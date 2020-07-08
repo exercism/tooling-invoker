@@ -1,36 +1,17 @@
 module ToolingInvoker
-  class RuncConfigurator
-    attr_accessor :uid_id, :gid_id, :invocation_args, :interactive, :rootfs, :working_directory
+  class RuncConfiguration
 
-    def initialize
-      @rootfs = "./rootfs"
-      @working_directory = "/opt/analyzer"
-    end
+    def initialize(working_directory, rootfs_source, invocation_args)
+      @rootfs = rootfs_source
+      @working_directory = working_directory
+      @invocation_args = invocation_args
 
-    def seed_from_env
+      @interactive = false
       @uid_id = `id -u`.chomp
       @gid_id = `id -g`.chomp
-      @invocation_args = []
-      @interactive = false
     end
 
-    def setup_invocation_args(working_directory, args)
-      @interactive = false
-      @working_directory = working_directory
-      @invocation_args = args
-    end
-
-    def setup_for_terminal_access
-      @interactive = true
-      @invocation_args = ["/bin/sh"]
-    end
-
-    def setup_script(script_path)
-      @interactive = false
-      @invocation_args = ["/bin/sh", script_path]
-    end
-
-    def build
+    def to_json
       config = <<-EOS
       {
         "ociVersion": "1.0.1-dev",
@@ -72,7 +53,7 @@ module ToolingInvoker
         "mounts": [
           {
             "destination": "/mnt/exercism-iteration",
-            "source": "./iteration",
+            "source": "./code",
             "options": [ "rbind", "rw" ]
           },
           {
@@ -200,5 +181,8 @@ module ToolingInvoker
       parsed["process"]["args"] = invocation_args
       parsed
     end
+    
+    private
+    attr_reader :rootfs, :uid_id, :gid_id, :invocation_args, :interactive, :working_directory
   end
 end

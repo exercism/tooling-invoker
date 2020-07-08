@@ -10,11 +10,9 @@ module ToolingInvoker
         @logs << external_command.report
       end
 
-      def inspect
+      def to_a
         @logs
       end
-
     end
   end
-
 end

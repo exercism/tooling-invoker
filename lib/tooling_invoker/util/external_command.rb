@@ -6,49 +6,27 @@ module ToolingInvoker
 
       BLOCK_SIZE = 1024
 
-      attr_accessor :cmd_string, :status, :stdout, :stderr, :suppress_output,
-                    :stderr_limit, :stdout_limit
-
-      def initialize(cmd_string)
+      def initialize(cmd_string, timeout: nil, stdout_limit: -1, stderr_limit: -1, suppress_output: false)
         @cmd_string = cmd_string
-        @stdout_limit = -1
-        @stderr_limit = -1
-      end
+        @stdout_limit = stdout_limit
+        @stderr_limit = stderr_limit
+        @suppress_output = suppress_output
 
-      def call!
-        call
-        raise "Failed #{cmd_string}" unless status.success?
+        if timeout && timeout > 0
+          @cmd = "/usr/bin/timeout -s 9 -k #{timeout + 1} #{timeout} #{cmd_string}"
+        else
+          @cmd = cmd_string
+        end
       end
 
       def call
         invoke_process
+
         puts "status: #{status}" unless suppress_output
         puts "stdout: #{stdout}" unless suppress_output
         puts "stderr: #{stderr}" unless suppress_output
-      end
 
-      def cmd
-        if @timeout
-          "/usr/bin/timeout -s 9 -k #{@timeout + 1} #{@timeout} #{cmd_string}"
-        else
-          cmd_string
-        end
-      end
-
-      def success?
-        status && status.success?
-      end
-
-      def killed?
-        !! @killed
-      end
-
-      def exit_status
-        status.exitstatus
-      end
-
-      def timeout=(timeout)
-        @timeout = timeout
+        raise "Failed #{cmd_string}" unless status.success?
       end
 
       def report
@@ -60,25 +38,21 @@ module ToolingInvoker
         }
       end
 
-      private
-
-      def fix_encoding(text)
-        return nil if text.nil?
-        text.force_encoding("ISO-8859-1").encode("UTF-8")
-      rescue => e
-        puts e.message
-        puts e.backtrace
-        "--- failed to encode as UTF-8: #{e.message} ---"
+      def exit_status
+        status.exitstatus
       end
 
+      private
+      attr_accessor :cmd_string, :stderr_limit, :stdout_limit,
+                    :status, :stdout, :stderr, :suppress_output
+
       def invoke_process
-        c = cmd
         captured_stdout = []
         captured_stderr = []
         stdout_size = 0
         stderr_size = 0
-        puts "> #{c}"  unless suppress_output
-        Open3.popen3(c) do |_stdin, _stdout, _stderr, wait_thr|
+        puts "> #{cmd}"  unless suppress_output
+        Open3.popen3(cmd) do |_stdin, _stdout, _stderr, wait_thr|
           pid = wait_thr.pid
           _stdin.close_write
 
@@ -127,6 +101,27 @@ module ToolingInvoker
           end
         end
       end
+
+      def cmd
+
+      end
+
+      def success?
+        status && status.success?
+      end
+
+      def killed?
+        !!@killed
+      end
+
+      def fix_encoding(text)
+        return nil if text.nil?
+        text.force_encoding("ISO-8859-1").encode("UTF-8")
+      rescue => e
+        puts e.message
+        puts e.backtrace
+        "--- failed to encode as UTF-8: #{e.message} ---"
+      end
     end
   end
-
+end

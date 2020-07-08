@@ -5,11 +5,11 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem "rake"
-gem "mocha"
-gem "minitest"
-gem 'zeitwerk'
-
 gem 'mandate'
 gem "aws-sdk-s3"
+gem 'zeitwerk'
+gem "rake"
 
+gem "mocha"
+gem "minitest"
+gem "timecop"
