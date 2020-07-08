@@ -1,6 +1,6 @@
 module ToolingInvoker
-  class ContainerRun
-    attr_reader :exercise_slug
+  class Job
+    attr_reader :id, :exercise_slug
 
     def initialize(exercise_slug)
       @exercise_slug = exercise_slug

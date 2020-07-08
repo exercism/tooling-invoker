@@ -17,7 +17,7 @@ module ToolingInvoker
 
       case job_type
       when :test_run
-        @job = ToolingInvoker::TestRun.new(exercise_slug)
+        @job = TestRunJob.new(exercise_slug)
       else 
         raise "Unknown job: #{type}"
       end
@@ -29,6 +29,7 @@ module ToolingInvoker
       )
 
       @runc = RuncWrapper.new(
+        job.id,
         environment.iteration_dir, 
         runc_configuration, 
         execution_timeout: request["execution_timeout"]
@@ -89,7 +90,6 @@ module ToolingInvoker
         rootfs_source: environment.rootfs_source,
         invocation: runc_result.report,
         result: parsed_results,
-        logs: runc.logs.to_a,
         exit_status: exit_status
       }
     end

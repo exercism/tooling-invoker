@@ -2,7 +2,7 @@ module ToolingInvoker
   class RuncConfiguration
 
     def initialize(working_directory, rootfs_source, invocation_args)
-      @rootfs = rootfs_source
+      @rootfs_source = rootfs_source
       @working_directory = working_directory
       @invocation_args = invocation_args
 
@@ -46,7 +46,7 @@ module ToolingInvoker
           "noNewPrivileges": true
         },
         "root": {
-          "path": "#{rootfs}",
+          "path": "#{rootfs_source}",
           "readonly": true
         },
         "hostname": "exercism-runner",
@@ -183,6 +183,6 @@ module ToolingInvoker
     end
     
     private
-    attr_reader :rootfs, :uid_id, :gid_id, :invocation_args, :interactive, :working_directory
+    attr_reader :rootfs_source, :uid_id, :gid_id, :invocation_args, :interactive, :working_directory
   end
 end
