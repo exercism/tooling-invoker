@@ -17,7 +17,7 @@ module ToolingInvoker
         msg: msg,
         data: data
       }
-      assert_equal expected, error.to_hash
+      assert_equal expected, error.to_h
     end
 
     def test_defaults
@@ -31,7 +31,13 @@ module ToolingInvoker
         msg: msg,
         data: {}
       }
-      assert_equal expected, error.to_hash
+      assert_equal expected, error.to_h
+    end
+
+    def test_raises_properly
+      assert_raises do
+        raise InvocationError.new(123, "foobar")
+      end
     end
   end
 end

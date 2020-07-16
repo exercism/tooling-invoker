@@ -23,8 +23,8 @@ module ToolingInvoker
       end
 
       runc_configuration = RuncConfiguration.new(
-        environment.rootfs_source,
         job.working_directory,
+        environment.rootfs_source,
         job.invocation_args
       )
 
@@ -63,6 +63,8 @@ module ToolingInvoker
     def prepare_input!
       log "Preparing input"
       FileUtils.mkdir_p(environment.iteration_dir)
+      FileUtils.mkdir("#{environment.iteration_dir}/tmp")
+
       SyncS3.(@request["s3_uri"], environment.source_code_dir, @request["context"]["credentials"])
     rescue => e
       raise InvocationError.new(512, "Failure preparing input", exception: e)

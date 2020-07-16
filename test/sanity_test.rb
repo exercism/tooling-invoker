@@ -3,6 +3,7 @@ require 'test_helper'
 module ToolingInvoker
   class SanityTest < Minitest::Test
     def test_sanity
+
       Timecop.freeze do
         ExternalCommand.any_instance.expects(:cmd).returns(
           "#{File.expand_path(File.dirname(__FILE__))}/../bin/mock_runc"

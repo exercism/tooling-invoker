@@ -1,6 +1,20 @@
 # Tooling invoker
 
-## Layout
+## Local Setup
+
+Tests can be run locally, but we recommend running this repo through Docker.
+
+To build the Dockerfile, run:
+```
+docker build -f Dockerfile.dev -t tooking-invoker .
+```
+
+To execute the Dockerfile, run:
+```
+./bin/docker-run
+```
+
+## Filesystem Layout
 
 The containers live in a directory (currently `CONTAINERS_DIR` but will be in config).
 

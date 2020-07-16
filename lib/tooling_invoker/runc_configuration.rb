@@ -3,7 +3,7 @@ module ToolingInvoker
 
     def initialize(working_directory, rootfs_source, invocation_args)
       @rootfs_source = rootfs_source
-      @working_directory = working_directory
+      @working_directory = File.expand_path(working_directory)
       @invocation_args = invocation_args
 
       @interactive = false
@@ -179,7 +179,7 @@ module ToolingInvoker
       parsed = JSON.parse(config)
       parsed["process"]["terminal"] = interactive
       parsed["process"]["args"] = invocation_args
-      parsed
+      parsed.to_json
     end
     
     private

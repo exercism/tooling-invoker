@@ -1,17 +1,19 @@
 module ToolingInvoker
   class InvocationError < RuntimeError
-    attr_reader :error_code, :msg, :exception, :data
+    attr_reader :error_code, :msg, :cause, :data
 
     def initialize(error_code, msg, exception: nil, data: {})
+      super("#{error_code}: #{msg}")
+
       @error_code = error_code
       @msg = msg
-      @exception = exception
+      @cause = exception
       @data = data
 
       log!
     end
 
-    def to_hash
+    def to_h
       {
         worker_error_code: error_code,
         msg: msg,
@@ -21,7 +23,7 @@ module ToolingInvoker
 
     def log!
       puts "** #{error_code} | #{msg}"
-      puts "** #{exception.backtrace}" if exception
+      puts "** #{cause.backtrace}" if cause
     end
   end
 end
