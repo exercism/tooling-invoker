@@ -1,9 +1,9 @@
 module ToolingInvoker
   class RuncWrapper
 
-    def initialize(job_id, iteration_dir, configuration, execution_timeout: 5)
-      @job_id = "hello"#job_id
-      @iteration_dir = iteration_dir
+    def initialize(job_id, job_dir, configuration, execution_timeout: 5)
+      @job_id = job_id
+      @job_dir = job_dir
       @configuration = configuration
       @execution_timeout = execution_timeout.to_i
 
@@ -13,7 +13,7 @@ module ToolingInvoker
     end
 
     def run!
-      File.write("#{iteration_dir}/config.json", configuration.to_json)
+      File.write("#{job_dir}/config.json", configuration.to_json)
 
       actual_command = "#{binary_path} --root root-state run #{job_id}"
       run_cmd = ExternalCommand.new(
@@ -22,8 +22,7 @@ module ToolingInvoker
         output_limit: 1024*1024
       )
 
-
-      Dir.chdir(iteration_dir) do
+      Dir.chdir(job_dir) do
         kill_thread = Thread.new do
           sleep(execution_timeout)
           system("#{binary_path} --root root-state kill #{job_id} KILL")
@@ -35,17 +34,14 @@ module ToolingInvoker
           p "Errored: #{e}"
         end
 
-        kill_thread.kill unless kill_thread.killed?
-
-        p "HERE3"
+        kill_thread.kill
       end
 
-      p "HERE!!"
       run_cmd
     end
 
     private
-    attr_reader :binary_path, :suppress_output, :memory_limit, :execution_timeout, :iteration_dir, :configuration
+    attr_reader :binary_path, :suppress_output, :memory_limit, :execution_timeout, :job_dir, :configuration
     attr_reader :job_id
   end
 end

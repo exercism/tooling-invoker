@@ -1,9 +1,9 @@
 module ToolingInvoker
   class TestRunJob < Job
 
-    def initialize(*args)
-      super
-      @id = "test_run-#{SecureRandom.hex}-#{Time.now.to_i}"
+    def initialize(iteration_id, *args)
+      id = "test_run-#{iteration_id}-#{SecureRandom.hex}"
+      super(id, iteration_id, *args)
     end
 
     def invocation_args

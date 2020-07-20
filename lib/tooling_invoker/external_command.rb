@@ -80,7 +80,6 @@ module ToolingInvoker
         rescue IOError => e
           puts "IOError: #{e}"
         ensure
-          p "Ensuring"
           stdout.close unless stdout.closed?
           stderr.close unless stderr.closed?
 

@@ -9,6 +9,7 @@ gem 'mandate'
 gem "aws-sdk-s3"
 gem 'zeitwerk'
 gem "rake"
+gem 'rest-client'
 
 gem "mocha"
 gem "minitest"

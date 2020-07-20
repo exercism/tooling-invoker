@@ -2,13 +2,12 @@ module ToolingInvoker
   class SyncS3
     include Mandate
 
-    initialize_with :s3_uri, :download_folder, :raw_credentials
+    initialize_with :s3_uri, :download_folder
 
     def call
       log "Syncing #{s3_uri} -> #{download_folder}"
 
       s3 = Aws::S3::Client.new(
-        credentials: aws_credentials,
         region: "eu-west-1",
         http_idle_timeout: 0
       )
@@ -42,14 +41,6 @@ module ToolingInvoker
     rescue => e
       log "ERROR in s3 sync #{e.message}"
       raise
-    end
-
-    memoize
-    def aws_credentials
-      key = raw_credentials["access_key_id"]
-      secret = raw_credentials["secret_access_key"]
-      session = raw_credentials["session_token"]
-      Aws::Credentials.new(key, secret, session)
     end
 
     def log(message)

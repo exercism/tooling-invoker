@@ -6,7 +6,6 @@ module ToolingInvoker
       @working_directory = File.expand_path(working_directory)
       @invocation_args = invocation_args
 
-      @interactive = false
       @uid_id = `id -u`.chomp
       @gid_id = `id -g`.chomp
     end
@@ -16,6 +15,7 @@ module ToolingInvoker
       {
         "ociVersion": "1.0.1-dev",
         "process": {
+          "terminal": false,
           "user": {
             "uid": 0,
             "gid": 0
@@ -177,12 +177,11 @@ module ToolingInvoker
       }
       EOS
       parsed = JSON.parse(config)
-      parsed["process"]["terminal"] = interactive
       parsed["process"]["args"] = invocation_args
       parsed.to_json
     end
     
     private
-    attr_reader :rootfs_source, :uid_id, :gid_id, :invocation_args, :interactive, :working_directory
+    attr_reader :rootfs_source, :uid_id, :gid_id, :invocation_args, :working_directory
   end
 end

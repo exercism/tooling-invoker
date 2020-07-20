@@ -179,7 +179,7 @@ module ToolingInvoker
       expected["process"]["args"] = invocation_args
 
       configuration = RuncConfiguration.new(working_directory, rootfs_source, invocation_args)
-      assert_equal expected, configuration.to_json
+      assert_equal expected.to_json, configuration.to_json
     end
   end
 end

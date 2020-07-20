@@ -1,26 +1,13 @@
 module ToolingInvoker
   class Invoker
-    def initialize(request, job_type, containers_dir)
-      @request = request
-      @job_type = job_type
-      @containers_dir = containers_dir
-
-      iteration_id = request["id"]
-      container_version = request["container_version"]
+    def initialize(job)
+      @job = job
 
       @environment = RuntimeEnvironment.new(
-        containers_dir, 
-        container_version, 
-        request["track_slug"], 
-        iteration_id
+        job.container_version, 
+        job.language_slug,
+        job.id
       )
-
-      case job_type
-      when :test_run
-        @job = TestRunJob.new(exercise_slug)
-      else 
-        raise "Unknown job: #{type}"
-      end
 
       runc_configuration = RuncConfiguration.new(
         job.working_directory,
@@ -30,14 +17,14 @@ module ToolingInvoker
 
       @runc = RuncWrapper.new(
         job.id,
-        environment.iteration_dir, 
+        environment.job_dir, 
         runc_configuration, 
-        execution_timeout: request["execution_timeout"]
+        execution_timeout: job.execution_timeout
       )
     end
 
     def invoke
-      log("Invoking request: #{environment.iteration_id}: #{environment.track_slug}:#{job.exercise_slug}")
+      log("Invoking request: #{job.id}: #{job.language_slug}:#{job.exercise_slug}")
 
       check_container!
       prepare_input!
@@ -49,23 +36,24 @@ module ToolingInvoker
     end
 
     private
-    attr_reader :request, :job, :environment, :runc
+    attr_reader :job, :environment, :runc
 
     def check_container!
       log "Checking container"
       unless environment.container_exists?
-        raise InvocationError.new(511, "Container is not available at #{environment.dir}")
+        raise InvocationError.new(511, "Container is not available at #{environment.container_dir}")
       end
     rescue => e
+      raise if e.is_a?(InvocationError) 
       raise InvocationError.new(512, "Failure accessing environment (during container check)", exception: e)
     end
 
     def prepare_input!
       log "Preparing input"
-      FileUtils.mkdir_p(environment.iteration_dir)
-      FileUtils.mkdir("#{environment.iteration_dir}/tmp")
+      FileUtils.mkdir_p(environment.job_dir)
+      FileUtils.mkdir("#{environment.job_dir}/tmp")
 
-      SyncS3.(@request["s3_uri"], environment.source_code_dir, @request["context"]["credentials"])
+      SyncS3.(job.s3_uri, environment.source_code_dir)
     rescue => e
       raise InvocationError.new(512, "Failure preparing input", exception: e)
     end
@@ -83,12 +71,12 @@ module ToolingInvoker
         raise InvocationError.new(513, "Container returned exit status of #{exit_status}", data: runc_result)
       end
 
-      raw_results = File.read("#{environment.iteration_dir}/#{job.results_filepath}")
+      raw_results = File.read("#{environment.job_dir}/#{job.results_filepath}")
       parsed_results = JSON.parse(raw_results)
 
       {
-        exercise_slug: exercise_slug,
-        iteration_dir: environment.iteration_dir,
+        exercise_slug: job.exercise_slug,
+        job_dir: environment.job_dir,
         rootfs_source: environment.rootfs_source,
         invocation: runc_result.report,
         result: parsed_results,
@@ -98,10 +86,6 @@ module ToolingInvoker
 
     def log(message)
       puts "** #{self.class.to_s} | #{message}"
-    end
-
-    def exercise_slug
-      @exercise_slug ||= request["exercise_slug"]
     end
   end
 end
