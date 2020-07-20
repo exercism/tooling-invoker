@@ -34,7 +34,7 @@ module ToolingInvoker
       }
         
       begin
-        assert_equal expected, Invoker.new(job).invoke
+        assert_equal expected, Invoker.(job)
       ensure
         FileUtils.rm_rf("#{Configuration.containers_dir}/ruby/releases/v1/jobs/#{job.id}")
       end

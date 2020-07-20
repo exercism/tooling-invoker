@@ -3,7 +3,7 @@ module ToolingInvoker
     include Singleton
     class << self
       extend Forwardable
-      def_delegator :instance, :containers_dir
+      def_delegators :instance, :containers_dir, :orchestrator_address
     end
 
     def orchestrator_address

@@ -1,5 +1,7 @@
 module ToolingInvoker
   class Invoker
+    include Mandate
+
     def initialize(job)
       @job = job
 
@@ -23,7 +25,7 @@ module ToolingInvoker
       )
     end
 
-    def invoke
+    def call
       log("Invoking request: #{job.id}: #{job.language_slug}:#{job.exercise_slug}")
 
       check_container!
