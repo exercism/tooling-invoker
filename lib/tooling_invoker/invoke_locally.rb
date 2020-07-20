@@ -17,7 +17,7 @@ module ToolingInvoker
       SyncS3.(job.s3_uri, input_dir)
 
       Dir.chdir(tool_dir) do
-        `bin/run.sh #{job.exercise_slug} #{input_dir} #{output_dir}`
+        `/bin/sh bin/run.sh #{job.exercise_slug} #{input_dir} #{output_dir}`
       end
 
       results = File.read("#{output_dir}/#{job.results_filepath}")

@@ -23,7 +23,14 @@ module ToolingInvoker
         region: "eu-west-1",
         http_idle_timeout: 0,
       }
-      config[:profile] = "exercism_tooling_invoker" if env == :development
+      if env == :development
+        if ENV["AWS_ACCESS_KEY_ID"]
+          config[:access_key_id] = ENV["AWS_ACCESS_KEY_ID"]
+          config[:secret_access_key] = ENV["AWS_SECRET_ACCESS_KEY"]
+        else
+          config[:profile] = "exercism_tooling_invoker"
+        end
+      end
       config
     end
 
