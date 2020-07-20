@@ -20,12 +20,22 @@ module ToolingInvoker
         execution_timeout: execution_timeout
       }
 
-      job = mock
+      job = mock(iteration_id: iteration_id)
+      results = mock
+
       TestRunJob.expects(:new).with(
         iteration_id, language_slug, exercise_slug, s3_uri, container_version, execution_timeout
       ).returns(job)
-      Invoker.expects(:call).with(job)
-      RestClient.expects(:get).returns(mock(body: resp.to_json))
+      InvokeRunc.expects(:call).with(job).returns(results)
+      RestClient.expects(:get).
+        with("#{Configuration.orchestrator_address}/iterations").
+        returns(mock(body: resp.to_json))
+
+      RestClient.expects(:patch).
+        with(
+          "#{Configuration.orchestrator_address}/iterations/#{iteration_id}",
+          results
+        )
 
       service = Worker.new
       service.expects(:loop).yields
@@ -39,7 +49,6 @@ module ToolingInvoker
       RestClient.expects(:get).raises(RestClient::NotFound)
       service.expects(:loop).yields
       service.expects(:sleep)
-
       service.()
     end
 

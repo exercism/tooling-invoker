@@ -7,10 +7,7 @@ module ToolingInvoker
     def call
       log "Syncing #{s3_uri} -> #{download_folder}"
 
-      s3 = Aws::S3::Client.new(
-        region: "eu-west-1",
-        http_idle_timeout: 0
-      )
+      s3 = Aws::S3::Client.new(Configuration.s3_config)
       log "Created client"
       location_uri = URI(s3_uri)
       bucket = location_uri.host

@@ -15,7 +15,6 @@ module ToolingInvoker
             sleep(0.1)
           end
         rescue => e
-          p e
           sleep(0.1)
         end
       end
@@ -26,7 +25,9 @@ module ToolingInvoker
     # This will raise an exception if something other than 
     # a 200 or a 404 is found.
     def check_for_job
-      resp = RestClient.get(Configuration.orchestrator_address)
+      resp = RestClient.get(
+        "#{Configuration.orchestrator_address}/iterations"
+      )
       request = JSON.parse(resp.body)
 
       klass = case request['job_type']
@@ -49,7 +50,11 @@ module ToolingInvoker
     end
 
     def handle_job(job)
-      Invoker.(job)
+      results = Configuration.invoker.(job)
+      RestClient.patch(
+        "#{Configuration.orchestrator_address}/iterations/#{job.iteration_id}", 
+        results
+      )
     end
 
     def log(message)

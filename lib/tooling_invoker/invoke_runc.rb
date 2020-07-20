@@ -1,5 +1,5 @@
 module ToolingInvoker
-  class Invoker
+  class InvokeRunc
     include Mandate
 
     def initialize(job)
@@ -7,7 +7,7 @@ module ToolingInvoker
 
       @environment = RuntimeEnvironment.new(
         job.container_version, 
-        job.language_slug,
+        job.tooling_slug,
         job.id
       )
 
@@ -81,7 +81,7 @@ module ToolingInvoker
         job_dir: environment.job_dir,
         rootfs_source: environment.rootfs_source,
         invocation: runc_result.report,
-        result: parsed_results,
+        results: parsed_results,
         exit_status: exit_status
       }
     end

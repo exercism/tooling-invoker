@@ -17,5 +17,9 @@ module ToolingInvoker
     def working_directory
       "/opt/test-runner"
     end
+
+    def tooling_slug
+      "#{language_slug}-test-runner"
+    end
   end
 end

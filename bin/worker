@@ -5,25 +5,15 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 
 require "tooling_invoker"
 
-begin
-  p ToolingInvoker::Invoker.new(
-    {
-      "id" => SecureRandom.uuid,
-      "track_slug" => "ruby",
-      "exercise_slug" => "bob",
-      "s3_uri" => "s3://exercism-iterations/production/iterations/1182520",
-      "execution_timeout" => 5,
-      'context' => {
-        "credentials" => {
-          'access_key_id' => ENV["AWS_ACCESS_KEY_ID"],
-          'secret_access_key' => ENV["AWS_SECRET_ACCESS_KEY"],
-        }
-      }
-    }, 
-    :test_run, 
-    File.expand_path('/opt/containers')
-  ).invoke
-rescue => e
-  p "Got to the end"
-  p e
-end
+#Worker.()
+
+job = ToolingInvoker::TestRunJob.new(
+  SecureRandom.uuid,
+  "ruby",
+  "bob",
+  "s3://exercism-iterations/production/iterations/1182520",
+  nil, 
+  nil
+)
+puts ToolingInvoker::InvokeLocally.(job)
+
