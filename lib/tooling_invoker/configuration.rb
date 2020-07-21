@@ -4,6 +4,7 @@ module ToolingInvoker
     class << self
       extend Forwardable
       def_delegators :instance, :containers_dir, 
+                                :jobs_dir,
                                 :orchestrator_address, 
                                 :invoker, 
                                 :s3_config
@@ -20,7 +21,7 @@ module ToolingInvoker
 
     def s3_config
       config = {
-        region: "eu-west-1",
+        region: "eu-west-2",
         http_idle_timeout: 0,
       }
       if env == :development
@@ -35,7 +36,7 @@ module ToolingInvoker
     end
 
     def orchestrator_address
-      "http://localhost:3020"
+      "http://localhost:3021"
     end
 
     def containers_dir
@@ -46,6 +47,15 @@ module ToolingInvoker
         File.expand_path("../../../..", __FILE__)
       when :production
         File.expand_path('/opt/containers')
+      end
+    end
+
+    def jobs_dir
+      case env
+      when :production
+        File.expand_path('/opt/jobs')
+      else
+        File.expand_path("/tmp/exercism-tooling-jobs")
       end
     end
 

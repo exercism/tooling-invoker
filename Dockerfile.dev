@@ -1,0 +1,15 @@
+FROM ruby:2.6.6-alpine3.12
+
+RUN gem install bundler && \
+    apk add --no-cache --update build-base cmake git
+
+RUN git clone https://github.com/exercism/ruby-test-runner /usr/src/ruby-test-runner && \
+    cd /usr/src/ruby-test-runner && \
+    bundle install
+
+WORKDIR /usr/src/app
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+ENTRYPOINT cd /usr/src/app && ./bin/worker

@@ -2,38 +2,38 @@ require 'test_helper'
 
 module ToolingInvoker
   class WorkerTest < Minitest::Test
-    def test_with
-      iteration_id = "123"
-      language_slug = "ruby"
-      exercise_slug  = "bob"
+    def test_flow
+      job_id = "123"
+      language = "ruby"
+      exercise  = "bob"
       s3_uri = "s3://..."
       container_version = "v1"
       execution_timeout = 10
 
       resp = {
-        job_type: "test_run",
-        iteration_id: iteration_id,
-        language_slug: language_slug,
-        exercise_slug: exercise_slug,
+        job_type: "test_runner",
+        id: job_id,
+        language: language,
+        exercise: exercise,
         s3_uri: s3_uri,
         container_version: container_version,
         execution_timeout: execution_timeout
       }
 
-      job = mock(iteration_id: iteration_id)
+      job = mock(id: job_id)
       results = mock
 
-      TestRunJob.expects(:new).with(
-        iteration_id, language_slug, exercise_slug, s3_uri, container_version, execution_timeout
+      TestRunnerJob.expects(:new).with(
+        job_id, language, exercise, s3_uri, container_version, execution_timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job).returns(results)
       RestClient.expects(:get).
-        with("#{Configuration.orchestrator_address}/iterations").
+        with("#{Configuration.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
 
       RestClient.expects(:patch).
         with(
-          "#{Configuration.orchestrator_address}/iterations/#{iteration_id}",
+          "#{Configuration.orchestrator_address}/jobs/#{job_id}",
           results
         )
 

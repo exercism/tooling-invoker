@@ -18,7 +18,6 @@ module ToolingInvoker
       )
 
       @runc = RuncWrapper.new(
-        job.id,
         environment.job_dir, 
         runc_configuration, 
         execution_timeout: job.execution_timeout
@@ -26,7 +25,7 @@ module ToolingInvoker
     end
 
     def call
-      log("Invoking request: #{job.id}: #{job.language_slug}:#{job.exercise_slug}")
+      log("Invoking request: #{job.id}: #{job.language}:#{job.exercise}")
 
       check_container!
       prepare_input!
@@ -77,7 +76,6 @@ module ToolingInvoker
       parsed_results = JSON.parse(raw_results)
 
       {
-        exercise_slug: job.exercise_slug,
         job_dir: environment.job_dir,
         rootfs_source: environment.rootfs_source,
         invocation: runc_result.report,

@@ -15,7 +15,7 @@ Tests can be run locally on any system.
 
 To build the Dockerfile, run:
 ```
-docker build -f Dockerfile.dev -t tooking-invoker .
+docker build -f Dockerfile.dev -t exercism-tooking-invoker .
 ```
 
 To execute the Dockerfile, run the following with your AWS keys:

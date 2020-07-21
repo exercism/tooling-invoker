@@ -5,9 +5,11 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 
 require "tooling_invoker"
 
-#Worker.()
+ToolingInvoker::Worker.()
 
-job = ToolingInvoker::TestRunJob.new(
+exit
+
+job = ToolingInvoker::TestRunnerJob.new(
   SecureRandom.uuid,
   "ruby",
   "bob",

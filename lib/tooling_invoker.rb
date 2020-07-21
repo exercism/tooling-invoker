@@ -10,10 +10,6 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 module ToolingInvoker
-
-  # TODO - Pivot this on config
-  CONTAINERS_DIR = "tmp/"
-
   def self.env
     @env ||= ENV["APP_ENV"]
   end

@@ -11,7 +11,7 @@ module ToolingInvoker
       end
 
       @container_dir = "#{tool_dir}/releases/#{container_version}"
-      @job_dir = "#{container_dir}/jobs/#{job_id}"
+      @job_dir = "#{Configuration.jobs_dir}/#{job_id}-#{SecureRandom.hex}"
       @source_code_dir = "#{job_dir}/code"
       @rootfs_source = "#{container_dir}/rootfs"
     end

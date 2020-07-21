@@ -2,6 +2,8 @@ module ToolingInvoker
   class Worker
     include Mandate
 
+    SLEEP_TIME = 1 #0.1
+
     def initialize
     end
 
@@ -12,10 +14,10 @@ module ToolingInvoker
           if job 
             handle_job(job)
           else
-            sleep(0.1)
+            sleep(SLEEP_TIME)
           end
         rescue => e
-          sleep(0.1)
+          sleep(SLEEP_TIME)
         end
       end
     end
@@ -26,21 +28,21 @@ module ToolingInvoker
     # a 200 or a 404 is found.
     def check_for_job
       resp = RestClient.get(
-        "#{Configuration.orchestrator_address}/iterations"
+        "#{Configuration.orchestrator_address}/jobs/next"
       )
       request = JSON.parse(resp.body)
 
       klass = case request['job_type']
-      when 'test_run'
-        TestRunJob
+      when 'test_runner'
+        TestRunnerJob
       else 
         raise "Unknown job: #{type}"
       end
 
       klass.new(
-        request['iteration_id'],
-        request['language_slug'],
-        request['exercise_slug'],
+        request['id'],
+        request['language'],
+        request['exercise'],
         request['s3_uri'],
         request['container_version'],
         request['execution_timeout']
@@ -52,7 +54,7 @@ module ToolingInvoker
     def handle_job(job)
       results = Configuration.invoker.(job)
       RestClient.patch(
-        "#{Configuration.orchestrator_address}/iterations/#{job.iteration_id}", 
+        "#{Configuration.orchestrator_address}/jobs/#{job.id}", 
         results
       )
     end
