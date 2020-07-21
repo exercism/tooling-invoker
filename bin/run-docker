@@ -7,6 +7,7 @@ docker run
 -v #{dir}:/usr/src/app 
 --env AWS_ACCESS_KEY_ID=#{ARGV[0]} 
 --env AWS_SECRET_ACCESS_KEY=#{ARGV[1]}
+--network=host
 exercism-tooking-invoker:latest
 }.join(" ")
 

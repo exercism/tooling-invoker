@@ -36,7 +36,7 @@ module ToolingInvoker
     end
 
     def orchestrator_address
-      "http://localhost:3021"
+      "http://127.0.0.1:3021"
     end
 
     def containers_dir
