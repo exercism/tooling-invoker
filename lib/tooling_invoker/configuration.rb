@@ -36,7 +36,8 @@ module ToolingInvoker
     end
 
     def orchestrator_address
-      "http://127.0.0.1:3021"
+      orchestrator_host = ENV.fetch("ORCHESTRATOR_HOST", "127.0.0.1")
+      "http://#{orchestrator_host}:3021"
     end
 
     def containers_dir
