@@ -21,8 +21,8 @@ module ToolingInvoker
       "#{language}-test-runner"
     end
 
-    def parsed_output
-      JSON.parse(output)
+    def parsed_result
+      JSON.parse(result)
     end
   end
 end
