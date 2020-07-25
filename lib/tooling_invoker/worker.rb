@@ -17,6 +17,10 @@ module ToolingInvoker
             sleep(SLEEP_TIME)
           end
         rescue => e
+          p "Top level error"
+          p e.message
+          p e.backtrace
+
           sleep(SLEEP_TIME)
         end
       end
@@ -30,22 +34,22 @@ module ToolingInvoker
       resp = RestClient.get(
         "#{Configuration.orchestrator_address}/jobs/next"
       )
-      request = JSON.parse(resp.body)
+      job_data = JSON.parse(resp.body)
 
-      klass = case request['job_type']
+      klass = case job_data['type']
       when 'test_runner'
         TestRunnerJob
       else 
-        raise "Unknown job: #{type}"
+        raise "Unknown job: #{job_data['type']}"
       end
 
       klass.new(
-        request['id'],
-        request['language'],
-        request['exercise'],
-        request['s3_uri'],
-        request['container_version'],
-        request['execution_timeout']
+        job_data['id'],
+        job_data['language'],
+        job_data['exercise'],
+        job_data['s3_uri'],
+        job_data['container_version'],
+        job_data['execution_timeout']
       )
     rescue RestClient::NotFound
       nil

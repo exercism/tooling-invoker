@@ -11,7 +11,7 @@ module ToolingInvoker
       execution_timeout = 10
 
       resp = {
-        job_type: "test_runner",
+        type: "test_runner",
         id: job_id,
         language: language,
         exercise: exercise,
