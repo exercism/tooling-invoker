@@ -7,7 +7,7 @@ module ToolingInvoker
     end
 
     def call
-      tool_dir = "#{Configuration.containers_dir}/#{job.tooling_slug}"
+      tool_dir = "#{Configuration.containers_dir}/#{job.tool}"
       job_dir = "#{Configuration.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
       input_dir = "#{job_dir}/input"
       output_dir = "#{job_dir}/output"
@@ -16,16 +16,22 @@ module ToolingInvoker
 
       SyncS3.(job.s3_uri, input_dir)
 
-      Dir.chdir(tool_dir) do
-        `/bin/sh bin/run.sh #{job.exercise} #{input_dir} #{output_dir}`
+      cmd = "/bin/sh bin/run.sh #{job.exercise} #{input_dir} #{output_dir}"
+      exit_status = Dir.chdir(tool_dir) do
+        system(cmd)
       end
 
-      results = File.read("#{output_dir}/#{job.results_filepath}")
-
-      {
-        msg_type: :response,
-        results: JSON.parse(results)
+      job.context = {
+        tool_dir: tool_dir,
+        job_dir: job_dir,
+        stdout: '',
+        stderr: '',
       }
+      job.invocation_data = {
+        cmd: cmd,
+        exit_status: exit_status,
+      }
+      job.result = File.read("#{output_dir}/#{job.results_filepath}")
     end
 
     private

@@ -20,13 +20,13 @@ module ToolingInvoker
         execution_timeout: execution_timeout
       }
 
-      job = mock(id: job_id)
       results = mock
+      job = mock(id: job_id, to_h: results)
 
       TestRunnerJob.expects(:new).with(
         job_id, language, exercise, s3_uri, container_version, execution_timeout
       ).returns(job)
-      InvokeRunc.expects(:call).with(job).returns(results)
+      InvokeRunc.expects(:call).with(job)
       RestClient.expects(:get).
         with("#{Configuration.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))

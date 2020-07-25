@@ -52,11 +52,14 @@ module ToolingInvoker
     end
 
     def handle_job(job)
-      results = Configuration.invoker.(job)
+      Configuration.invoker.(job)
       RestClient.patch(
         "#{Configuration.orchestrator_address}/jobs/#{job.id}", 
-        results
+        job.to_h
       )
+    rescue => e
+      p e.message
+      p e.backtrace
     end
 
     def log(message)

@@ -15,25 +15,15 @@ module ToolingInvoker
 
     def call
       invoke_process
-
-      puts "status: #{status}" unless suppress_output
-      puts "stdout: #{stdout}" unless suppress_output
-      puts "stderr: #{stderr}" unless suppress_output
-
-      raise "Failed #{raw_cmd}" unless success?
     end
 
-    def report
+    def to_h
       {
         cmd: raw_cmd,
-        success: success?,
+        exit_status: status&.exitstatus,
         stdout: fix_encoding(stdout),
         stderr: fix_encoding(stderr)
       }
-    end
-
-    def exit_status
-      status.exitstatus
     end
 
     private
@@ -90,17 +80,14 @@ module ToolingInvoker
       end
     end
 
-    def success?
-      status && status.success?
-    end
-
     def fix_encoding(text)
-      return nil if text.nil?
+      return "" if text.nil?
       text.force_encoding("ISO-8859-1").encode("UTF-8")
     rescue => e
       puts e.message
       puts e.backtrace
       puts "--- failed to encode as UTF-8: #{e.message} ---"
+      ""
     end
   end
 end

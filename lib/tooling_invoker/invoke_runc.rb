@@ -7,7 +7,7 @@ module ToolingInvoker
 
       @environment = RuntimeEnvironment.new(
         job.container_version, 
-        job.tooling_slug,
+        job.tool,
         job.id
       )
 
@@ -29,11 +29,14 @@ module ToolingInvoker
 
       check_container!
       prepare_input!
-      result = run_job!
-      result.merge(msg_type: :response)
-
+      run_job!
     rescue InvocationError => e
-      e.to_h.merge(msg_type: :error_response)
+      job.status = e.error_code
+      job.invocation_data[:exception_msg] = e.message
+    rescue => e
+      job.status = 513
+      job.invocation_data[:exception_msg] = e.message
+      job.invocation_data[:exception_backtrace] = e.backtrace
     end
 
     private
@@ -44,6 +47,10 @@ module ToolingInvoker
       unless environment.container_exists?
         raise InvocationError.new(511, "Container is not available at #{environment.container_dir}")
       end
+
+      # Add context for later retreival
+      job.context[:job_dir] = environment.job_dir
+      job.context[:rootfs_source] = environment.rootfs_source
     rescue => e
       raise if e.is_a?(InvocationError) 
       raise InvocationError.new(512, "Failure accessing environment (during container check)", exception: e)
@@ -61,27 +68,17 @@ module ToolingInvoker
 
     def run_job!
       log "Invoking container"
-      begin
-        runc_result = runc.run!
-      rescue => e
-        raise InvocationError.new(513, "Error from container", exception: e)
+      invocation_data = runc.run!
+
+      # Add invocation_data for later retreival
+      job.invocation_data = invocation_data
+
+      unless invocation_data[:exit_status] == 0
+        raise InvocationError.new(513, "Container returned exit status of #{invocation_data[:exit_status].inspect}", data: invocation_data)
       end
 
-      exit_status = runc_result.exit_status
-      if exit_status != 0
-        raise InvocationError.new(513, "Container returned exit status of #{exit_status}", data: runc_result)
-      end
-
-      raw_results = File.read("#{environment.job_dir}/#{job.results_filepath}")
-      parsed_results = JSON.parse(raw_results)
-
-      {
-        job_dir: environment.job_dir,
-        rootfs_source: environment.rootfs_source,
-        invocation: runc_result.report,
-        results: parsed_results,
-        exit_status: exit_status
-      }
+      job.result = File.read("#{environment.job_dir}/#{job.results_filepath}")
+      job.status = 200
     end
 
     def log(message)
