@@ -17,8 +17,12 @@ module ToolingInvoker
       "/opt/test-runner"
     end
 
-    def tooling_slug
+    def tool
       "#{language}-test-runner"
+    end
+
+    def parsed_output
+      JSON.parse(output)
     end
   end
 end

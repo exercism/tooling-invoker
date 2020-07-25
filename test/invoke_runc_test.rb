@@ -2,17 +2,12 @@ require 'test_helper'
 
 module ToolingInvoker
   class InvokeRuncTest < Minitest::Test
-    def test_proxies_to_external_command
-      hex = SecureRandom.hex
-      SecureRandom.expects(:hex).times(3).returns(hex)
-
-      ExternalCommand.any_instance.expects(:cmd).returns(
-        "#{File.expand_path(File.dirname(__FILE__))}/../bin/mock_runc"
-      ).at_least_once
+    def setup
+      super
 
       SyncS3.expects(:call).once
 
-      job = TestRunnerJob.new(
+      @job = TestRunnerJob.new(
         SecureRandom.hex,
         "ruby",
         "bob",
@@ -21,25 +16,65 @@ module ToolingInvoker
         10
       )
 
-      expected = {
-        job_dir: "#{Configuration.jobs_dir}/#{job.id}-#{hex}", 
+      @hex = SecureRandom.hex
+
+      @expected_context = {
+        job_dir: "#{Configuration.jobs_dir}/#{@job.id}-#{@hex}", 
         rootfs_source: "#{Configuration.containers_dir}/ruby-test-runner/releases/v1/rootfs", 
-        invocation: {
-          cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{hex}'", 
-          success: true, 
-          stdout: "", 
-          stderr: ""
-        }, 
-        results: {'happy' => 'people'}, 
-        exit_status: 0, 
-        msg_type: :response
       }
-        
+
+      SecureRandom.expects(:hex).twice.returns(@hex)
+    end
+
+    def test_happy_path
+      ExternalCommand.any_instance.expects(:cmd).returns(
+        "#{File.expand_path(File.dirname(__FILE__))}/bin/mock_runc"
+      ).at_least_once
+
+      expected_result = "{\"happy\": \"people\"}"
+      expected_invocation_data = {
+        cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{@hex}'", 
+        exit_status: 0,
+        stdout: "", 
+        stderr: ""
+      }
+
       begin
-        assert_equal expected, InvokeRunc.(job)
+        InvokeRunc.(@job)
       ensure
-        FileUtils.rm_rf("#{Configuration.containers_dir}/ruby-test-runner/releases/v1/jobs/#{job.id}")
+        FileUtils.rm_rf("#{Configuration.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
       end
+
+      assert_equal 200, @job.status
+      assert_equal expected_result, @job.result
+      assert_equal expected_invocation_data, @job.invocation_data
+      assert_equal @expected_context, @job.context
+    end
+
+    def test_failed_invocation
+      ExternalCommand.any_instance.expects(:cmd).returns(
+        "#{File.expand_path(File.dirname(__FILE__))}/bin/missing_file"
+      ).at_least_once
+
+      expected_invocation_data = {
+        cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{@hex}'", 
+        exit_status: nil,
+        stdout: "", 
+        stderr: "",
+        exception_msg: "513: Container returned exit status of nil"
+      }
+
+      begin
+        InvokeRunc.(@job)
+      ensure
+        FileUtils.rm_rf("#{Configuration.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
+      end
+
+      assert_equal 513, @job.status
+      assert_nil @job.result
+      assert_equal expected_invocation_data, @job.invocation_data
+      assert_equal @expected_context, @job.context
     end
   end
+
 end

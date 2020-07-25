@@ -3,8 +3,8 @@ module ToolingInvoker
 
     attr_reader :container_dir, :job_dir, :source_code_dir, :rootfs_source
 
-    def initialize(container_version, tooling_slug, job_id)
-      tool_dir = "#{Configuration.containers_dir}/#{tooling_slug}"
+    def initialize(container_version, tool, job_id)
+      tool_dir = "#{Configuration.containers_dir}/#{tool}"
 
       if !container_version || container_version.empty?
         container_version = File.readlink("#{tool_dir}/current").split('/').last

@@ -23,22 +23,28 @@ module ToolingInvoker
         output_limit: 1024*1024
       )
 
-      Dir.chdir(job_dir) do
-        kill_thread = Thread.new do
-          sleep(execution_timeout)
-          system("#{binary_path} --root root-state kill #{run_id} KILL")
-        end
+      begin
+        Dir.chdir(job_dir) do
+          kill_thread = Thread.new do
+            sleep(execution_timeout)
+            system("#{binary_path} --root root-state kill #{run_id} KILL")
+          end
 
-        begin
-          run_cmd.()
-        rescue => e
-          p "Errored: #{e}"
-        end
+          begin
+            run_cmd.()
+          rescue => e
+            p "Errored: #{e}"
+          end
 
-        kill_thread.kill
+          kill_thread.kill
+        end
+      rescue
       end
 
-      run_cmd
+      run_cmd.to_h
+    rescue => e
+      p e
+      {}
     end
 
     private
