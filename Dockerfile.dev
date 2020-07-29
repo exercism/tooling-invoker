@@ -10,6 +10,8 @@ RUN git clone https://github.com/exercism/ruby-test-runner /usr/src/ruby-test-ru
 WORKDIR /usr/src/app
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN bundle install --full-index
 
-ENTRYPOINT cd /usr/src/app && ./bin/worker
+ENTRYPOINT cd /usr/src/app && \
+           setup_exercism_config --settings-file=/usr/src/settings/settings.yml && \
+           ./bin/worker
