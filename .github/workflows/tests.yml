@@ -10,6 +10,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      dynamodb: 
+        image: "amazon/dynamodb-local"
+        ports:
+          - 8000
+
     steps:
     ###
     # Checkout using GitHub's checkout action
@@ -35,9 +41,14 @@ jobs:
     ###
     # Install bundler and yarn dependencies
     - name: Install dependencies
+      env:
+        EXERCISM_ENV: test
+        EXERCISM_CI: true
+        DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
       run: |
         bundle config path vendor/bundle # This is needed for the caching above
         bundle install --jobs 4 --retry 3
+        bundle exec setup_exercism_config
 
     ###
     # Setup code climate
@@ -51,6 +62,9 @@ jobs:
     # Run the tests
     - name: Run Ruby tests
       env:
+        EXERCISM_ENV: test
+        EXERCISM_CI: true
+        DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
         CAPTURE_CODE_COVERAGE: true
       run: |
         bundle exec rake test
