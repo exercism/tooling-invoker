@@ -36,7 +36,7 @@ module ToolingInvoker
     end
 
     def orchestrator_address
-      "http://127.0.0.1:3021"
+      Exercism.config.tooling_orchestrator_url
     end
 
     def containers_dir
@@ -60,7 +60,7 @@ module ToolingInvoker
     end
 
     def env
-      @env ||= case ENV["APP_ENV"].to_s
+      @env ||= case ENV["EXERCISM_ENV"].to_s
         when "test"
           :test
         when "production"

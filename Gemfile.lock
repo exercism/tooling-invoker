@@ -8,6 +8,9 @@ GEM
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
+    aws-sdk-dynamodb (1.51.0)
+      aws-sdk-core (~> 3, >= 3.99.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.35.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
@@ -19,6 +22,10 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    exercism_config (0.17.0)
+      aws-sdk-dynamodb (~> 1.0)
+      mandate
+      zeitwerk
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -47,6 +54,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-s3
+  exercism_config (>= 0.17.0)
   mandate
   minitest
   mocha
