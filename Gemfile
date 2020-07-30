@@ -11,6 +11,7 @@ gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
 gem 'exercism_config', '>= 0.21.0'  
+gem 'rubyzip'
 
 gem "mocha"
 gem "minitest"

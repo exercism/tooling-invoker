@@ -10,12 +10,9 @@ module ToolingInvoker
     end
 
     def invoker
-      case env
-      when :development
-        InvokeLocally
-      else
-        InvokeRunc
-      end
+      return InvokeDocker if ENV["EXERCISM_DOCKER"]
+      return InvokeLocally if env == :development
+      InvokeRunc
     end
 
     def orchestrator_address
