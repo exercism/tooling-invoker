@@ -22,7 +22,7 @@ module ToolingInvoker
       })
 
       p resp
-      json = JSON.parse(resp)
+      json = JSON.parse(resp.body)
 
       job.context = {
         tool_dir: "",
