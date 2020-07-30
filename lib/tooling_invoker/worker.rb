@@ -34,7 +34,9 @@ module ToolingInvoker
       resp = RestClient.get(
         "#{Configuration.orchestrator_address}/jobs/next"
       )
+      p resp.body
       job_data = JSON.parse(resp.body)
+      p job_data
 
       klass = case job_data['type']
       when 'test_runner'
