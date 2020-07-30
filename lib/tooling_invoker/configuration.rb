@@ -10,7 +10,7 @@ module ToolingInvoker
     end
 
     def invoker
-      return InvokeDocker if ENV["EXERCISM_DOCKER"]
+      return InvokeDocker if ENV["EXERCISM_INVOKE_VIA_DOCKER"]
       return InvokeLocally if env == :development
       InvokeRunc
     end
