@@ -16,5 +16,5 @@ COPY .cache/bundler/ /usr/src/bundler_cache
 RUN bundle install
 
 ENTRYPOINT bundle update --full-index --conservative exercism_config && \
-           EXERCISM_DOCKER=true EXERCISM_ENV=development setup_exercism_config && \
+           EXERCISM_DOCKER=true EXERCISM_ENV=development bundle exec setup_exercism_config && \
            ./bin/worker

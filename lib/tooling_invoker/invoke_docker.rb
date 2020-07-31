@@ -21,7 +21,6 @@ module ToolingInvoker
         exercise: job.exercise
       })
 
-      p resp
       json = JSON.parse(resp.body)
 
       job.context = {
@@ -34,7 +33,9 @@ module ToolingInvoker
         cmd: "",
         exit_status: json['exit_status']
       }
+
       job.result = json['result']
+      job.status = job.result ? 200 : 400
     end
 
     private
