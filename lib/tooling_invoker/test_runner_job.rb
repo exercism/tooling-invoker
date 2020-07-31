@@ -23,6 +23,8 @@ module ToolingInvoker
 
     def parsed_result
       JSON.parse(result)
+    rescue
+      {}
     end
   end
 end

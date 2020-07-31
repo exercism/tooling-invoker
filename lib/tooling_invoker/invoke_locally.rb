@@ -32,6 +32,7 @@ module ToolingInvoker
         exit_status: exit_status,
       }
       job.result = File.read("#{output_dir}/#{job.results_filepath}")
+      job.status = job.result ? 200 : 400
     end
 
     private
