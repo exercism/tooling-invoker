@@ -15,7 +15,7 @@ module ToolingInvoker
 
       ZipFileGenerator.new(input_dir, zip_file).write
       
-      resp = RestClient.post('http://csharp-test-runner:4567/job', {
+      resp = RestClient.post('http://#{job.language}:4567/job', {
         zipped_files: File.read(zip_file), 
         results_filepath: job.results_filepath, 
         exercise: job.exercise
