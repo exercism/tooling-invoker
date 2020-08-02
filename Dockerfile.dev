@@ -1,12 +1,7 @@
 # [stage 1] **************************************************
 FROM ruby:2.6.6-alpine3.12 as gembuilder
 
-# RUN gem install bundler && \
 RUN apk add --no-cache --update build-base cmake
-
-# RUN git clone https://github.com/exercism/ruby-test-runner /usr/src/ruby-test-runner && \
-#     cd /usr/src/ruby-test-runner && \
-#     bundle install
 
 WORKDIR /usr/src/app
 
