@@ -12,7 +12,7 @@ RUN gem install bundler:2.1.4 && \
     bundle install
 
 #############
-### Stage 2 #
+## Stage 2 ##
 #############
 FROM ruby:2.6.6-alpine3.12
 
