@@ -7,7 +7,7 @@ module ToolingInvoker
     end
 
     def call
-      job_dir = "#{Configuration.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
+      job_dir = "#{ToolingInvoker.config.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
       input_dir = "#{job_dir}/output"
       zip_file = "#{job_dir}/files.zip"
       FileUtils.mkdir_p(input_dir)

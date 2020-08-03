@@ -4,9 +4,6 @@ module ToolingInvoker
 
     SLEEP_TIME = 1 #0.1
 
-    def initialize
-    end
-
     def call
       loop do
         begin
@@ -32,7 +29,7 @@ module ToolingInvoker
     # a 200 or a 404 is found.
     def check_for_job
       resp = RestClient.get(
-        "#{Configuration.orchestrator_address}/jobs/next"
+        "#{config.orchestrator_address}/jobs/next"
       )
       job_data = JSON.parse(resp.body)
 
@@ -56,9 +53,9 @@ module ToolingInvoker
     end
 
     def handle_job(job)
-      Configuration.invoker.(job)
+      config.invoker.(job)
       RestClient.patch(
-        "#{Configuration.orchestrator_address}/jobs/#{job.id}", 
+        "#{config.orchestrator_address}/jobs/#{job.id}", 
         job.to_h
       )
     rescue => e
@@ -68,6 +65,11 @@ module ToolingInvoker
 
     def log(message)
       puts "* #{message}"
+    end
+
+    private
+    def config
+      ToolingInvoker.config
     end
   end
 end

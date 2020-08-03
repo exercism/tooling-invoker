@@ -19,8 +19,8 @@ module ToolingInvoker
       @hex = SecureRandom.hex
 
       @expected_context = {
-        job_dir: "#{Configuration.jobs_dir}/#{@job.id}-#{@hex}", 
-        rootfs_source: "#{Configuration.containers_dir}/ruby-test-runner/releases/v1/rootfs", 
+        job_dir: "#{config.jobs_dir}/#{@job.id}-#{@hex}", 
+        rootfs_source: "#{config.containers_dir}/ruby-test-runner/releases/v1/rootfs", 
       }
 
       SecureRandom.expects(:hex).twice.returns(@hex)
@@ -42,7 +42,7 @@ module ToolingInvoker
       begin
         InvokeRunc.(@job)
       ensure
-        FileUtils.rm_rf("#{Configuration.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
+        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
       end
 
       assert_equal 200, @job.status
@@ -67,7 +67,7 @@ module ToolingInvoker
       begin
         InvokeRunc.(@job)
       ensure
-        FileUtils.rm_rf("#{Configuration.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
+        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
       end
 
       assert_equal 513, @job.status
