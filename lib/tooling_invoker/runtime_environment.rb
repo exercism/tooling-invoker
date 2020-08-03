@@ -1,6 +1,5 @@
 module ToolingInvoker
   class RuntimeEnvironment
-
     attr_reader :container_dir, :job_dir, :source_code_dir, :rootfs_source
 
     def initialize(container_version, tool, job_id)

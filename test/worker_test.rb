@@ -5,7 +5,7 @@ module ToolingInvoker
     def test_flow
       job_id = "123"
       language = "ruby"
-      exercise  = "bob"
+      exercise = "bob"
       s3_uri = "s3://..."
       container_version = "v1"
       execution_timeout = 10

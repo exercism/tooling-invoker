@@ -5,12 +5,12 @@ module ToolingInvoker
     def test_to_json
       working_directory = '/working_dir'
       rootfs_source = '/rootfs_source'
-      invocation_args = ["foo", "bar"]
+      invocation_args = %w[foo bar]
 
       uid_id = `id -u`.chomp
       gid_id = `id -g`.chomp
 
-      json = %Q{
+      json = %(
         {
           "ociVersion": "1.0.1-dev",
           "process": {
@@ -174,7 +174,7 @@ module ToolingInvoker
             ]
           }
         }
-      }
+      )
       expected = JSON.parse(json)
       expected["process"]["args"] = invocation_args
 

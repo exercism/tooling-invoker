@@ -6,7 +6,7 @@ module ToolingInvoker
       @job = job
 
       @environment = RuntimeEnvironment.new(
-        job.container_version, 
+        job.container_version,
         job.tool,
         job.id
       )
@@ -18,8 +18,8 @@ module ToolingInvoker
       )
 
       @runc = RuncWrapper.new(
-        environment.job_dir, 
-        runc_configuration, 
+        environment.job_dir,
+        runc_configuration,
         execution_timeout: job.execution_timeout
       )
     end
@@ -33,7 +33,7 @@ module ToolingInvoker
     rescue InvocationError => e
       job.status = e.error_code
       job.invocation_data[:exception_msg] = e.message
-    rescue => e
+    rescue StandardError => e
       job.status = 513
       job.invocation_data[:exception_msg] = e.message
       job.invocation_data[:exception_backtrace] = e.backtrace
@@ -51,8 +51,9 @@ module ToolingInvoker
       # Add context for later retreival
       job.context[:job_dir] = environment.job_dir
       job.context[:rootfs_source] = environment.rootfs_source
-    rescue => e
-      raise if e.is_a?(InvocationError) 
+    rescue StandardError => e
+      raise if e.is_a?(InvocationError)
+
       raise InvocationError.new(512, "Failure accessing environment (during container check)", exception: e)
     end
 
@@ -62,7 +63,7 @@ module ToolingInvoker
       FileUtils.mkdir("#{environment.job_dir}/tmp")
 
       SyncS3.(job.s3_uri, environment.source_code_dir)
-    rescue => e
+    rescue StandardError => e
       raise InvocationError.new(512, "Failure preparing input", exception: e)
     end
 
@@ -74,7 +75,11 @@ module ToolingInvoker
       job.invocation_data = invocation_data
 
       unless invocation_data[:exit_status] == 0
-        raise InvocationError.new(513, "Container returned exit status of #{invocation_data[:exit_status].inspect}", data: invocation_data)
+        raise InvocationError.new(
+          513,
+          "Container returned exit status of #{invocation_data[:exit_status].inspect}",
+          data: invocation_data
+        )
       end
 
       job.result = File.read("#{environment.job_dir}/#{job.results_filepath}")
@@ -82,7 +87,7 @@ module ToolingInvoker
     end
 
     def log(message)
-      puts "** #{self.class.to_s} | #{message}"
+      puts "** #{self.class} | #{message}"
     end
   end
 end

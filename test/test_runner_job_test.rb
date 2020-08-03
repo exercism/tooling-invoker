@@ -17,10 +17,14 @@ module ToolingInvoker
       assert_equal s3_uri, test_run.s3_uri
       assert_equal container_version, test_run.container_version
       assert_equal execution_timeout, test_run.execution_timeout
-      assert_equal ['bin/run.sh', 'bob', "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"], test_run.invocation_args
+      assert_equal [
+        'bin/run.sh',
+        'bob',
+        "/mnt/exercism-iteration/",
+        "/mnt/exercism-iteration/"
+      ], test_run.invocation_args
       assert_equal "results.json", test_run.results_filepath
       assert_equal "/opt/test-runner", test_run.working_directory
     end
   end
 end
-

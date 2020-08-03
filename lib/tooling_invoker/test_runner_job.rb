@@ -1,6 +1,5 @@
 module ToolingInvoker
   class TestRunnerJob < Job
-
     def initialize(id, *args)
       super(id, *args)
     end
@@ -23,7 +22,7 @@ module ToolingInvoker
 
     def parsed_result
       JSON.parse(result)
-    rescue
+    rescue StandardError
       {}
     end
   end

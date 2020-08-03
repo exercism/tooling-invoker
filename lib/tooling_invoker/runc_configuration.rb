@@ -1,6 +1,5 @@
 module ToolingInvoker
   class RuncConfiguration
-
     def initialize(working_directory, rootfs_source, invocation_args)
       @rootfs_source = rootfs_source
       @working_directory = File.expand_path(working_directory)
@@ -10,8 +9,8 @@ module ToolingInvoker
       @gid_id = `id -g`.chomp
     end
 
-    def to_json
-      config = <<-EOS
+    def to_json(*_args)
+      config = <<-CONFIG
       {
         "ociVersion": "1.0.1-dev",
         "process": {
@@ -175,12 +174,12 @@ module ToolingInvoker
           ]
         }
       }
-      EOS
+      CONFIG
       parsed = JSON.parse(config)
       parsed["process"]["args"] = invocation_args
       parsed.to_json
     end
-    
+
     private
     attr_reader :rootfs_source, :uid_id, :gid_id, :invocation_args, :working_directory
   end

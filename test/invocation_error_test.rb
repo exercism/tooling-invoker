@@ -6,7 +6,7 @@ module ToolingInvoker
       error_code = 123
       msg = "an error message"
       exception = RuntimeError.new
-      data = {foo: 'bar'}
+      data = { foo: 'bar' }
 
       InvocationError.any_instance.expects(:puts).with("** #{error_code} | #{msg}")
       InvocationError.any_instance.expects(:puts).with("** #{exception.backtrace}")
@@ -41,5 +41,3 @@ module ToolingInvoker
     end
   end
 end
-
-

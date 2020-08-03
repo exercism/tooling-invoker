@@ -2,7 +2,6 @@ require 'open3'
 
 module ToolingInvoker
   class ExternalCommand
-
     BLOCK_SIZE = 1024
 
     def initialize(raw_cmd, timeout: 0, output_limit: -1, suppress_output: false)
@@ -34,7 +33,7 @@ module ToolingInvoker
       captured_stderr = []
       killed = false
 
-      result = Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
+      Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
         stdin.close_write
 
         begin
@@ -45,10 +44,12 @@ module ToolingInvoker
             break if stderr.closed?
 
             files = IO.select([stdout, stderr])
+            next unless files
+
             files[0].each do |f|
               if f.closed?
                 killed = true
-                break 
+                break
               end
 
               stream = f == stdout ? captured_stdout : captured_stderr
@@ -57,16 +58,17 @@ module ToolingInvoker
               rescue IOError
               end
 
-              # If there is too much output, kill the process
-              if output_limit > 0 && stream.size > output_limit
-                p "Killing the process"
-                Process.kill("KILL", wait_thr.pid)
-                killed = true
-                break
-              end
-            end if files
-          end
+              # If we haven't got too much output then continue for
+              # another cycle.
+              next unless output_limit.positive? && stream.size > output_limit
 
+              # If there is too much output, kill the process
+              p "Killing the process"
+              Process.kill("KILL", wait_thr.pid)
+              killed = true
+              break
+            end
+          end
         rescue IOError => e
           puts "IOError: #{e}"
         ensure
@@ -82,8 +84,9 @@ module ToolingInvoker
 
     def fix_encoding(text)
       return "" if text.nil?
+
       text.force_encoding("ISO-8859-1").encode("UTF-8")
-    rescue => e
+    rescue StandardError => e
       puts e.message
       puts e.backtrace
       puts "--- failed to encode as UTF-8: #{e.message} ---"

@@ -14,12 +14,12 @@ module ToolingInvoker
       SyncS3.(job.s3_uri, input_dir)
 
       ZipFileGenerator.new(input_dir, zip_file).write
-      
+
       resp = RestClient.post("http://#{job.language}-test-runner:4567/job", {
-        zipped_files: File.read(zip_file), 
-        results_filepath: job.results_filepath, 
-        exercise: job.exercise
-      })
+                               zipped_files: File.read(zip_file),
+                               results_filepath: job.results_filepath,
+                               exercise: job.exercise
+                             })
 
       json = JSON.parse(resp.body)
 
@@ -27,7 +27,7 @@ module ToolingInvoker
         tool_dir: "",
         job_dir: "",
         stdout: '',
-        stderr: '',
+        stderr: ''
       }
       job.invocation_data = {
         cmd: "",
@@ -71,7 +71,6 @@ module ToolingInvoker
     end
 
     private
-
     # A helper method to make the recursion work.
     def write_entries(entries, path, zipfile)
       entries.each do |e|
@@ -96,6 +95,4 @@ module ToolingInvoker
       zipfile.add(zipfile_path, disk_file_path)
     end
   end
-    
 end
-
