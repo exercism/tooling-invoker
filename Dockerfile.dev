@@ -1,5 +1,5 @@
 #############
-### Stage 1 #
+## Stage 1 ##
 #############
 FROM ruby:2.6.6-alpine3.12 as gembuilder
 
