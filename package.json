@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "pretty-quick": "^2.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged && git diff --name-only --staged | grep '.rb$' | xargs bundle exec rubocop --except Metrics --auto-correct --format quiet --force-exclusion app/controllers/application_controller.rb && git diff --name-only --staged | grep '.rb$' | xargs git add"
+    }
+  },
+  "dependencies": {
+    "prettier": "^2.0.5"
+  }
+}
