@@ -12,6 +12,9 @@ require "tooling_invoker"
 
 module Minitest
   class Test
+    def config
+      ToolingInvoker.config
+    end
   end
 end
 

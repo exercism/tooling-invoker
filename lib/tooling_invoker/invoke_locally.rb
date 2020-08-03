@@ -7,8 +7,8 @@ module ToolingInvoker
     end
 
     def call
-      tool_dir = "#{Configuration.containers_dir}/#{job.tool}"
-      job_dir = "#{Configuration.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
+      tool_dir = "#{config.containers_dir}/#{job.tool}"
+      job_dir = "#{config.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
       input_dir = "#{job_dir}/input"
       output_dir = "#{job_dir}/output"
       FileUtils.mkdir_p(input_dir)
@@ -37,5 +37,9 @@ module ToolingInvoker
 
     private
     attr_reader :job
+    
+    def config
+      ToolingInvoker.config
+    end
   end
 end

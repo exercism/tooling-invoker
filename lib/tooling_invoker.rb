@@ -11,7 +11,7 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 module ToolingInvoker
-  def self.env
-    @env ||= ENV["EXERCISM_ENV"]
+  def self.config
+    Configuration.instance
   end
 end

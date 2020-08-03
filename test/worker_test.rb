@@ -28,12 +28,12 @@ module ToolingInvoker
       ).returns(job)
       InvokeRunc.expects(:call).with(job)
       RestClient.expects(:get).
-        with("#{Configuration.orchestrator_address}/jobs/next").
+        with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
 
       RestClient.expects(:patch).
         with(
-          "#{Configuration.orchestrator_address}/jobs/#{job_id}",
+          "#{config.orchestrator_address}/jobs/#{job_id}",
           results
         )
 
