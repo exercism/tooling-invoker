@@ -25,11 +25,11 @@ module ToolingInvoker
         tool_dir: tool_dir,
         job_dir: job_dir,
         stdout: '',
-        stderr: '',
+        stderr: ''
       }
       job.invocation_data = {
         cmd: cmd,
-        exit_status: exit_status,
+        exit_status: exit_status
       }
       job.result = File.read("#{output_dir}/#{job.results_filepath}")
       job.status = job.result ? 200 : 400
@@ -37,7 +37,7 @@ module ToolingInvoker
 
     private
     attr_reader :job
-    
+
     def config
       ToolingInvoker.config
     end

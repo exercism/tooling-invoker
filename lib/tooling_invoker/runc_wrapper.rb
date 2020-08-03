@@ -1,6 +1,5 @@
 module ToolingInvoker
   class RuncWrapper
-
     def initialize(job_dir, configuration, execution_timeout: 5)
       @run_id = SecureRandom.hex
 
@@ -10,7 +9,7 @@ module ToolingInvoker
 
       @binary_path = "/opt/container_tools/runc"
       @suppress_output = false
-      @memory_limit = 3000000
+      @memory_limit = 3_000_000
     end
 
     def run!
@@ -20,7 +19,7 @@ module ToolingInvoker
       run_cmd = ExternalCommand.new(
         "bash -x -c 'ulimit -v #{memory_limit}; #{actual_command}'",
         timeout: execution_timeout,
-        output_limit: 1024*1024
+        output_limit: 1024 * 1024
       )
 
       begin
@@ -32,17 +31,17 @@ module ToolingInvoker
 
           begin
             run_cmd.()
-          rescue => e
+          rescue StandardError => e
             p "Errored: #{e}"
           end
 
           kill_thread.kill
         end
-      rescue
+      rescue StandardError
       end
 
       run_cmd.to_h
-    rescue => e
+    rescue StandardError => e
       p e
       {}
     end
@@ -51,4 +50,3 @@ module ToolingInvoker
     attr_reader :binary_path, :suppress_output, :memory_limit, :execution_timeout, :job_dir, :configuration, :run_id
   end
 end
-

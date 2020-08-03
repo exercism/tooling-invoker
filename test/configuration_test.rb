@@ -27,16 +27,15 @@ module ToolingInvoker
       )
       config = Configuration.instance
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
-      assert_equal File.expand_path("../../..", __FILE__), config.containers_dir
+      assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeLocally, config.invoker
     end
 
     def test_docker_flag_does_not_override_test
       ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
-      orchestrator_url = mock
       Exercism.stubs(
-        environment: :test,
+        environment: :test
       )
       assert_equal InvokeRunc, Configuration.instance.invoker
     ensure
@@ -45,9 +44,8 @@ module ToolingInvoker
 
     def test_docker_flag_does_not_override_production
       ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
-      orchestrator_url = mock
       Exercism.stubs(
-        environment: :production,
+        environment: :production
       )
       assert_equal InvokeRunc, Configuration.instance.invoker
     ensure
@@ -65,7 +63,7 @@ module ToolingInvoker
       )
       config = Configuration.instance
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
-      assert_equal File.expand_path("../../..", __FILE__), config.containers_dir
+      assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeDocker, config.invoker
     ensure
@@ -82,7 +80,7 @@ module ToolingInvoker
       )
       config = Configuration.instance
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
-      assert_equal File.expand_path("../../test/fixtures/containers", __FILE__), config.containers_dir
+      assert_equal File.expand_path('../test/fixtures/containers', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeRunc, config.invoker
     end

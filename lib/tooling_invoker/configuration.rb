@@ -4,8 +4,11 @@ module ToolingInvoker
 
     def invoker
       if Exercism.environment == :development
-        ENV["EXERCISM_INVOKE_VIA_DOCKER"] ?
-          InvokeDocker : InvokeLocally 
+        if ENV["EXERCISM_INVOKE_VIA_DOCKER"]
+          InvokeDocker
+        else
+          InvokeLocally
+        end
       else
         InvokeRunc
       end
@@ -18,9 +21,9 @@ module ToolingInvoker
     def containers_dir
       case Exercism.environment
       when :test
-        File.expand_path("../../../test/fixtures/containers", __FILE__)
+        File.expand_path('../../test/fixtures/containers', __dir__)
       when :development
-        File.expand_path("../../../..", __FILE__)
+        File.expand_path('../../..', __dir__)
       when :production
         File.expand_path('/opt/containers')
       end
