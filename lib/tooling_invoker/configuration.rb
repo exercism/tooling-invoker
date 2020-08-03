@@ -3,9 +3,12 @@ module ToolingInvoker
     include Singleton
 
     def invoker
-      return InvokeDocker if ENV["EXERCISM_INVOKE_VIA_DOCKER"]
-      return InvokeLocally if Exercism.environment == :development
-      InvokeRunc
+      if Exercism.environment == :development
+        ENV["EXERCISM_INVOKE_VIA_DOCKER"] ?
+          InvokeDocker : InvokeLocally 
+      else
+        InvokeRunc
+      end
     end
 
     def orchestrator_address

@@ -32,6 +32,28 @@ module ToolingInvoker
       assert_equal InvokeLocally, config.invoker
     end
 
+    def test_docker_flag_does_not_override_test
+      ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
+      orchestrator_url = mock
+      Exercism.stubs(
+        environment: :test,
+      )
+      assert_equal InvokeRunc, Configuration.instance.invoker
+    ensure
+      ENV.delete('EXERCISM_INVOKE_VIA_DOCKER')
+    end
+
+    def test_docker_flag_does_not_override_production
+      ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
+      orchestrator_url = mock
+      Exercism.stubs(
+        environment: :production,
+      )
+      assert_equal InvokeRunc, Configuration.instance.invoker
+    ensure
+      ENV.delete('EXERCISM_INVOKE_VIA_DOCKER')
+    end
+
     def test_development_defaults_with_docker_flag
       ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
       orchestrator_url = mock
