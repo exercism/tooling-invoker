@@ -10,7 +10,7 @@ gem "aws-sdk-s3"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism_config', '>= 0.26.0'  
+gem 'exercism_config', '>= 0.27.0'  
 gem 'rubyzip'
 
 gem "mocha"
