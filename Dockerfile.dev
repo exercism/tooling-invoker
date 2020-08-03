@@ -11,7 +11,9 @@ COPY Gemfile Gemfile.lock ./
 RUN gem install bundler:2.1.4 && \
     bundle install
 
-# [stage 2] **************************************************
+#############
+### Stage 2 #
+#############
 FROM ruby:2.6.6-alpine3.12
 
 WORKDIR /usr/src/app
