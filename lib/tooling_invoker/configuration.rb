@@ -29,6 +29,10 @@ module ToolingInvoker
       end
     end
 
+    def job_polling_delay
+      (ENV["JOB_POLLING_DELAY"] || 1).to_f
+    end
+
     def jobs_dir
       case Exercism.environment
       when :production

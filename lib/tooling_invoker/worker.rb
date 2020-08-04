@@ -2,22 +2,20 @@ module ToolingInvoker
   class Worker
     include Mandate
 
-    SLEEP_TIME = 1 # 0.1
-
     def call
       loop do
         job = check_for_job
         if job
           handle_job(job)
         else
-          sleep(SLEEP_TIME)
+          sleep(ToolingInvoker.config.job_polling_delay)
         end
       rescue StandardError => e
         p "Top level error"
         p e.message
         p e.backtrace
 
-        sleep(SLEEP_TIME)
+        sleep(ToolingInvoker.config.job_polling_delay)
       end
     end
 

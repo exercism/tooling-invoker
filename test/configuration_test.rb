@@ -26,6 +26,7 @@ module ToolingInvoker
         )
       )
       config = Configuration.instance
+      assert_equal 1, config.job_polling_delay
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
       assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
@@ -62,6 +63,7 @@ module ToolingInvoker
         )
       )
       config = Configuration.instance
+      assert_equal 1, config.job_polling_delay
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
       assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
@@ -79,6 +81,7 @@ module ToolingInvoker
         )
       )
       config = Configuration.instance
+      assert_equal 1, config.job_polling_delay
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
       assert_equal File.expand_path('../test/fixtures/containers', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
