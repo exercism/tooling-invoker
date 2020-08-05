@@ -20,4 +20,4 @@ jobs:
           repository: ihid/exercism-tooling-invoker
           tag_with_sha: true
           tags: latest
-          dockerfile: development.Dockerfile
+          dockerfile: dev.Dockerfile
