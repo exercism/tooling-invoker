@@ -1,4 +1,5 @@
 # Tooling invoker
+![Tests](https://github.com/exercism/tooling-invoker/workflows/Tests/badge.svg)
 
 ## Local Setup
 
