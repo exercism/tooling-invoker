@@ -2,80 +2,79 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     services:
-      dynamodb: 
+      dynamodb:
         image: "amazon/dynamodb-local"
         ports:
           - 8000
 
     steps:
-    ###
-    # Checkout using GitHub's checkout action
-    - uses: actions/checkout@v2
+      ###
+      # Checkout using GitHub's checkout action
+      - uses: actions/checkout@v2
 
-    ###
-    # Setup Ruby - this needs to match the version in the Gemfile
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
-      with:
-        ruby-version: 2.6.6
+      ###
+      # Setup Ruby - this needs to match the version in the Gemfile
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+        with:
+          ruby-version: 2.6.6
 
-    ###
-    # Caching using GitHub's caching action
-    - name: Cache Bundler
-      uses: actions/cache@v2
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gems-
+      ###
+      # Caching using GitHub's caching action
+      - name: Cache Bundler
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
 
-    ###
-    # Install bundler and yarn dependencies
-    - name: Install dependencies
-      env:
-        EXERCISM_ENV: test
-        EXERCISM_CI: true
-        DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-      run: |
-        bundle config path vendor/bundle # This is needed for the caching above
-        bundle install --jobs 4 --retry 3
-        bundle exec setup_exercism_config
+      ###
+      # Install bundler and yarn dependencies
+      - name: Install dependencies
+        env:
+          EXERCISM_ENV: test
+          EXERCISM_CI: true
+          DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
+        run: |
+          bundle config path vendor/bundle # This is needed for the caching above
+          bundle install --jobs 4 --retry 3
+          bundle exec setup_exercism_config
 
-    ###
-    # Setup code climate
-    # - name: Setup Code Climate test-reporter
-    #   run: |
-    #     curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    #     chmod +x ./cc-test-reporter
-    #     ./cc-test-reporter before-build
-        
-    ###
-    # Run the tests
-    - name: Run Ruby tests
-      env:
-        EXERCISM_ENV: test
-        EXERCISM_CI: true
-        DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-        CAPTURE_CODE_COVERAGE: true
-      run: |
-        bundle exec rake test
-        #./cc-test-reporter format-coverage -t simplecov -o codeclimate.backend.json coverage/backend/.resultset.json
-             
-    ###
-    # Publish the coverage to CodeClimate
-    # - name: Publish code coverage
-    #   env: 
-    #     GIT_BRANCH: ${GITHUB_REF/refs\/heads\//}
-    #     CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-    #   run: |
-    #     ./cc-test-reporter sum-coverage codeclimate.*.json -p 2 -o codeclimate.total.json
-    #     ./cc-test-reporter upload-coverage -i codeclimate.total.json
+      ###
+      # Setup code climate
+      - name: Setup Code Climate test-reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+
+      ###
+      # Run the tests
+      - name: Run Ruby tests
+        env:
+          EXERCISM_ENV: test
+          EXERCISM_CI: true
+          DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
+          CAPTURE_CODE_COVERAGE: true
+        run: |
+          bundle exec rake test
+          ./cc-test-reporter format-coverage -t simplecov -o codeclimate.backend.json coverage/backend/.resultset.json
+
+      ###
+      # Publish the coverage to CodeClimate
+      - name: Publish code coverage
+        env:
+          GIT_BRANCH: ${GITHUB_REF/refs\/heads\//}
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        run: |
+          ./cc-test-reporter upload-coverage -i codeclimate.*.json

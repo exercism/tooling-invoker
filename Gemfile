@@ -19,3 +19,4 @@ gem "timecop"
 gem 'rubocop'
 gem 'rubocop-minitest'
 gem 'rubocop-performance'
+gem 'simplecov', '~> 0.17.0'
