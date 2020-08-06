@@ -26,6 +26,7 @@ RUN gem install bundler:2.1.4
 
 COPY --from=gembuilder /usr/local/bundle/ /usr/local/bundle/
 COPY --from=common /shell /
+COPY . .
 
 ENV CONTAINER_NAME=tooling-invoker
 
