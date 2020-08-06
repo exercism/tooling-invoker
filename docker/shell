@@ -1,9 +1,9 @@
 #!/bin/bash
-docker build -t exercism-tooling-invoker . -f ./Dockerfile.dev
+docker build -t exercism/tooling-invoker . -f ./dev.Dockerfile
 echo
 PWD=$(PWD)
 docker run --entrypoint "/shell" --network v3-docker-compose_default \
     -e EXERCISM_DOCKER=true \
     --mount "type=bind,src=$PWD,dst=/usr/src/app" \
     --rm \
-    -it exercism-tooling-invoker
+    -it exercism/tooling-invoker
