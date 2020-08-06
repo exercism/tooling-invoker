@@ -1,7 +1,7 @@
 #############
 ## Stage 1 ##
 #############
-FROM exercism-v3-startup as common
+FROM exercism/setup as common
 FROM ruby:2.6.6-alpine3.12 as gembuilder
 
 RUN apk add --no-cache --update build-base cmake
