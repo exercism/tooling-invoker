@@ -3,7 +3,7 @@ module ToolingInvoker
     include Singleton
 
     def invoker
-      if Exercism.environment == :development
+      if Exercism.env.development?
         if ENV["EXERCISM_INVOKE_VIA_DOCKER"]
           InvokeDocker
         else
@@ -19,19 +19,17 @@ module ToolingInvoker
     end
 
     def containers_dir
-      case Exercism.environment
-      when :test
+      if Exercism.env.test?
         File.expand_path('../../test/fixtures/containers', __dir__)
-      when :development
+      elsif Exercism.env.development?
         File.expand_path('../../..', __dir__)
-      when :production
+      elsif Exercism.env.production?
         File.expand_path('/opt/containers')
       end
     end
 
     def jobs_dir
-      case Exercism.environment
-      when :production
+      if Exercism.env.production?
         File.expand_path('/opt/jobs')
       else
         File.expand_path("/tmp/exercism-tooling-jobs")

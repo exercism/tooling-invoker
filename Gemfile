@@ -10,7 +10,7 @@ gem "aws-sdk-s3"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism-config', '>= 0.35.0'
+gem 'exercism-config', '>= 0.36.0'
 #gem 'exercism-config', path: "../exercism_config"
 gem 'rubyzip'
 
