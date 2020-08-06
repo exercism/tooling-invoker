@@ -24,7 +24,7 @@ GEM
     docile (1.3.2)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    exercism-config (0.33.0)
+    exercism-config (0.34.0)
       aws-sdk-dynamodb (~> 1.0)
       mandate
       zeitwerk
@@ -86,7 +86,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-s3
-  exercism-config (>= 0.33.0)
+  exercism-config (>= 0.34.0)
   mandate
   minitest
   mocha

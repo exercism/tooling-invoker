@@ -4,7 +4,7 @@ require 'mandate'
 require 'aws-sdk-s3'
 require 'rest-client'
 require 'singleton'
-require 'exercism_config'
+require 'exercism-config'
 
 require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
