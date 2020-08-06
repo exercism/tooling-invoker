@@ -5,7 +5,7 @@ module ToolingInvoker
     def test_production_defaults
       orchestrator_url = mock
       Exercism.stubs(
-        environment: :production,
+        env: ExercismConfig::Environment.new(:production),
         config: mock(
           tooling_orchestrator_url: orchestrator_url
         )
@@ -20,7 +20,7 @@ module ToolingInvoker
     def test_development_defaults
       orchestrator_url = mock
       Exercism.stubs(
-        environment: :development,
+        env: ExercismConfig::Environment.new(:development),
         config: mock(
           tooling_orchestrator_url: orchestrator_url
         )
@@ -35,7 +35,7 @@ module ToolingInvoker
     def test_docker_flag_does_not_override_test
       ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
       Exercism.stubs(
-        environment: :test
+        env: ExercismConfig::Environment.new(:test)
       )
       assert_equal InvokeRunc, Configuration.instance.invoker
     ensure
@@ -45,7 +45,7 @@ module ToolingInvoker
     def test_docker_flag_does_not_override_production
       ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
       Exercism.stubs(
-        environment: :production
+        env: ExercismConfig::Environment.new(:production)
       )
       assert_equal InvokeRunc, Configuration.instance.invoker
     ensure
@@ -56,7 +56,7 @@ module ToolingInvoker
       ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
       orchestrator_url = mock
       Exercism.stubs(
-        environment: :development,
+        env: ExercismConfig::Environment.new(:development),
         config: mock(
           tooling_orchestrator_url: orchestrator_url
         )

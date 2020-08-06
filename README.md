@@ -1,4 +1,7 @@
 # Tooling Invoker
+![Tests](https://github.com/exercism/tooling-invoker/workflows/Tests/badge.svg)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c203fecce87e38343289/maintainability)](https://codeclimate.com/github/exercism/tooling-invoker/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c203fecce87e38343289/test_coverage)](https://codeclimate.com/github/exercism/tooling-invoker/test_coverage)
 
 ## Local Setup
 

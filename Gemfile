@@ -10,7 +10,8 @@ gem "aws-sdk-s3"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism_config', '>= 0.28.0'
+gem 'exercism-config', '>= 0.36.0'
+#gem 'exercism-config', path: "../exercism_config"
 gem 'rubyzip'
 
 gem "mocha"
@@ -19,3 +20,4 @@ gem "timecop"
 gem 'rubocop'
 gem 'rubocop-minitest'
 gem 'rubocop-performance'
+gem 'simplecov', '~> 0.17.0'
