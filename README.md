@@ -27,10 +27,7 @@ To execute the Dockerfile, run the following with your AWS keys:
 
 ### Running Tests inside Docker
 
-Requirements
-
-- You need to be using the [v3-docker-compose](https://github.com/exercism/v3-docker-compose/) stack
-- You need to have built at least `startup` (this Dockerfile depends on the `exercism-v3-startup` image)
+Note: Tests can be run without the full [v3-docker-compose](https://github.com/exercism/v3-docker-compose/) stack
 
 ```bash
 # to run bundle exec rake test
