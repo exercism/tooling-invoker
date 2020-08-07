@@ -8,16 +8,3 @@ require "tooling_invoker"
 puts "Starting ToolingInvoker::Worker..."
 STDOUT.flush
 ToolingInvoker::Worker.()
-
-exit
-
-job = ToolingInvoker::TestRunnerJob.new(
-  SecureRandom.uuid,
-  "ruby",
-  "bob",
-  "s3://exercism-iterations/production/iterations/1182520",
-  nil,
-  nil
-)
-puts ToolingInvoker::InvokeLocally.(job)
-
