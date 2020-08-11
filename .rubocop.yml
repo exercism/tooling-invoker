@@ -6,6 +6,8 @@ AllCops:
   NewCops: disable
   Exclude:
     - "bin/**/*"
+    - "Gemfile"
+    - "Gemfile.lock"
 
 Bundler/OrderedGems:
   Enabled: false
