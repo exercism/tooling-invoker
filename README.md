@@ -1,14 +1,13 @@
-# Tooling invoker
+# Tooling Invoker
 ![Tests](https://github.com/exercism/tooling-invoker/workflows/Tests/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c203fecce87e38343289/maintainability)](https://codeclimate.com/github/exercism/tooling-invoker/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c203fecce87e38343289/test_coverage)](https://codeclimate.com/github/exercism/tooling-invoker/test_coverage)
 
 ## Local Setup
 
-The production version of this code uses `runc`. 
-This only works on Linux and not within Docker. 
+The production version of this code uses `runc`.
+This only works on Linux and not within Docker.
 However, there is a local version available which runs off a locally checked out piece of tooling.
-The Dockerfile in this repo has the Ruby Test Runner bundled with it.
 
 To use this, do the following:
 - Clone a tooling repo to the directory parallel for this (e.g. `ruby-test-runner`)
@@ -24,6 +23,23 @@ docker build -f Dockerfile.dev -t exercism-tooking-invoker .
 To execute the Dockerfile, run the following with your AWS keys:
 ```
 ./bin/run-docker $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
+```
+
+### Running Tests inside Docker
+
+Note: Tests can be run without the full [v3-docker-compose](https://github.com/exercism/v3-docker-compose/) stack
+
+```bash
+# to run bundle exec rake test
+./docker/test
+```
+
+Or to jump into a console, then just run commands as normal:
+
+```bash
+./docker/console
+{^_^} tooling-invoker
+      /usr/src/app % bundle exec rake test
 ```
 
 ## Filesystem Layout
