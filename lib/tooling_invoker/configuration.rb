@@ -28,6 +28,10 @@ module ToolingInvoker
       end
     end
 
+    def job_polling_delay
+      (ENV["JOB_POLLING_DELAY"] || 1).to_f
+    end
+
     def jobs_dir
       if Exercism.env.production?
         File.expand_path('/opt/jobs')
