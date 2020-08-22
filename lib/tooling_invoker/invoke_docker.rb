@@ -15,10 +15,11 @@ module ToolingInvoker
 
       ZipFileGenerator.new(input_dir, zip_file).write
 
-      resp = RestClient.post("http://#{job.language}-test-runner:4567/job", {
+      resp = RestClient.post("http://#{job.tool}:4567/job", {
                                zipped_files: File.read(zip_file),
                                results_filepath: job.results_filepath,
-                               exercise: job.exercise
+                               exercise: job.exercise,
+                               working_directory: job.working_directory
                              })
 
       json = JSON.parse(resp.body)
