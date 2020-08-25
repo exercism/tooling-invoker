@@ -33,6 +33,8 @@ module ToolingInvoker
                 TestRunnerJob
               when 'representer'
                 RepresenterJob
+              when 'analyzer':
+                AnalyzerJob
               else
                 raise "Unknown job: #{job_data['type']}"
               end

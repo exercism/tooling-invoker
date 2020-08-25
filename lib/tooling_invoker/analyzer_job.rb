@@ -1,5 +1,5 @@
 module ToolingInvoker
-  class RepresenterJob < Job
+  class AnalyzerJob < Job
     def initialize(id, *args)
       super(id, *args)
     end
@@ -9,15 +9,15 @@ module ToolingInvoker
     end
 
     def results_filepath
-      "representation.txt"
+      "analysis.json"
     end
 
     def working_directory
-      "/opt/representer"
+      "/opt/analyzer"
     end
 
     def tool
-      "#{language}-representer"
+      "#{language}-analyzer"
     end
 
     def parsed_result
