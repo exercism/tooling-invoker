@@ -67,6 +67,8 @@ jobs:
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
+          echo "${{github.event_name}}"
+          echo "${{github.ref}}"
           bundle exec rake test
           ./cc-test-reporter format-coverage -t simplecov -o codeclimate.backend.json coverage/backend/.resultset.json
 
