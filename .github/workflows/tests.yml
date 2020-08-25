@@ -67,15 +67,13 @@ jobs:
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
-          echo "${{github.event_name}}"
-          echo "${{github.ref}}"
           bundle exec rake test
           ./cc-test-reporter format-coverage -t simplecov -o codeclimate.backend.json coverage/backend/.resultset.json
 
       ###
       # Publish the coverage to CodeClimate
       - name: Publish code coverage
-        if: ${{ github.event_name == 'push' && github.ref == 'master' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         env:
           GIT_BRANCH: ${GITHUB_REF/refs\/heads\//}
           CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
