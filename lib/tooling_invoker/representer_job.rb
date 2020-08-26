@@ -21,9 +21,7 @@ module ToolingInvoker
     end
 
     def parsed_result
-      JSON.parse(result)
-    rescue StandardError
-      {}
+      result
     end
   end
 end
