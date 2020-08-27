@@ -2,29 +2,33 @@ require 'test_helper'
 
 module ToolingInvoker
   class WorkerTest < Minitest::Test
-    def test_flow_for_test_runner
-      job_id = "123"
-      language = "ruby"
-      exercise = "bob"
-      s3_uri = "s3://..."
-      container_version = "v1"
-      execution_timeout = 10
+    def setup
+      super
 
+      @job_id = "123"
+      @language = "ruby"
+      @exercise = "bob"
+      @s3_uri = "s3://..."
+      @container_version = "v1"
+      @execution_timeout = 10
+    end
+
+    def test_flow_for_test_runner
       resp = {
         type: "test_runner",
-        id: job_id,
-        language: language,
-        exercise: exercise,
-        s3_uri: s3_uri,
-        container_version: container_version,
-        execution_timeout: execution_timeout
+        id: @job_id,
+        language: @language,
+        exercise: @exercise,
+        s3_uri: @s3_uri,
+        container_version: @container_version,
+        execution_timeout: @execution_timeout
       }
 
       results = mock
-      job = mock(id: job_id, to_h: results)
+      job = mock(id: @job_id, to_h: results)
 
       TestRunnerJob.expects(:new).with(
-        job_id, language, exercise, s3_uri, container_version, execution_timeout
+        @job_id, @language, @exercise, @s3_uri, @container_version, @execution_timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job)
       RestClient.expects(:get).
@@ -33,7 +37,7 @@ module ToolingInvoker
 
       RestClient.expects(:patch).
         with(
-          "#{config.orchestrator_address}/jobs/#{job_id}",
+          "#{config.orchestrator_address}/jobs/#{@job_id}",
           results
         )
 
@@ -45,28 +49,21 @@ module ToolingInvoker
     end
 
     def test_flow_for_representer
-      job_id = "123"
-      language = "ruby"
-      exercise = "bob"
-      s3_uri = "s3://..."
-      container_version = "v1"
-      execution_timeout = 10
-
       resp = {
         type: "representer",
-        id: job_id,
-        language: language,
-        exercise: exercise,
-        s3_uri: s3_uri,
-        container_version: container_version,
-        execution_timeout: execution_timeout
+        id: @job_id,
+        language: @language,
+        exercise: @exercise,
+        s3_uri: @s3_uri,
+        container_version: @container_version,
+        execution_timeout: @execution_timeout
       }
 
       results = mock
-      job = mock(id: job_id, to_h: results)
+      job = mock(id: @job_id, to_h: results)
 
       RepresenterJob.expects(:new).with(
-        job_id, language, exercise, s3_uri, container_version, execution_timeout
+        @job_id, @language, @exercise, @s3_uri, @container_version, @execution_timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job)
       RestClient.expects(:get).
@@ -75,7 +72,7 @@ module ToolingInvoker
 
       RestClient.expects(:patch).
         with(
-          "#{config.orchestrator_address}/jobs/#{job_id}",
+          "#{config.orchestrator_address}/jobs/#{@job_id}",
           results
         )
 
@@ -87,28 +84,21 @@ module ToolingInvoker
     end
 
     def test_flow_for_analyzer
-      job_id = "123"
-      language = "ruby"
-      exercise = "bob"
-      s3_uri = "s3://..."
-      container_version = "v1"
-      execution_timeout = 10
-
       resp = {
         type: "analyzer",
-        id: job_id,
-        language: language,
-        exercise: exercise,
-        s3_uri: s3_uri,
-        container_version: container_version,
-        execution_timeout: execution_timeout
+        id: @job_id,
+        language: @language,
+        exercise: @exercise,
+        s3_uri: @s3_uri,
+        container_version: @container_version,
+        execution_timeout: @execution_timeout
       }
 
       results = mock
-      job = mock(id: job_id, to_h: results)
+      job = mock(id: @job_id, to_h: results)
 
       AnalyzerJob.expects(:new).with(
-        job_id, language, exercise, s3_uri, container_version, execution_timeout
+        @job_id, @language, @exercise, @s3_uri, @container_version, @execution_timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job)
       RestClient.expects(:get).
@@ -117,7 +107,7 @@ module ToolingInvoker
 
       RestClient.expects(:patch).
         with(
-          "#{config.orchestrator_address}/jobs/#{job_id}",
+          "#{config.orchestrator_address}/jobs/#{@job_id}",
           results
         )
 
