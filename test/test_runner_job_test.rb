@@ -23,7 +23,7 @@ module ToolingInvoker
         "/mnt/exercism-iteration/",
         "/mnt/exercism-iteration/"
       ], test_run.invocation_args
-      assert_equal "results.json", test_run.results_filepath
+      assert_equal ["results.json"], test_run.output_filepaths
       assert_equal "/opt/test-runner", test_run.working_directory
     end
   end

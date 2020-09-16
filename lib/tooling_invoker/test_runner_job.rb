@@ -8,8 +8,8 @@ module ToolingInvoker
       ["bin/run.sh", exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
     end
 
-    def results_filepath
-      "results.json"
+    def output_filepaths
+      ["results.json"]
     end
 
     def working_directory
@@ -20,8 +20,8 @@ module ToolingInvoker
       "#{language}-test-runner"
     end
 
-    def parsed_result
-      JSON.parse(result)
+    def output
+      { "results.json": JSON.parse(output_files["results.json"]) }
     rescue StandardError
       {}
     end

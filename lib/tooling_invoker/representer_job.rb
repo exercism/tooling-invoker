@@ -8,8 +8,8 @@ module ToolingInvoker
       ["bin/run.sh", exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
     end
 
-    def results_filepath
-      "representation.txt"
+    def output_filepaths
+      ["representation.txt", "mapping.json"]
     end
 
     def working_directory
@@ -20,8 +20,13 @@ module ToolingInvoker
       "#{language}-representer"
     end
 
-    def parsed_result
-      result
+    def output
+      { 
+        "representation.txt": output_files["representation.txt"],
+        "mapping.json": JSON.parse(output_files["mapping.json"])
+      }
+    rescue StandardError
+      {}
     end
   end
 end

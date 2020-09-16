@@ -31,7 +31,12 @@ module ToolingInvoker
         cmd: cmd,
         exit_status: exit_status
       }
-      job.result = File.read("#{output_dir}/#{job.results_filepath}")
+
+      job.output_files = {}
+      job.output_filepaths.each do |output_filepath|
+        job.output_files[output_filepath] = File.read("#{output_dir.job_dir}/#{output_filepath}")
+      end
+
       job.status = job.result ? 200 : 400
     end
 
