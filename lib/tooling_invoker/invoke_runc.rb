@@ -86,7 +86,7 @@ module ToolingInvoker
       job.output_filepaths.each do |output_filepath|
         job.output_files[output_filepath] = File.read("#{environment.job_dir}/#{output_filepath}")
       end
-      
+
       job.status = 200
     end
 
