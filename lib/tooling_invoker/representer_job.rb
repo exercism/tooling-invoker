@@ -21,7 +21,7 @@ module ToolingInvoker
     end
 
     def output=(output_files)
-      @output = 
+      @output =
         {
           "representation.txt": output_files["representation.txt"],
           "mapping.json": JSON.parse(output_files["mapping.json"])
