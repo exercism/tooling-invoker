@@ -21,11 +21,7 @@ module ToolingInvoker
     end
 
     def output=(output_files)
-      @output =
-        {
-          "representation.txt": output_files["representation.txt"],
-          "mapping.json": JSON.parse(output_files["mapping.json"])
-        }
+      @output = output_files
     rescue StandardError
       @output = {}
     end

@@ -21,7 +21,7 @@ module ToolingInvoker
     end
 
     def output=(output_files)
-      @output = { "results.json": JSON.parse(output_files["results.json"]) }
+      @output = output_files
     rescue StandardError
       @output = {}
     end

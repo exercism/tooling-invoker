@@ -31,7 +31,7 @@ module ToolingInvoker
         "#{__dir__}/bin/mock_runc"
       ).at_least_once
 
-      expected_output = { "results.json": { "happy" => "people" } }
+      expected_output = { "results.json" => '{"happy": "people"}' }
       expected_invocation_data = {
         cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{@hex}'",
         exit_status: 0,
