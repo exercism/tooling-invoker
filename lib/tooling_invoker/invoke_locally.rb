@@ -32,7 +32,7 @@ module ToolingInvoker
         exit_status: exit_status
       }
 
-      job.output_files = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
+      job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
         hash[output_filepath] = File.read("#{output_dir.job_dir}/#{output_filepath}")
       end
 

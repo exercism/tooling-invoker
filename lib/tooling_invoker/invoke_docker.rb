@@ -35,8 +35,8 @@ module ToolingInvoker
         exit_status: json['exit_status']
       }
 
-      job.output_files = json['output_files']
-      job.status = job.output_files ? 200 : 400
+      job.output = json['output_files']
+      job.status = job.output ? 200 : 400
     end
 
     private

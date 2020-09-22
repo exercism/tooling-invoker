@@ -20,10 +20,10 @@ module ToolingInvoker
       "#{language}-test-runner"
     end
 
-    def output
-      { "results.json": JSON.parse(output_files["results.json"]) }
+    def output=(output_files)
+      @output = { "results.json": JSON.parse(output_files["results.json"]) }
     rescue StandardError
-      {}
+      @output = {}
     end
   end
 end

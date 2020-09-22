@@ -20,10 +20,10 @@ module ToolingInvoker
       "#{language}-analyzer"
     end
 
-    def output
-      { "analysis.json": JSON.parse(output_files["analysis.json"]) }
+    def output=(output_files)
+      @output = { "analysis.json": JSON.parse(output_files["analysis.json"]) }
     rescue StandardError
-      {}
+      @output = {}
     end
   end
 end

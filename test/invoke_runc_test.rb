@@ -31,7 +31,7 @@ module ToolingInvoker
         "#{__dir__}/bin/mock_runc"
       ).at_least_once
 
-      expected_output_files = { "results.json" => "{\"happy\": \"people\"}" }
+      expected_output = {:"results.json" => {"happy" => "people"}}
       expected_invocation_data = {
         cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{@hex}'",
         exit_status: 0,
@@ -46,7 +46,7 @@ module ToolingInvoker
       end
 
       assert_equal 200, @job.status
-      assert_equal expected_output_files, @job.output_files
+      assert_equal expected_output, @job.output
       assert_equal expected_invocation_data, @job.invocation_data
       assert_equal @expected_context, @job.context
     end
@@ -71,7 +71,7 @@ module ToolingInvoker
       end
 
       assert_equal 513, @job.status
-      assert_nil @job.output_files
+      assert_nil @job.output
       assert_equal expected_invocation_data, @job.invocation_data
       assert_equal @expected_context, @job.context
     end

@@ -1,7 +1,7 @@
 module ToolingInvoker
   class Job
     attr_reader :id, :language, :s3_uri, :exercise, :container_version, :execution_timeout
-    attr_accessor :status, :output_files, :context, :invocation_data
+    attr_accessor :status, :output, :context, :invocation_data
 
     def initialize(id, language, exercise, s3_uri, container_version, execution_timeout)
       @id = id
