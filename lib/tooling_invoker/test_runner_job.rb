@@ -19,11 +19,5 @@ module ToolingInvoker
     def tool
       "#{language}-test-runner"
     end
-
-    def output=(output_files)
-      @output = output_files
-    rescue StandardError
-      @output = {}
-    end
   end
 end

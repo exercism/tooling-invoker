@@ -19,11 +19,5 @@ module ToolingInvoker
     def tool
       "#{language}-representer"
     end
-
-    def output=(output_files)
-      @output = output_files
-    rescue StandardError
-      @output = {}
-    end
   end
 end
