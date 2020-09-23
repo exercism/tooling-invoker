@@ -17,7 +17,7 @@ module ToolingInvoker
 
       resp = RestClient.post("http://#{job.tool}:4567/job", {
                                zipped_files: File.read(zip_file),
-                               results_filepath: job.results_filepath,
+                               output_filepaths: job.output_filepaths.join(','),
                                exercise: job.exercise,
                                working_directory: job.working_directory
                              })
@@ -35,8 +35,8 @@ module ToolingInvoker
         exit_status: json['exit_status']
       }
 
-      job.result = json['result']
-      job.status = job.result ? 200 : 400
+      job.output = json['output_files']
+      job.status = job.output ? 200 : 400
     end
 
     private

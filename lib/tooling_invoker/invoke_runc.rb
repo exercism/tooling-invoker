@@ -82,7 +82,10 @@ module ToolingInvoker
         )
       end
 
-      job.result = File.read("#{environment.job_dir}/#{job.results_filepath}")
+      job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
+        hash[output_filepath] = File.read("#{environment.job_dir}/#{output_filepath}")
+      end
+
       job.status = 200
     end
 
