@@ -7,7 +7,7 @@ module ToolingInvoker
       @configuration = configuration
       @execution_timeout = execution_timeout.to_i
 
-      @binary_path = "/opt/container_tools/runc"
+      @binary_path = Configuration::RUNC_BINARY_PATH
       @suppress_output = false
       @memory_limit = 3_000_000
     end

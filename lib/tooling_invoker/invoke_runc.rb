@@ -61,6 +61,7 @@ module ToolingInvoker
       log "Preparing input"
       FileUtils.mkdir_p(environment.job_dir)
       FileUtils.mkdir("#{environment.job_dir}/tmp")
+      FileUtils.mkdir(environment.source_code_dir)
 
       SyncS3.(job.s3_uri, environment.source_code_dir)
     rescue StandardError => e
@@ -83,7 +84,7 @@ module ToolingInvoker
       end
 
       job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
-        hash[output_filepath] = File.read("#{environment.job_dir}/#{output_filepath}")
+        hash[output_filepath] = File.read("#{environment.source_code_dir}/#{output_filepath}")
       end
 
       job.status = 200
