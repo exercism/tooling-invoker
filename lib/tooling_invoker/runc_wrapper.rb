@@ -6,7 +6,7 @@ module ToolingInvoker
       @job_dir = job_dir
       @configuration = configuration
       @timeout = timeout.to_i
-      @timeout = 5 unless timeout > 0
+      @timeout = 5 unless @timeout > 0
 
       @binary_path = Configuration::RUNC_BINARY_PATH
       @suppress_output = false
