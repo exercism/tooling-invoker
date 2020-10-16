@@ -20,7 +20,7 @@ module ToolingInvoker
       @runc = RuncWrapper.new(
         environment.job_dir,
         runc_configuration,
-        execution_timeout: job.execution_timeout
+        timeout: job.timeout
       )
     end
 
@@ -32,6 +32,7 @@ module ToolingInvoker
       run_job!
     rescue InvocationError => e
       job.status = e.error_code
+      job.invocation_data = (e.data || {})
       job.invocation_data[:exception_msg] = e.message
     rescue StandardError => e
       job.status = 513
@@ -70,19 +71,8 @@ module ToolingInvoker
 
     def run_job!
       log "Invoking container"
-      invocation_data = runc.run!
 
-      # Add invocation_data for later retreival
-      job.invocation_data = invocation_data
-
-      unless invocation_data[:exit_status] == 0
-        raise InvocationError.new(
-          513,
-          "Container returned exit status of #{invocation_data[:exit_status].inspect}",
-          data: invocation_data
-        )
-      end
-
+      job.invocation_data = runc.run!
       job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
         hash[output_filepath] = File.read("#{environment.source_code_dir}/#{output_filepath}")
       end

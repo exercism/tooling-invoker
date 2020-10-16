@@ -45,7 +45,7 @@ module ToolingInvoker
         job_data['exercise'],
         job_data['s3_uri'],
         job_data['container_version'],
-        job_data['execution_timeout']
+        job_data['timeout']
       )
     rescue RestClient::NotFound
       nil

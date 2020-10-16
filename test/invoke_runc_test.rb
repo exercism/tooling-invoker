@@ -27,13 +27,13 @@ module ToolingInvoker
     end
 
     def test_happy_path
-      ExternalCommand.any_instance.expects(:cmd).returns(
+      ExternalCommand.any_instance.expects(:wrapped_cmd).returns(
         "#{__dir__}/bin/mock_runc"
       ).at_least_once
 
       expected_output = { "results.json" => '{"happy": "people"}' }
       expected_invocation_data = {
-        cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{@hex}'",
+        cmd: "/opt/container_tools/runc --root root-state run #{@hex}",
         exit_status: 0,
         stdout: "",
         stderr: ""
@@ -52,16 +52,16 @@ module ToolingInvoker
     end
 
     def test_failed_invocation
-      ExternalCommand.any_instance.expects(:cmd).returns(
+      ExternalCommand.any_instance.expects(:wrapped_cmd).returns(
         "#{__dir__}/bin/missing_file"
       ).at_least_once
 
       expected_invocation_data = {
-        cmd: "bash -x -c 'ulimit -v 3000000; /opt/container_tools/runc --root root-state run #{@hex}'",
+        cmd: "/opt/container_tools/runc --root root-state run #{@hex}",
         exit_status: nil,
         stdout: "",
         stderr: "",
-        exception_msg: "513: Container returned exit status of nil"
+        exception_msg: "513: The following error occurred: No such file or directory - /Users/iHiD/Code/exercism/tooling-invoker/test/bin/missing_file"  # rubocop:disable Layout/LineLength
       }
 
       begin
