@@ -30,10 +30,6 @@ module ToolingInvoker
       check_container!
       prepare_input!
       run_job!
-    rescue InvocationError => e
-      job.status = e.error_code
-      job.invocation_data = (e.data || {})
-      job.invocation_data[:exception_msg] = e.message
     rescue StandardError => e
       job.status = 513
       job.invocation_data[:exception_msg] = e.message
@@ -72,12 +68,21 @@ module ToolingInvoker
     def run_job!
       log "Invoking container"
 
-      job.invocation_data = runc.run!
-      job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
-        hash[output_filepath] = File.read("#{environment.source_code_dir}/#{output_filepath}")
+      begin
+        job.invocation_data = runc.run!
+        job.status = 200
+      rescue InvocationError => e
+        job.status = e.error_code
+        job.invocation_data = (e.data || {})
+        job.invocation_data[:exception_msg] = e.message
       end
 
-      job.status = 200
+      job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
+        hash[output_filepath] = File.read("#{environment.source_code_dir}/#{output_filepath}")
+      rescue StandardError
+        # If the file hasn't been written by the tooling
+        # don't blow up everything else unnceessarily
+      end
     end
 
     def log(message)

@@ -71,7 +71,7 @@ module ToolingInvoker
       end
 
       assert_equal 513, @job.status
-      assert_nil @job.output
+      assert_equal({}, @job.output)
       assert_equal expected_invocation_data, @job.invocation_data
       assert_equal @expected_context, @job.context
     end
