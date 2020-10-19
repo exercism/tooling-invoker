@@ -9,7 +9,7 @@ module ToolingInvoker
     def initialize(cmd,
                    output_limit: ONE_MEGABYTE_IN_BYTES,
                    memory_limit: THREE_GIGABYTES_IN_KILOBYTES,
-                   timeout: 5,
+                   timeout:,
                    suppress_output: false)
       @cmd = cmd
       @timeout = timeout
