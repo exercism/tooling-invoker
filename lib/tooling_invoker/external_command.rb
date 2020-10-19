@@ -40,6 +40,10 @@ module ToolingInvoker
 
     def abort!
       Process.kill("KILL", @pid)
+    rescue StandardError
+      # If the process has already gone, then don't
+      # stress out. We'll already be raise a 401
+      # downstream of here.
     end
 
     private
