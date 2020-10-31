@@ -33,10 +33,10 @@ module ToolingInvoker
       }
 
       job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
-        hash[output_filepath] = File.read("#{output_dir.job_dir}/#{output_filepath}")
+        hash[output_filepath] = File.read("#{output_dir}/#{output_filepath}")
       end
 
-      job.status = job.result ? 200 : 400
+      job.status = job.output ? 200 : 400
     end
 
     private

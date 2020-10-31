@@ -22,7 +22,8 @@ module ToolingInvoker
 
         cmd = ExternalCommand.new(
           "#{binary_path} --root root-state run #{run_id}",
-          timeout: timeout
+          timeout: timeout,
+          output_dir: job_dir
         )
       rescue StandardError => e
         raise InvocationError.new(

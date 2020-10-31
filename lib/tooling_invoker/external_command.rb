@@ -10,12 +10,14 @@ module ToolingInvoker
                    output_limit: ONE_MEGABYTE_IN_BYTES,
                    memory_limit: THREE_GIGABYTES_IN_KILOBYTES,
                    timeout:,
-                   suppress_output: false)
+                   suppress_output: false,
+                   output_dir:)
       @cmd = cmd
       @timeout = timeout
       @output_limit = output_limit
       @memory_limit = memory_limit
       @suppress_output = suppress_output
+      @output_dir = output_dir
       @killed_for_excessive_output = false
     end
 
@@ -47,7 +49,7 @@ module ToolingInvoker
     end
 
     private
-    attr_reader :cmd, :timeout, :output_limit, :memory_limit, :suppress_output,
+    attr_reader :cmd, :timeout, :output_limit, :memory_limit, :suppress_output, :output_dir,
                 :status, :stdout, :stderr, :pid, :killed_for_excessive_output
 
     def invoke_process
@@ -103,6 +105,9 @@ module ToolingInvoker
         @stdout = captured_stdout.join
         @stderr = captured_stderr.join
         @status = wait_thr.value
+
+        File.write("#{output_dir}/stdout", @stdout)
+        File.write("#{output_dir}/stderr", @stderr)
       end
     end
 
