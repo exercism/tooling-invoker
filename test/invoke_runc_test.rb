@@ -7,7 +7,7 @@ module ToolingInvoker
 
       SyncS3.expects(:call).once
 
-      @job = TestRunnerJob.new(
+      @job = Jobs::TestRunnerJob.new(
         SecureRandom.hex,
         "ruby",
         "bob",

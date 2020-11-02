@@ -27,7 +27,7 @@ module ToolingInvoker
       results = mock
       job = mock(id: @job_id, to_h: results)
 
-      TestRunnerJob.expects(:new).with(
+      Jobs::TestRunnerJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job)
@@ -62,7 +62,7 @@ module ToolingInvoker
       results = mock
       job = mock(id: @job_id, to_h: results)
 
-      RepresenterJob.expects(:new).with(
+      Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job)
@@ -97,7 +97,7 @@ module ToolingInvoker
       results = mock
       job = mock(id: @job_id, to_h: results)
 
-      AnalyzerJob.expects(:new).with(
+      Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
       InvokeRunc.expects(:call).with(job)

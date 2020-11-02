@@ -17,7 +17,7 @@ module ToolingInvoker
     end
 
     def test_timeout
-      job = TestRunnerJob.new(
+      job = Jobs::TestRunnerJob.new(
         @job_id,
         "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
         1 # This is the timeout that we use to test this
@@ -45,7 +45,7 @@ module ToolingInvoker
     end
 
     def test_excessive_output
-      job = TestRunnerJob.new(
+      job = Jobs::TestRunnerJob.new(
         @job_id,
         "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
         1 # Ensures this is high enough to run out of output

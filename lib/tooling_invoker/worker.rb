@@ -30,11 +30,11 @@ module ToolingInvoker
 
       klass = case job_data['type']
               when 'test_runner'
-                TestRunnerJob
+                Jobs::TestRunnerJob
               when 'representer'
-                RepresenterJob
+                Jobs::RepresenterJob
               when 'analyzer'
-                AnalyzerJob
+                Jobs::AnalyzerJob
               else
                 raise "Unknown job: #{job_data['type']}"
               end

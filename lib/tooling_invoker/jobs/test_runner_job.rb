@@ -1,4 +1,4 @@
-module ToolingInvoker
+module ToolingInvoker::Jobs
   class TestRunnerJob < Job
     def initialize(id, *args)
       super(id, *args)
