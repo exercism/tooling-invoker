@@ -27,6 +27,9 @@ module ToolingInvoker
       FileUtils.mkdir(job.output_dir)
 
       SyncS3.(job.s3_uri, job.source_code_dir)
+
+      FileUtils.chmod_R(0o777, job.source_code_dir)
+      FileUtils.chmod_R(0o777, job.output_dir)
     rescue StandardError => e
       raise InvocationError.new(512, "Failure preparing input", exception: e)
     end
