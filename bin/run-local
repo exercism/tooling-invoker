@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+ENV["EXERCISM_LOCAL_SHELL"] = true
+
 require "bundler/setup"
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 

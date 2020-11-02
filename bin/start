@@ -14,3 +14,12 @@ FileUtils.chdir APP_ROOT do
   system! 'git reset --hard origin/master'
   system! 'bundle exec bin/worker'
 end
+
+require "bundler/setup"
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+
+require "tooling_invoker"
+
+puts "Starting ToolingInvoker::Worker..."
+STDOUT.flush
+ToolingInvoker::Worker.()

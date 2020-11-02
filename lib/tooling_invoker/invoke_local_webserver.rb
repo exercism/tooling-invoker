@@ -1,5 +1,5 @@
 module ToolingInvoker
-  class InvokeDocker
+  class InvokeLocalWebserver
     include Mandate
 
     def initialize(job)

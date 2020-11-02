@@ -6,10 +6,10 @@ module ToolingInvoker
 
     def invoker
       if Exercism.env.development?
-        if ENV["EXERCISM_INVOKE_VIA_DOCKER"]
-          InvokeDocker
+        if ENV["EXERCISM_LOCAL_SHELL"]
+          InvokeLocalShell
         else
-          InvokeLocally
+          InvokeLocalWebserver
         end
       else
         InvokeRunc

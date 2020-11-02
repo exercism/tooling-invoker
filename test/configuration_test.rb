@@ -30,31 +30,31 @@ module ToolingInvoker
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
       assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
-      assert_equal InvokeLocally, config.invoker
+      assert_equal InvokeLocalWebserver, config.invoker
     end
 
-    def test_docker_flag_does_not_override_test
-      ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
+    def test_local_shell_flag_does_not_override_test
+      ENV['EXERCISM_LOCAL_SHELL'] = "true"
       Exercism.stubs(
         env: ExercismConfig::Environment.new(:test)
       )
       assert_equal InvokeRunc, Configuration.instance.invoker
     ensure
-      ENV.delete('EXERCISM_INVOKE_VIA_DOCKER')
+      ENV.delete('EXERCISM_LOCAL_SHELL')
     end
 
-    def test_docker_flag_does_not_override_production
-      ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
+    def test_local_shell_flag_does_not_override_production
+      ENV['EXERCISM_LOCAL_SHELL'] = "true"
       Exercism.stubs(
         env: ExercismConfig::Environment.new(:production)
       )
       assert_equal InvokeRunc, Configuration.instance.invoker
     ensure
-      ENV.delete('EXERCISM_INVOKE_VIA_DOCKER')
+      ENV.delete('EXERCISM_LOCAL_SHELL')
     end
 
-    def test_development_defaults_with_docker_flag
-      ENV['EXERCISM_INVOKE_VIA_DOCKER'] = "true"
+    def test_development_defaults_with_local_shell_flag
+      ENV['EXERCISM_LOCAL_SHELL'] = "true"
       orchestrator_url = mock
       Exercism.stubs(
         env: ExercismConfig::Environment.new(:development),
@@ -67,9 +67,9 @@ module ToolingInvoker
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
       assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
-      assert_equal InvokeDocker, config.invoker
+      assert_equal InvokeLocalShell, config.invoker
     ensure
-      ENV.delete('EXERCISM_INVOKE_VIA_DOCKER')
+      ENV.delete('EXERCISM_LOCAL_SHELL')
     end
 
     def test_test_defaults

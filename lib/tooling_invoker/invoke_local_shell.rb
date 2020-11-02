@@ -1,5 +1,5 @@
 module ToolingInvoker
-  class InvokeLocally
+  class InvokeLocalShell
     include Mandate
 
     def initialize(job)
