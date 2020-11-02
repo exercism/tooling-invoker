@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module ToolingInvoker
-  class InvokeRuncTest < Minitest::Test
+  class InvokeDockerTest < Minitest::Test
     def setup
       super
       @job_id = SecureRandom.hex
@@ -22,7 +22,7 @@ module ToolingInvoker
         "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
         1 # This is the timeout that we use to test this
       )
-      ExternalCommand.any_instance.stubs(wrapped_cmd: "#{__dir__}/bin/infinite_loop")
+      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
 
       # Check the cleanup command is called correctly and then
       # store it so we can clean up the test too. Else we'll leave
@@ -35,7 +35,7 @@ module ToolingInvoker
       end
 
       begin
-        InvokeRunc.(job)
+        InvokeDocker.(job)
       ensure
         FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job_id}")
         `kill -s SIGKILL #{pid_to_kill}`
@@ -50,14 +50,14 @@ module ToolingInvoker
         "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
         1 # Ensures this is high enough to run out of output
       )
-      ExternalCommand.any_instance.stubs(wrapped_cmd: "#{__dir__}/bin/infinite_output")
+      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")
 
       # The command will print out 20,000 bytes. Let's break at
       # the half way stage.
-      ExternalCommand.any_instance.stubs(output_limit: 10_000)
+      ExecDocker.any_instance.stubs(output_limit: 10_000)
 
       begin
-        InvokeRunc.(job)
+        InvokeDocker.(job)
       ensure
         FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job_id}")
       end

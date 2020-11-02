@@ -16,7 +16,7 @@ module ToolingInvoker::Jobs
       assert_equal exercise, test_run.exercise
       assert_equal s3_uri, test_run.s3_uri
       assert_equal container_version, test_run.container_version
-      assert_equal timeout, test_run.timeout
+      assert_equal timeout, test_run.timeout_s
       assert_equal [
         'bin/run.sh',
         'bob',

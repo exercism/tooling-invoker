@@ -2,17 +2,16 @@ module ToolingInvoker
   class Configuration
     include Singleton
 
-    RUNC_BINARY_PATH = "/opt/container_tools/runc".freeze
-
     def invoker
-      if Exercism.env.development?
-        if ENV["EXERCISM_LOCAL_SHELL"]
-          InvokeLocalShell
-        else
-          InvokeLocalWebserver
-        end
+      return InvokeDocker unless Exercism.env.development?
+
+      case ENV["EXERCISM_INVOKE_STATEGY"]
+      when "shell"
+        InvokeLocalShell
+      when "docker"
+        InvokeDocker
       else
-        InvokeRunc
+        InvokeLocalWebserver
       end
     end
 

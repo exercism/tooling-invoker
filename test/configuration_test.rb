@@ -14,7 +14,7 @@ module ToolingInvoker
       assert_equal '/opt/jobs', config.jobs_dir
       assert_equal '/opt/containers', config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
-      assert_equal InvokeRunc, config.invoker
+      assert_equal InvokeDocker, config.invoker
     end
 
     def test_development_defaults
@@ -34,27 +34,27 @@ module ToolingInvoker
     end
 
     def test_local_shell_flag_does_not_override_test
-      ENV['EXERCISM_LOCAL_SHELL'] = "true"
+      ENV['EXERCISM_INVOKE_STATEGY'] = "shell"
       Exercism.stubs(
         env: ExercismConfig::Environment.new(:test)
       )
-      assert_equal InvokeRunc, Configuration.instance.invoker
+      assert_equal InvokeDocker, Configuration.instance.invoker
     ensure
-      ENV.delete('EXERCISM_LOCAL_SHELL')
+      ENV.delete('EXERCISM_INVOKE_STATEGY')
     end
 
     def test_local_shell_flag_does_not_override_production
-      ENV['EXERCISM_LOCAL_SHELL'] = "true"
+      ENV['EXERCISM_INVOKE_STATEGY'] = "shell"
       Exercism.stubs(
         env: ExercismConfig::Environment.new(:production)
       )
-      assert_equal InvokeRunc, Configuration.instance.invoker
+      assert_equal InvokeDocker, Configuration.instance.invoker
     ensure
-      ENV.delete('EXERCISM_LOCAL_SHELL')
+      ENV.delete('EXERCISM_INVOKE_STATEGY')
     end
 
     def test_development_defaults_with_local_shell_flag
-      ENV['EXERCISM_LOCAL_SHELL'] = "true"
+      ENV['EXERCISM_INVOKE_STATEGY'] = "shell"
       orchestrator_url = mock
       Exercism.stubs(
         env: ExercismConfig::Environment.new(:development),
@@ -69,7 +69,7 @@ module ToolingInvoker
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeLocalShell, config.invoker
     ensure
-      ENV.delete('EXERCISM_LOCAL_SHELL')
+      ENV.delete('EXERCISM_INVOKE_STATEGY')
     end
 
     def test_test_defaults
@@ -85,7 +85,7 @@ module ToolingInvoker
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
       assert_equal File.expand_path('../test/fixtures/containers', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
-      assert_equal InvokeRunc, config.invoker
+      assert_equal InvokeDocker, config.invoker
     end
   end
 end

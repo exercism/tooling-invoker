@@ -30,7 +30,7 @@ module ToolingInvoker
       Jobs::TestRunnerJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
-      InvokeRunc.expects(:call).with(job)
+      InvokeDocker.expects(:call).with(job)
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
@@ -65,7 +65,7 @@ module ToolingInvoker
       Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
-      InvokeRunc.expects(:call).with(job)
+      InvokeDocker.expects(:call).with(job)
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
@@ -100,7 +100,7 @@ module ToolingInvoker
       Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
-      InvokeRunc.expects(:call).with(job)
+      InvokeDocker.expects(:call).with(job)
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
