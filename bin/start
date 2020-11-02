@@ -12,7 +12,6 @@ end
 FileUtils.chdir APP_ROOT do
   system! 'git fetch'
   system! 'git reset --hard origin/switch-to-docker'
-  system! 'bundle exec bin/worker'
 end
 
 require "bundler/setup"
