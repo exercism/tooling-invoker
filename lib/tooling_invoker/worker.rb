@@ -6,7 +6,9 @@ module ToolingInvoker
       loop do
         job = check_for_job
         if job
+          start_time = Time.now.to_f
           handle_job(job)
+          puts "#{job.id}: Total time: #{Time.now.to_f - start_time}"
         else
           sleep(ToolingInvoker.config.job_polling_delay)
         end

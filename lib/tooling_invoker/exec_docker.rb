@@ -22,7 +22,11 @@ module ToolingInvoker
       # that we use. We also want to look out for (and rescue)
       # various failed exit conditions (timeout, out of memory, etc)
       begin
-        docker_thread = Thread.new { exec_command! }
+        docker_thread = Thread.new do
+          start_time = Time.now.to_f
+          exec_command!
+          puts "#{job.id}: Docker time: #{Time.now.to_f - start_time}"
+        end
 
         # Run the command in a thread and timeout just
         # after the SIGKILL is sent inside ExternalCommand timeout.
