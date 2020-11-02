@@ -26,7 +26,7 @@ module ToolingInvoker
       end
 
       def image
-        "exercism/#{tool}:production"
+        "#{tool}:production"
       end
 
       memoize
