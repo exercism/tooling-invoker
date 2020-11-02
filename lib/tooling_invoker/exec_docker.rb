@@ -179,8 +179,8 @@ module ToolingInvoker
         "--rm",
         job.image,
         job.exercise,
-        "/mnt/exercism-iteration",
-        "/mnt/exercism-iteration"
+        "/mnt/exercism-iteration/",
+        "/mnt/exercism-iteration/"
       ].join(" ")
 
       timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{timeout_s} #{docker_cmd}"
