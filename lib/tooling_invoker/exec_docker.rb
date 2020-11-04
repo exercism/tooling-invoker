@@ -177,6 +177,7 @@ module ToolingInvoker
         "-m 3GB",
         "--stop-timeout 0", # Convert a SIGTERM to a SIGKILL instantly
         "--rm",
+        "--network none",
         job.image,
         job.exercise,
         "/mnt/exercism-iteration/",
