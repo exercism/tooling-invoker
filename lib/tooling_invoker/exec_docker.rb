@@ -10,7 +10,7 @@ module ToolingInvoker
     def initialize(job)
       @job = job
       @timeout_s = job.timeout_s.to_i
-      @timeout_s = 10 unless @timeout_s > 0
+      @timeout_s = 20 unless @timeout_s > 0
 
       @container_label = "exercism-#{job.id}-#{SecureRandom.hex}"
       @output_limit = ONE_MEGABYTE_IN_BYTES
