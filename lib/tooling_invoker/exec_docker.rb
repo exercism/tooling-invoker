@@ -142,6 +142,7 @@ module ToolingInvoker
         @stdout = captured_stdout.join
         @stderr = captured_stderr.join
         @exit_status ||= wait_thr.value&.exitstatus
+        p "Exit status in command ensure: #{wait_thr.value} : #{wait_thr.value&.exitstatus}"
 
         File.write("#{job.output_dir}/stdout", @stdout)
         File.write("#{job.output_dir}/stderr", @stderr)
