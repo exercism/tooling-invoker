@@ -41,6 +41,9 @@ module ToolingInvoker
         # very unlikely as it means that the system level timeout has been
         # breached, but it just adds one tiny layer of protection.
         unless success
+          puts "Forcing timeout"
+          @exit_status = TIMEOUT_EXIT_STATUS
+
           abort!
           sleep(0.01)
           docker_thread.kill
