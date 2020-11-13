@@ -21,13 +21,11 @@ module ToolingInvoker
         system(cmd)
       end
 
-      job.context = {
+      job.metadata = {
         tool_dir: tool_dir,
         job_dir: job_dir,
         stdout: '',
-        stderr: ''
-      }
-      job.invocation_data = {
+        stderr: '',
         cmd: cmd,
         exit_status: exit_status
       }

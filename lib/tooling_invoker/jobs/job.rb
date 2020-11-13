@@ -4,7 +4,7 @@ module ToolingInvoker
       extend Mandate::Memoize
 
       attr_reader :id, :language, :s3_uri, :exercise, :container_version, :timeout_s
-      attr_accessor :status, :output, :invocation_data
+      attr_accessor :status, :output, :metadata
 
       def initialize(id, language, exercise, s3_uri, container_version, timeout_s)
         @id = id
@@ -14,14 +14,14 @@ module ToolingInvoker
         @container_version = container_version
         @timeout_s = timeout_s
         @status = 410
-        @invocation_data = {}
+        @metadata = {}
       end
 
       def to_h
         {
           status: status,
           output: output,
-          invocation_data: invocation_data
+          metadata: metadata
         }
       end
 
