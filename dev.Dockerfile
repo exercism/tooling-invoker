@@ -30,4 +30,4 @@ COPY . .
 
 ENV CONTAINER_NAME=tooling-invoker
 
-ENTRYPOINT ./bin/worker
+ENTRYPOINT ./bin/run-local
