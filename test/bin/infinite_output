@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
 20.times do
-  puts Array.new(1000).map{"x"}.join
+  puts Array.new(1000).map { "x" }.join
 end
