@@ -142,19 +142,7 @@ module ToolingInvoker
         @stdout = captured_stdout.join
         @stderr = captured_stderr.join
         @exit_status ||= wait_thr.value&.exitstatus
-        begin
-          p wait_thr.value
-          p wait_thr.value.stopped?
-          p wait_thr.value.signaled?
-          p wait_thr.value.stopsig
-          p wait_thr.value.termsig
-
-          @exit_status = TIMEOUT_EXIT_STATUS if !@exit_status && wait_thr.value.stopsig == 54
-        rescue StandardError
-          # foo
-        end
-
-        p "Exit status in command ensure: #{wait_thr.value} : #{wait_thr.value&.exitstatus}"
+        @exit_status = TIMEOUT_EXIT_STATUS if !@exit_status && wait_thr.value.termsig == 9
 
         File.write("#{job.output_dir}/stdout", @stdout)
         File.write("#{job.output_dir}/stderr", @stderr)
