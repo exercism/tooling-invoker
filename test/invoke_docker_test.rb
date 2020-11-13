@@ -26,7 +26,7 @@ module ToolingInvoker
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
       expected_output = { "results.json" => '{"happy": "people"}' }
-      expected_invocation_data = {
+      expected_metadata = {
         cmd: "#{__dir__}/bin/mock_docker",
         exit_status: 0,
         stdout: "",
@@ -34,7 +34,7 @@ module ToolingInvoker
       }
 
       begin
-        Dir.mkdir("#{@job_dir}")
+        Dir.mkdir(@job_dir.to_s)
         Dir.chdir(@job_dir) do
           InvokeDocker.(@job)
         end
@@ -44,13 +44,13 @@ module ToolingInvoker
 
       assert_equal 200, @job.status
       assert_equal expected_output, @job.output
-      assert_equal expected_invocation_data, @job.invocation_data
+      assert_equal expected_metadata, @job.metadata
     end
 
     def test_failed_invocation
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/missing_file")
 
-      expected_invocation_data = {
+      expected_metadata = {
         cmd: "#{__dir__}/bin/missing_file",
         exit_status: nil,
         stdout: "",
@@ -66,7 +66,7 @@ module ToolingInvoker
 
       assert_equal 513, @job.status
       assert_equal({}, @job.output)
-      assert_equal expected_invocation_data, @job.invocation_data
+      assert_equal expected_metadata, @job.metadata
     end
   end
 end

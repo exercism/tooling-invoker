@@ -13,8 +13,8 @@ module ToolingInvoker
       run_job!
     rescue StandardError => e
       job.status = 513
-      job.invocation_data[:exception_msg] = e.message
-      job.invocation_data[:exception_backtrace] = e.backtrace
+      job.metadata[:exception_msg] = e.message
+      job.metadata[:exception_backtrace] = e.backtrace
     end
 
     private
@@ -38,12 +38,12 @@ module ToolingInvoker
       log "Invoking container"
 
       begin
-        job.invocation_data = ExecDocker.(job)
+        job.metadata = ExecDocker.(job)
         job.status = 200
       rescue InvocationError => e
         job.status = e.error_code
-        job.invocation_data = (e.data || {})
-        job.invocation_data[:exception_msg] = e.message
+        job.metadata = (e.data || {})
+        job.metadata[:exception_msg] = e.message
       end
 
       job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|

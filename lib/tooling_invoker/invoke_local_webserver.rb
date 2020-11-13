@@ -24,13 +24,11 @@ module ToolingInvoker
 
       json = JSON.parse(resp.body)
 
-      job.context = {
+      job.metadata = {
         tool_dir: "",
         job_dir: "",
         stdout: '',
-        stderr: ''
-      }
-      job.invocation_data = {
+        stderr: '',
         cmd: "",
         exit_status: json['exit_status']
       }

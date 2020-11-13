@@ -179,7 +179,7 @@ module ToolingInvoker
         "--rm",
         "--network none",
         job.image,
-        job.exercise,
+        job.exercise, # TODO: These should be read from invocation_args
         "/mnt/exercism-iteration/",
         "/mnt/exercism-iteration/"
       ].join(" ")
