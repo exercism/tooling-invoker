@@ -16,6 +16,11 @@ jobs:
         ports:
           - 8000
 
+      s3:
+        image: "adobe/s3mock"
+        ports:
+          - 9090
+
     steps:
       ###
       # Checkout using GitHub's checkout action

@@ -24,14 +24,18 @@ module ToolingInvoker
         timeout: @timeout
       }
 
-      results = mock
+      status = mock
+      output = mock
       job = mock
-      job.stubs(id: @job_id, to_h: results)
+      job.stubs(id: @job_id, status: status, output: output)
 
       Jobs::TestRunnerJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
+
       InvokeDocker.expects(:call).with(job)
+      UploadMetadata.expects(:call).with(job)
+
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
@@ -39,7 +43,10 @@ module ToolingInvoker
       RestClient.expects(:patch).
         with(
           "#{config.orchestrator_address}/jobs/#{@job_id}",
-          results
+          {
+            status: status,
+            output: output
+          }
         )
 
       service = Worker.new
@@ -60,14 +67,17 @@ module ToolingInvoker
         timeout: @timeout
       }
 
-      results = mock
+      status = mock
+      output = mock
       job = mock
-      job.stubs(id: @job_id, to_h: results)
+      job.stubs(id: @job_id, status: status, output: output)
 
       Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
       InvokeDocker.expects(:call).with(job)
+      UploadMetadata.expects(:call).with(job)
+
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
@@ -75,7 +85,10 @@ module ToolingInvoker
       RestClient.expects(:patch).
         with(
           "#{config.orchestrator_address}/jobs/#{@job_id}",
-          results
+          {
+            status: status,
+            output: output
+          }
         )
 
       service = Worker.new
@@ -96,14 +109,17 @@ module ToolingInvoker
         timeout: @timeout
       }
 
-      results = mock
+      status = mock
+      output = mock
       job = mock
-      job.stubs(id: @job_id, to_h: results)
+      job.stubs(id: @job_id, status: status, output: output)
 
       Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @s3_uri, @container_version, @timeout
       ).returns(job)
       InvokeDocker.expects(:call).with(job)
+      UploadMetadata.expects(:call).with(job)
+
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
         returns(mock(body: resp.to_json))
@@ -111,7 +127,10 @@ module ToolingInvoker
       RestClient.expects(:patch).
         with(
           "#{config.orchestrator_address}/jobs/#{@job_id}",
-          results
+          {
+            status: status,
+            output: output
+          }
         )
 
       service = Worker.new

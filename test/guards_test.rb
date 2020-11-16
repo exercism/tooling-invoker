@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module ToolingInvoker
-  class InvokeDockerTest < Minitest::Test
+  class GuardsTest < Minitest::Test
     def setup
       super
       @job_id = SecureRandom.hex
@@ -41,7 +41,30 @@ module ToolingInvoker
         `kill -s SIGKILL #{pid_to_kill}`
       end
 
-      assert_equal 401, job.status
+      assert_equal Jobs::Job::TIMEOUT_STATUS, job.status
+    end
+
+    def test_too_many_results
+      job = Jobs::TestRunnerJob.new(
+        @job_id,
+        "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
+        1 # This is the timeout that we use to test this
+      )
+      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
+
+      begin
+        FileUtils.mkdir_p(job.source_code_dir)
+        Dir.chdir(job.source_code_dir) do
+          File.write(
+            "results.json",
+            "a" * (Jobs::Job::MAX_OUTPUT_FILE_SIZE + 1)
+          )
+        end
+
+        assert_equal Jobs::Job::EXCESSIVE_OUTPUT_STATUS, job.status
+      ensure
+        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{job.id}")
+      end
     end
 
     def test_excessive_output
@@ -62,7 +85,7 @@ module ToolingInvoker
         FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job_id}")
       end
 
-      assert_equal 402, job.status
+      assert_equal Jobs::Job::EXCESSIVE_STDOUT_STATUS, job.status
     end
   end
 end

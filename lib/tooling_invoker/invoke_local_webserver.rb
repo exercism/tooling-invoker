@@ -24,17 +24,10 @@ module ToolingInvoker
 
       json = JSON.parse(resp.body)
 
-      job.metadata = {
-        tool_dir: "",
-        job_dir: "",
-        stdout: '',
-        stderr: '',
-        cmd: "",
-        exit_status: json['exit_status']
-      }
-
+      job.stdout = ""
+      job.stderr = ""
       job.output = json['output_files']
-      job.status = job.output ? 200 : 400
+      job.output ? job.succeeded! : job.exceptioned!("No output")
     end
 
     private

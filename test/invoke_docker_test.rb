@@ -25,14 +25,6 @@ module ToolingInvoker
     def test_happy_path
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
-      expected_output = { "results.json" => '{"happy": "people"}' }
-      expected_metadata = {
-        cmd: "#{__dir__}/bin/mock_docker",
-        exit_status: 0,
-        stdout: "",
-        stderr: ""
-      }
-
       begin
         Dir.mkdir(@job_dir.to_s)
         Dir.chdir(@job_dir) do
@@ -42,21 +34,16 @@ module ToolingInvoker
         FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
       end
 
+      expected_output = { "results.json" => '{"happy": "people"}' }
+
       assert_equal 200, @job.status
       assert_equal expected_output, @job.output
-      assert_equal expected_metadata, @job.metadata
+      assert_equal "", @job.stdout
+      assert_equal "", @job.stderr
     end
 
     def test_failed_invocation
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/missing_file")
-
-      expected_metadata = {
-        cmd: "#{__dir__}/bin/missing_file",
-        exit_status: nil,
-        stdout: "",
-        stderr: "",
-        exception_msg: "513: The following error occurred: No such file or directory - #{__dir__}/bin/missing_file"  # rubocop:disable Layout/LineLength
-      }
 
       begin
         InvokeDocker.(@job)
@@ -66,7 +53,8 @@ module ToolingInvoker
 
       assert_equal 513, @job.status
       assert_equal({}, @job.output)
-      assert_equal expected_metadata, @job.metadata
+      assert_equal "", @job.stdout
+      assert_equal "", @job.stderr
     end
   end
 end

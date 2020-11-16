@@ -17,24 +17,13 @@ module ToolingInvoker
       SyncS3.(job.s3_uri, input_dir)
 
       cmd = "/bin/sh bin/run.sh #{job.exercise} #{input_dir} #{output_dir}"
-      exit_status = Dir.chdir(tool_dir) do
+      Dir.chdir(tool_dir) do
         system(cmd)
       end
 
-      job.metadata = {
-        tool_dir: tool_dir,
-        job_dir: job_dir,
-        stdout: '',
-        stderr: '',
-        cmd: cmd,
-        exit_status: exit_status
-      }
-
-      job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
-        hash[output_filepath] = File.read("#{output_dir}/#{output_filepath}")
-      end
-
-      job.status = job.output ? 200 : 400
+      job.stdout = ""
+      job.stderr = ""
+      job.output ? job.succeeded! : job.exceptioned!("No output")
     end
 
     private
