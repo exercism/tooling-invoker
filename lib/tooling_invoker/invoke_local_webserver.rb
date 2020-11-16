@@ -11,7 +11,8 @@ module ToolingInvoker
       input_dir = "#{job_dir}/output"
       zip_file = "#{job_dir}/files.zip"
       FileUtils.mkdir_p(input_dir)
-      SyncS3.(job.s3_uri, input_dir)
+
+      SetupInputFiles.(job)
 
       ZipFileGenerator.new(input_dir, zip_file).write
 

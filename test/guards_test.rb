@@ -7,19 +7,23 @@ module ToolingInvoker
       @job_id = SecureRandom.hex
       @hex = SecureRandom.hex
 
-      @expected_context = {
-        job_dir: "#{config.jobs_dir}/#{@job_id}-#{@hex}",
-        rootfs_source: "#{config.containers_dir}/ruby-test-runner/releases/v1/rootfs"
-      }
-
       SecureRandom.stubs(hex: @hex)
-      SyncS3.stubs(:call)
+
+      @job_dir = "#{Configuration.instance.jobs_dir}/#{@job_id}-#{@hex}"
+      @input_efs_dir = "#{Configuration.instance.jobs_efs_dir}/#{@job_id}"
+
+      FileUtils.mkdir_p(@input_efs_dir)
+    end
+
+    def teardown
+      FileUtils.rm_rf(@job_dir)
+      FileUtils.rm_rf(@input_efs_dir)
     end
 
     def test_timeout
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
+        "ruby", "bob", "v1",
         1 # This is the timeout that we use to test this
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
@@ -37,7 +41,6 @@ module ToolingInvoker
       begin
         InvokeDocker.(job)
       ensure
-        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job_id}")
         `kill -s SIGKILL #{pid_to_kill}`
       end
 
@@ -47,30 +50,26 @@ module ToolingInvoker
     def test_too_many_results
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
+        "ruby", "bob", "v1",
         1 # This is the timeout that we use to test this
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
 
-      begin
-        FileUtils.mkdir_p(job.source_code_dir)
-        Dir.chdir(job.source_code_dir) do
-          File.write(
-            "results.json",
-            "a" * (Jobs::Job::MAX_OUTPUT_FILE_SIZE + 1)
-          )
-        end
-
-        assert_equal Jobs::Job::EXCESSIVE_OUTPUT_STATUS, job.status
-      ensure
-        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{job.id}")
+      FileUtils.mkdir_p(job.source_code_dir)
+      Dir.chdir(job.source_code_dir) do
+        File.write(
+          "results.json",
+          "a" * (Jobs::Job::MAX_OUTPUT_FILE_SIZE + 1)
+        )
       end
+
+      assert_equal Jobs::Job::EXCESSIVE_OUTPUT_STATUS, job.status
     end
 
     def test_excessive_output
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", "s3://exercism-iterations/production/iterations/1182520", "v1",
+        "ruby", "bob", "v1",
         1 # Ensures this is high enough to run out of output
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")
@@ -79,11 +78,7 @@ module ToolingInvoker
       # the half way stage.
       ExecDocker.any_instance.stubs(output_limit: 10_000)
 
-      begin
-        InvokeDocker.(job)
-      ensure
-        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job_id}")
-      end
+      InvokeDocker.(job)
 
       assert_equal Jobs::Job::EXCESSIVE_STDOUT_STATUS, job.status
     end

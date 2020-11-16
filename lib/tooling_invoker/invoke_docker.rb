@@ -21,14 +21,14 @@ module ToolingInvoker
       FileUtils.mkdir(job.source_code_dir)
       FileUtils.mkdir(job.output_dir)
 
-      SyncS3.(job.s3_uri, job.source_code_dir)
+      SetupInputFiles.(job)
 
       FileUtils.chmod_R(0o777, job.source_code_dir)
       FileUtils.chmod_R(0o777, job.output_dir)
 
       true
     rescue StandardError => e
-      failed_to_prepare_input!(e)
+      job.failed_to_prepare_input!(e)
 
       false
     end

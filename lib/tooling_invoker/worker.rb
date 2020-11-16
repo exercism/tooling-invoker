@@ -45,7 +45,6 @@ module ToolingInvoker
         job_data['id'],
         job_data['language'],
         job_data['exercise'],
-        job_data['s3_uri'],
         job_data['container_version'],
         job_data['timeout']
       )

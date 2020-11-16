@@ -14,7 +14,7 @@ module ToolingInvoker
       FileUtils.mkdir_p(input_dir)
       FileUtils.mkdir_p(output_dir)
 
-      SyncS3.(job.s3_uri, input_dir)
+      SetupInputFiles.(job)
 
       cmd = "/bin/sh bin/run.sh #{job.exercise} #{input_dir} #{output_dir}"
       Dir.chdir(tool_dir) do
