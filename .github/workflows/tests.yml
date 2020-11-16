@@ -50,10 +50,12 @@ jobs:
           EXERCISM_ENV: test
           EXERCISM_CI: true
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
+          S3_PORT: ${{ job.services.s3.ports['9090'] }}
         run: |
           bundle config path vendor/bundle # This is needed for the caching above
           bundle install --jobs 4 --retry 3
           bundle exec setup_exercism_config
+          bundle exec setup_exercism_local_aws
 
       ###
       # Setup code climate
