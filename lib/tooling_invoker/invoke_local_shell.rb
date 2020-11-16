@@ -10,8 +10,6 @@ module ToolingInvoker
       tool_dir = "#{config.containers_dir}/#{job.tool}"
 
       FileUtils.mkdir_p(job.source_code_dir)
-      p job.input_efs_dir
-      p job.source_code_dir
 
       # TODO: When docker moves to seperate dirs, move this too.
       # FileUtils.mkdir_p(output_dir)

@@ -33,7 +33,7 @@ module ToolingInvoker
 
     def jobs_efs_dir
       if Exercism.env.production?
-        File.expand_path('/mnt/jobs')
+        File.expand_path('/mnt/tooling_jobs')
       else
         File.expand_path("/tmp/exercism-tooling-jobs-efs")
       end
