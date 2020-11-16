@@ -40,7 +40,7 @@ module ToolingInvoker
       FileUtils.rm_rf(@job.input_efs_dir)
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
-      Dir.mkdir(@job.dir)
+      Dir.mkdir_p(@job.dir)
       Dir.chdir(@job.dir) do
         InvokeDocker.(@job)
       end
