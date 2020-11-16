@@ -5,68 +5,60 @@ module ToolingInvoker
     def setup
       super
 
-      SyncS3.expects(:call).once
-
       @job = Jobs::TestRunnerJob.new(
         SecureRandom.hex,
         "ruby",
         "bob",
-        "s3://exercism-iterations/production/iterations/1182520",
         "v1",
         10
       )
+      FileUtils.mkdir_p(@job.input_efs_dir)
+    end
 
-      @hex = SecureRandom.hex
-      @job_dir = "#{config.jobs_dir}/#{@job.id}-#{@hex}"
-
-      SecureRandom.expects(:hex).twice.returns(@hex)
+    def teardown
+      FileUtils.rm_rf(@job.dir)
+      FileUtils.rm_rf(@job.input_efs_dir)
     end
 
     def test_happy_path
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
-      expected_output = { "results.json" => '{"happy": "people"}' }
-      expected_metadata = {
-        cmd: "#{__dir__}/bin/mock_docker",
-        exit_status: 0,
-        stdout: "",
-        stderr: ""
-      }
-
-      begin
-        Dir.mkdir(@job_dir.to_s)
-        Dir.chdir(@job_dir) do
-          InvokeDocker.(@job)
-        end
-      ensure
-        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
+      Dir.mkdir(@job.dir)
+      Dir.chdir(@job.dir) do
+        InvokeDocker.(@job)
       end
+
+      expected_output = { "results.json" => '{"happy": "people"}' }
 
       assert_equal 200, @job.status
       assert_equal expected_output, @job.output
-      assert_equal expected_metadata, @job.metadata
+      assert_equal "", @job.stdout
+      assert_equal "", @job.stderr
+    end
+
+    def test_failed_setup
+      FileUtils.rm_rf(@job.input_efs_dir)
+      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
+
+      FileUtils.mkdir_p(@job.dir)
+      Dir.chdir(@job.dir) do
+        InvokeDocker.(@job)
+      end
+
+      assert_equal 512, @job.status
+      assert_equal "", @job.stdout
+      assert_equal "", @job.stderr
     end
 
     def test_failed_invocation
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/missing_file")
 
-      expected_metadata = {
-        cmd: "#{__dir__}/bin/missing_file",
-        exit_status: nil,
-        stdout: "",
-        stderr: "",
-        exception_msg: "513: The following error occurred: No such file or directory - #{__dir__}/bin/missing_file"  # rubocop:disable Layout/LineLength
-      }
-
-      begin
-        InvokeDocker.(@job)
-      ensure
-        FileUtils.rm_rf("#{config.containers_dir}/ruby-test-runner/releases/v1/jobs/#{@job.id}")
-      end
+      InvokeDocker.(@job)
 
       assert_equal 513, @job.status
       assert_equal({}, @job.output)
-      assert_equal expected_metadata, @job.metadata
+      assert_equal "", @job.stdout
+      assert_equal "", @job.stderr
     end
   end
 end

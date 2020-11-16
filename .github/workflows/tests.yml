@@ -16,6 +16,11 @@ jobs:
         ports:
           - 8000
 
+      s3:
+        image: "adobe/s3mock"
+        ports:
+          - 9090
+
     steps:
       ###
       # Checkout using GitHub's checkout action
@@ -24,7 +29,7 @@ jobs:
       ###
       # Setup Ruby - this needs to match the version in the Gemfile
       - name: Set up Ruby
-        uses: ruby/setup-ruby@ec106b438a1ff6ff109590de34ddc62c540232e0
+        uses: actions/setup-ruby@5f29a1cd8dfebf420691c4c9a0e832e2fae5a526
         with:
           ruby-version: 2.6.6
 
@@ -45,10 +50,13 @@ jobs:
           EXERCISM_ENV: test
           EXERCISM_CI: true
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
+          S3_PORT: ${{ job.services.s3.ports['9090'] }}
         run: |
+          gem install bundler:2.1.4
           bundle config path vendor/bundle # This is needed for the caching above
           bundle install --jobs 4 --retry 3
           bundle exec setup_exercism_config
+          bundle exec setup_exercism_local_aws
 
       ###
       # Setup code climate
@@ -65,6 +73,7 @@ jobs:
           EXERCISM_ENV: test
           EXERCISM_CI: true
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
+          S3_PORT: ${{ job.services.s3.ports['9090'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
           bundle exec rake test

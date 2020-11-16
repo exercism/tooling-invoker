@@ -12,7 +12,6 @@ module ToolingInvoker
       )
       config = Configuration.instance
       assert_equal '/opt/jobs', config.jobs_dir
-      assert_equal '/opt/containers', config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeDocker, config.invoker
     end
@@ -28,6 +27,7 @@ module ToolingInvoker
       config = Configuration.instance
       assert_equal 1, config.job_polling_delay
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
+      assert_equal '/tmp/exercism-tooling-jobs-efs', config.jobs_efs_dir
       assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeLocalWebserver, config.invoker
@@ -65,6 +65,7 @@ module ToolingInvoker
       config = Configuration.instance
       assert_equal 1, config.job_polling_delay
       assert_equal '/tmp/exercism-tooling-jobs', config.jobs_dir
+      assert_equal '/tmp/exercism-tooling-jobs-efs', config.jobs_efs_dir
       assert_equal File.expand_path('../..', __dir__), config.containers_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeLocalShell, config.invoker

@@ -24,13 +24,19 @@ module ToolingInvoker
         File.expand_path('../../test/fixtures/containers', __dir__)
       elsif Exercism.env.development?
         File.expand_path('../../..', __dir__)
-      elsif Exercism.env.production?
-        File.expand_path('/opt/containers')
       end
     end
 
     def job_polling_delay
       (ENV["JOB_POLLING_DELAY"] || 1).to_f
+    end
+
+    def jobs_efs_dir
+      if Exercism.env.production?
+        File.expand_path('/mnt/tooling_jobs')
+      else
+        File.expand_path("/tmp/exercism-tooling-jobs-efs")
+      end
     end
 
     def jobs_dir

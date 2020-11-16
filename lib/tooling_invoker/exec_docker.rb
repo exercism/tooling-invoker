@@ -42,54 +42,23 @@ module ToolingInvoker
         # breached, but it just adds one tiny layer of protection.
         unless success
           puts "Forcing timeout"
-          @exit_status = TIMEOUT_EXIT_STATUS
+          job.timed_out!
 
           abort!
           sleep(0.01)
           docker_thread.kill
         end
       rescue StandardError => e
-        raise InvocationError.new(
-          513,
-          "The following error occurred: #{e.message}",
-          data: to_h
-        )
+        job.exceptioned!(e.message, e.backtrace)
       end
 
       # Always explicity kill the containers in case they've timed-out
       # via out manual checks.
       kill_containers!
-
-      # If we timed outvia the timeout command (exit status 124)
-      # or we timed out here (success == false), # raise a timeout exception
-      if exit_status == TIMEOUT_EXIT_STATUS || !success
-        raise InvocationError.new(
-          401, "Container timed out",
-          data: {}
-        )
-      end
-
-      if exit_status == EXCESSIVE_OUTPUT_EXIT_STATUS
-        raise InvocationError.new(
-          402, "Container overloaded IO",
-          data: {}
-        )
-      end
-
-      unless exit_status == 0
-        raise InvocationError.new(
-          513,
-          "Container returned exit status of #{exit_status}",
-          data: to_h
-        )
-      end
-
-      to_h
     end
 
     private
-    attr_reader :job, :container_label, :timeout_s, :output_limit,
-                :exit_status, :stdout, :stderr, :pid
+    attr_reader :job, :container_label, :timeout_s, :output_limit, :pid
 
     def exec_command!
       captured_stdout = []
@@ -110,8 +79,8 @@ module ToolingInvoker
 
           files[0].each do |f|
             if f.closed?
-              @exit_status = EXCESSIVE_OUTPUT_EXIT_STATUS
-              break
+              job.killed_for_excessive_output!
+              return # rubocop:disable Lint/NonLocalExitFromIterator
             end
 
             stream = f == stdout ? captured_stdout : captured_stderr
@@ -131,21 +100,28 @@ module ToolingInvoker
             # If there is too much output, kill the process.
             abort!
 
-            @exit_status = EXCESSIVE_OUTPUT_EXIT_STATUS
-            break
+            job.killed_for_excessive_output!
+            return # rubocop:disable Lint/NonLocalExitFromIterator
           end
         end
       ensure
         stdout.close unless stdout.closed?
         stderr.close unless stderr.closed?
 
-        @stdout = captured_stdout.join
-        @stderr = captured_stderr.join
-        @exit_status ||= wait_thr.value&.exitstatus
-        @exit_status = TIMEOUT_EXIT_STATUS if !@exit_status && wait_thr.value.termsig == 9
+        job.stdout = fix_encoding(captured_stdout.join)
+        job.stderr = fix_encoding(captured_stdout.join)
 
-        File.write("#{job.output_dir}/stdout", @stdout)
-        File.write("#{job.output_dir}/stderr", @stderr)
+        if wait_thr.value&.exitstatus == 0
+          job.succeeded!
+        elsif wait_thr.value.termsig == 9
+          job.timed_out!
+        else
+          job.exceptioned!("Exit status: #{wait_thr.value&.exitstatus}")
+        end
+
+        # TODO: Remove this at some point
+        File.write("#{job.output_dir}/stdout", job.stdout)
+        File.write("#{job.output_dir}/stderr", job.stderr)
       end
     end
 
@@ -190,16 +166,6 @@ module ToolingInvoker
 
       timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{timeout_s} #{docker_cmd}"
       Exercism.env.development? ? docker_cmd : timeout_cmd
-    end
-
-    memoize
-    def to_h
-      {
-        cmd: docker_run_command,
-        exit_status: exit_status,
-        stdout: fix_encoding(stdout),
-        stderr: fix_encoding(stderr)
-      }
     end
 
     def fix_encoding(text)

@@ -11,7 +11,8 @@ module ToolingInvoker
       input_dir = "#{job_dir}/output"
       zip_file = "#{job_dir}/files.zip"
       FileUtils.mkdir_p(input_dir)
-      SyncS3.(job.s3_uri, input_dir)
+
+      SetupInputFiles.(job)
 
       ZipFileGenerator.new(input_dir, zip_file).write
 
@@ -24,17 +25,10 @@ module ToolingInvoker
 
       json = JSON.parse(resp.body)
 
-      job.metadata = {
-        tool_dir: "",
-        job_dir: "",
-        stdout: '',
-        stderr: '',
-        cmd: "",
-        exit_status: json['exit_status']
-      }
-
+      job.stdout = ""
+      job.stderr = ""
       job.output = json['output_files']
-      job.status = job.output ? 200 : 400
+      job.output ? job.succeeded! : job.exceptioned!("No output")
     end
 
     private

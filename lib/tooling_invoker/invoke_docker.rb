@@ -9,12 +9,7 @@ module ToolingInvoker
     def call
       log("Invoking request: #{job.id}: #{job.language}:#{job.exercise}")
 
-      prepare_input!
-      run_job!
-    rescue StandardError => e
-      job.status = 513
-      job.metadata[:exception_msg] = e.message
-      job.metadata[:exception_backtrace] = e.backtrace
+      prepare_input! && run_job!
     end
 
     private
@@ -26,32 +21,24 @@ module ToolingInvoker
       FileUtils.mkdir(job.source_code_dir)
       FileUtils.mkdir(job.output_dir)
 
-      SyncS3.(job.s3_uri, job.source_code_dir)
+      SetupInputFiles.(job)
 
       FileUtils.chmod_R(0o777, job.source_code_dir)
       FileUtils.chmod_R(0o777, job.output_dir)
+
+      true
     rescue StandardError => e
-      raise InvocationError.new(512, "Failure preparing input", exception: e)
+      job.failed_to_prepare_input!(e)
+
+      false
     end
 
     def run_job!
       log "Invoking container"
 
-      begin
-        job.metadata = ExecDocker.(job)
-        job.status = 200
-      rescue InvocationError => e
-        job.status = e.error_code
-        job.metadata = (e.data || {})
-        job.metadata[:exception_msg] = e.message
-      end
-
-      job.output = job.output_filepaths.each.with_object({}) do |output_filepath, hash|
-        hash[output_filepath] = File.read("#{job.source_code_dir}/#{output_filepath}")
-      rescue StandardError
-        # If the file hasn't been written by the tooling
-        # don't blow up everything else unnceessarily
-      end
+      ExecDocker.(job)
+    rescue StandardError => e
+      job.exceptioned!(e.message, backtrace: e.backtrace)
     end
 
     def log(message)

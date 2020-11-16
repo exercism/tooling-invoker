@@ -13,9 +13,9 @@ module ToolingInvoker
           sleep(ToolingInvoker.config.job_polling_delay)
         end
       rescue StandardError => e
-        p "Top level error"
-        p e.message
-        p e.backtrace
+        puts "Top level error"
+        puts e.message
+        puts e.backtrace
 
         sleep(ToolingInvoker.config.job_polling_delay)
       end
@@ -45,7 +45,6 @@ module ToolingInvoker
         job_data['id'],
         job_data['language'],
         job_data['exercise'],
-        job_data['s3_uri'],
         job_data['container_version'],
         job_data['timeout']
       )
@@ -57,11 +56,13 @@ module ToolingInvoker
       config.invoker.(job)
       RestClient.patch(
         "#{config.orchestrator_address}/jobs/#{job.id}",
-        job.to_h
+        status: job.status,
+        output: job.output
       )
+      UploadMetadata.(job)
     rescue StandardError => e
-      p e.message
-      p e.backtrace
+      puts e.message
+      puts e.backtrace
     end
 
     def log(message)

@@ -11,9 +11,6 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 module ToolingInvoker
-  TIMEOUT_EXIT_STATUS = 124
-  EXCESSIVE_OUTPUT_EXIT_STATUS = 402
-
   def self.config
     Configuration.instance
   end
