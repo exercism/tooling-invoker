@@ -8,15 +8,17 @@ module ToolingInvoker
 
     def call
       tool_dir = "#{config.containers_dir}/#{job.tool}"
-      job_dir = "#{config.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
-      input_dir = "#{job_dir}/input"
-      output_dir = "#{job_dir}/output"
-      FileUtils.mkdir_p(input_dir)
-      FileUtils.mkdir_p(output_dir)
+
+      FileUtils.mkdir_p(job.source_code_dir)
+      p job.input_efs_dir
+      p job.source_code_dir
+
+      # TODO: When docker moves to seperate dirs, move this too.
+      # FileUtils.mkdir_p(output_dir)
 
       SetupInputFiles.(job)
 
-      cmd = "/bin/sh bin/run.sh #{job.exercise} #{input_dir} #{output_dir}"
+      cmd = "/bin/sh bin/run.sh #{job.exercise} #{job.source_code_dir} #{job.source_code_dir}"
       Dir.chdir(tool_dir) do
         system(cmd)
       end

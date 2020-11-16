@@ -73,6 +73,7 @@ jobs:
           EXERCISM_ENV: test
           EXERCISM_CI: true
           DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
+          S3_PORT: ${{ job.services.s3.ports['9090'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
           bundle exec rake test

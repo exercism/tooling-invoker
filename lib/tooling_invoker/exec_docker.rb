@@ -116,7 +116,7 @@ module ToolingInvoker
         elsif wait_thr.value.termsig == 9
           job.timed_out!
         else
-          job.exceptioned("Exit status: #{wait_thr.value&.exitstatus}")
+          job.exceptioned!("Exit status: #{wait_thr.value&.exitstatus}")
         end
 
         # TODO: Remove this at some point

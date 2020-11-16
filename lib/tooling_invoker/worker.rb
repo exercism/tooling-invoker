@@ -61,8 +61,8 @@ module ToolingInvoker
       )
       UploadMetadata.(job)
     rescue StandardError => e
-      p e.message
-      p e.backtrace
+      puts e.message
+      puts e.backtrace
     end
 
     def log(message)
