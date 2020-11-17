@@ -7,14 +7,12 @@ module ToolingInvoker
     end
 
     def call
-      job_dir = "#{ToolingInvoker.config.jobs_dir}/#{job.id}-#{SecureRandom.hex}"
-      input_dir = "#{job_dir}/output"
-      zip_file = "#{job_dir}/files.zip"
-      FileUtils.mkdir_p(input_dir)
+      FileUtils.mkdir_p(job.source_code_dir)
 
       SetupInputFiles.(job)
 
-      ZipFileGenerator.new(input_dir, zip_file).write
+      zip_file = "#{job.dir}/files.zip"
+      ZipFileGenerator.new(job.source_code_dir, zip_file).write
 
       resp = RestClient.post("http://#{job.tool}:4567/job", {
                                zipped_files: File.read(zip_file),
