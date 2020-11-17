@@ -3,6 +3,9 @@ module ToolingInvoker
     include Mandate
 
     def call
+      STDOUT.sync = true
+      STDERR.sync = true
+
       loop do
         job = check_for_job
         if job
