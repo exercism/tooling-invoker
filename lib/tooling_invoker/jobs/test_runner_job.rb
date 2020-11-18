@@ -5,8 +5,12 @@ module ToolingInvoker
         super(id, *args)
       end
 
+      def cmd
+        "bin/run.sh"
+      end
+
       def invocation_args
-        ["bin/run.sh", exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
+        [exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
       end
 
       def output_filepaths

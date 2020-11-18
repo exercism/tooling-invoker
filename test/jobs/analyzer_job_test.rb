@@ -15,8 +15,9 @@ module ToolingInvoker::Jobs
       assert_equal exercise, test_run.exercise
       assert_equal container_version, test_run.container_version
       assert_equal timeout, test_run.timeout_s
+
+      assert_equal "bin/run.sh", test_run.cmd
       assert_equal [
-        'bin/run.sh',
         'bob',
         "/mnt/exercism-iteration/",
         "/mnt/exercism-iteration/"

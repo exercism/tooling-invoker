@@ -159,9 +159,7 @@ module ToolingInvoker
         "--rm",
         "--network none",
         job.image,
-        job.exercise, # TODO: These should be read from invocation_args
-        "/mnt/exercism-iteration/",
-        "/mnt/exercism-iteration/"
+        *job.invocation_args
       ].join(" ")
 
       timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{timeout_s} #{docker_cmd}"
