@@ -188,7 +188,7 @@ module ToolingInvoker
         "-a stdout -a stderr", # Attach stdout and stderr
         "-v #{job.source_code_dir}:/mnt/exercism-iteration",
         "-l #{container_label}",
-        "-m 3GB",
+        "-m 7GB",
         "--stop-timeout 0", # Convert a SIGTERM to a SIGKILL instantly
         "--rm",
         "--network none",
