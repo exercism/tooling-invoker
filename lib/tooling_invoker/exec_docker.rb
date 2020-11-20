@@ -80,7 +80,7 @@ module ToolingInvoker
 
           p "C"
 
-          files = IO.select([stdout, stderr])
+          files = IO.select([stdout, stderr], 0.1)
           p "D"
           next unless files
 
