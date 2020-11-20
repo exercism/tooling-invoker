@@ -71,20 +71,35 @@ module ToolingInvoker
 
       begin
         while wait_thr.alive?
+          p wait_thr.alive?
+          p "A"
           break if stdout.closed?
+
+          p "B"
           break if stderr.closed?
 
+          p "C"
+
           files = IO.select([stdout, stderr])
+          p "D"
           next unless files
 
+          p "E"
+
           files[0].each do |f|
+            p "F"
             if f.closed?
+              p "G"
               job.killed_for_excessive_output!
+              p "H"
               return # rubocop:disable Lint/NonLocalExitFromIterator
             end
 
+            puts "I"
             stream = f == stdout ? captured_stdout : captured_stderr
+            puts "J"
             begin
+              puts "K"
               stream << f.read_nonblock(BLOCK_SIZE)
             rescue IOError
               # Don't blow up if there is an error reading
@@ -94,33 +109,49 @@ module ToolingInvoker
             # If we haven't got too much output then continue for
             # another cycle. Our measure is the amount of blocks
             # we've collected over the total data we want.
+            puts "L"
             next unless output_limit.positive?
+
+            puts "M"
             next unless stream.size > (output_limit.to_f / BLOCK_SIZE)
 
             # If there is too much output, kill the process.
+            puts "N"
             abort!
 
+            puts "O"
             job.killed_for_excessive_output!
+            puts "P"
             return # rubocop:disable Lint/NonLocalExitFromIterator
           end
         end
       ensure
+        puts "Q"
         stdout.close unless stdout.closed?
+        puts "R"
         stderr.close unless stderr.closed?
+        puts "S"
 
         job.stdout = fix_encoding(captured_stdout.join)
+        puts "T"
         job.stderr = fix_encoding(captured_stdout.join)
 
         if wait_thr.value&.exitstatus == 0
+          puts "U"
           job.succeeded!
+          puts "V"
         elsif wait_thr.value.termsig == 9
+          puts "W"
           job.timed_out!
         else
+          puts "X"
           job.exceptioned!("Exit status: #{wait_thr.value&.exitstatus}")
         end
 
+        puts "Y"
         # TODO: Remove this at some point
         File.write("#{job.output_dir}/stdout", job.stdout)
+        puts "Z"
         File.write("#{job.output_dir}/stderr", job.stderr)
       end
     end
