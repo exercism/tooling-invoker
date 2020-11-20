@@ -64,6 +64,7 @@ module ToolingInvoker
       captured_stdout = []
       captured_stderr = []
 
+      puts docker_run_command
       stdin, stdout, stderr, wait_thr = Open3.popen3(docker_run_command)
       @pid = wait_thr[:pid]
 
