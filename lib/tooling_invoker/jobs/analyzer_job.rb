@@ -4,6 +4,10 @@ module ToolingInvoker::Jobs
       super(id, *args)
     end
 
+    def type
+      "analyzer"
+    end
+
     def cmd
       "bin/run.sh"
     end

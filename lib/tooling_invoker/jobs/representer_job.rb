@@ -4,6 +4,10 @@ module ToolingInvoker::Jobs
       super(id, *args)
     end
 
+    def type
+      "representer"
+    end
+
     def cmd
       "bin/run.sh"
     end

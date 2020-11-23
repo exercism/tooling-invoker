@@ -17,17 +17,17 @@ module ToolingInvoker
       loop do
         job = check_for_job
         if job
-          puts "#{job.id}: Starting job"
+          Log.("Starting job", job: job)
           start_time = Time.now.to_f
           handle_job(job)
-          puts "#{job.id}: Total time: #{Time.now.to_f - start_time}"
+          Log.("Total time: #{Time.now.to_f - start_time}", job: job)
         else
           sleep(ToolingInvoker.config.job_polling_delay)
         end
       rescue StandardError => e
-        puts "Top level error"
-        puts e.message
-        puts e.backtrace
+        Log.("Top level error")
+        Log.(e.message)
+        Log.(e.backtrace)
 
         sleep(ToolingInvoker.config.job_polling_delay)
       end
@@ -73,12 +73,9 @@ module ToolingInvoker
       )
       UploadMetadata.(job)
     rescue StandardError => e
-      puts e.message
-      puts e.backtrace
-    end
-
-    def log(message)
-      puts "* #{message}"
+      Log.("Error handling job", job: job)
+      Log.(e.message, job: job)
+      Log.(e.backtrace, job: job)
     end
 
     def config

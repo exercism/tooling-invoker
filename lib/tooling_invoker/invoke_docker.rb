@@ -7,7 +7,7 @@ module ToolingInvoker
     end
 
     def call
-      log("Invoking request: #{job.id}: #{job.language}:#{job.exercise}")
+      Log.("Invoking request: #{job.type}:#{job.language}:#{job.exercise}", job: job)
 
       prepare_input! && run_job!
     end
@@ -16,7 +16,7 @@ module ToolingInvoker
     attr_reader :job
 
     def prepare_input!
-      log "Preparing input"
+      Log.("Preparing input", job: job)
       FileUtils.mkdir_p(job.dir)
       FileUtils.mkdir(job.source_code_dir)
       FileUtils.mkdir(job.output_dir)
@@ -28,21 +28,18 @@ module ToolingInvoker
 
       true
     rescue StandardError => e
+      Log.("Failed to prepare input", job: job)
       job.failed_to_prepare_input!(e)
 
       false
     end
 
     def run_job!
-      log "Invoking container"
+      Log.("Invoking container", job: job)
 
       ExecDocker.(job)
     rescue StandardError => e
       job.exceptioned!(e.message, backtrace: e.backtrace)
-    end
-
-    def log(message)
-      puts "** #{self.class} | #{message}"
     end
   end
 end

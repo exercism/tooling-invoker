@@ -25,7 +25,7 @@ module ToolingInvoker
         docker_thread = Thread.new do
           start_time = Time.now.to_f
           exec_command!
-          puts "#{job.id}: Docker time: #{Time.now.to_f - start_time}"
+          Log.("Docker time: #{Time.now.to_f - start_time}", job: job)
         end
 
         # Run the command in a thread and timeout just
@@ -41,7 +41,7 @@ module ToolingInvoker
         # very unlikely as it means that the system level timeout has been
         # breached, but it just adds one tiny layer of protection.
         unless success
-          puts "Forcing timeout"
+          Log.("Forcing timeout", job: job)
           job.timed_out!
 
           abort!
@@ -64,7 +64,7 @@ module ToolingInvoker
       captured_stdout = []
       captured_stderr = []
 
-      puts docker_run_command
+      Log.("Running #{docker_run_command}", job: job)
       stdin, stdout, stderr, wait_thr = Open3.popen3(docker_run_command)
       @pid = wait_thr[:pid]
 
@@ -171,9 +171,9 @@ module ToolingInvoker
 
       text.force_encoding("ISO-8859-1").encode("UTF-8")
     rescue StandardError => e
-      puts e.message
-      puts e.backtrace
-      puts "--- failed to encode as UTF-8: #{e.message} ---"
+      Log.("Running --- failed to encode as UTF-8 ---", job: job)
+      Log.("Running #{e.message}", job: job)
+      Log.("Running #{e.backtrace}", job: job)
       ""
     end
   end

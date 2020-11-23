@@ -5,6 +5,10 @@ module ToolingInvoker
         super(id, *args)
       end
 
+      def type
+        "test_runner"
+      end
+
       def cmd
         "bin/run.sh"
       end
