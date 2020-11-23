@@ -99,9 +99,9 @@ module ToolingInvoker
             next unless stream.size > MAX_BLOCKS
 
             # If there is too much output, kill the process.
+            job.killed_for_excessive_output!
             abort!
 
-            job.killed_for_excessive_output!
             return # rubocop:disable Lint/NonLocalExitFromIterator
           end
         end
