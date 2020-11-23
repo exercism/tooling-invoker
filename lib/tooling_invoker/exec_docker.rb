@@ -85,10 +85,10 @@ module ToolingInvoker
             end
 
             stream = f == stdout ? captured_stdout : captured_stderr
-            p stream
             begin
               stream << f.read_nonblock(BLOCK_SIZE)
-            rescue IOError
+            rescue IOError => e
+              Log.("Error reading from io: #{e.message}", job: job)
               # Don't blow up if there is an error reading
               # the stream.
             end
@@ -109,10 +109,8 @@ module ToolingInvoker
         stdout.close unless stdout.closed?
         stderr.close unless stderr.closed?
 
-        p captured_stdout.join
-        p captured_stdout.join
         job.stdout = fix_encoding(captured_stdout.join)
-        job.stderr = fix_encoding(captured_stdout.join)
+        job.stderr = fix_encoding(captured_stderr.join)
 
         if wait_thr.value&.exitstatus == 0
           job.succeeded!
