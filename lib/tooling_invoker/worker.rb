@@ -6,6 +6,14 @@ module ToolingInvoker
       STDOUT.sync = true
       STDERR.sync = true
 
+      # Setup docker network. If the network already
+      # exists then this will be a noop. It takes about
+      # 120ms to exec, so just do it on worker init
+      system(
+        "docker network create --internal no-internet",
+        out: File::NULL, err: File::NULL
+      )
+
       loop do
         job = check_for_job
         if job

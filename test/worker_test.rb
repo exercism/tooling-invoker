@@ -10,6 +10,21 @@ module ToolingInvoker
       @exercise = "bob"
       @container_version = "v1"
       @timeout = 10
+
+      Kernel.stubs(:system)
+    end
+
+    def test_creates_network
+      service = Worker.new
+      service.stubs(:loop)
+      service.stubs(:sleep)
+
+      service.expects(:system).with(
+        "docker network create --internal no-internet",
+        out: File::NULL, err: File::NULL
+      )
+
+      service.()
     end
 
     def test_flow_for_test_runner
