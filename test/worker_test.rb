@@ -20,7 +20,7 @@ module ToolingInvoker
       service.stubs(:sleep)
 
       service.expects(:system).with(
-        "docker network create --internal no-internet",
+        "docker network create --internal internal",
         out: File::NULL, err: File::NULL
       )
 

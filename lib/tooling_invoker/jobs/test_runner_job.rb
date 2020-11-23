@@ -6,7 +6,7 @@ module ToolingInvoker
       end
 
       def type
-        "test_runner"
+        "test-runner"
       end
 
       def cmd
@@ -23,10 +23,6 @@ module ToolingInvoker
 
       def working_directory
         "/opt/test-runner"
-      end
-
-      def tool
-        "#{language}-test-runner"
       end
     end
   end

@@ -14,6 +14,10 @@ module ToolingInvoker
       assert_equal '/opt/jobs', config.jobs_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal InvokeDocker, config.invoker
+      assert_equal "1GB", config.max_memory_for_tool("ruby-test-runner")
+      assert_equal "3GB", config.max_memory_for_tool("foobar")
+      assert_equal "internal", config.network_for_tool("elixir-test-runner")
+      assert_equal "none", config.network_for_tool("foobar")
     end
 
     def test_development_defaults

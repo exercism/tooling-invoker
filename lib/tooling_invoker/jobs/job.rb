@@ -30,6 +30,10 @@ module ToolingInvoker
         @exception = {}
       end
 
+      def tool
+        "#{language}-#{type}"
+      end
+
       def succeeded!
         @status = 200
       end

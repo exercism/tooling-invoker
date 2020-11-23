@@ -152,12 +152,12 @@ module ToolingInvoker
       docker_cmd = [
         "docker container run",
         "-a stdout -a stderr", # Attach stdout and stderr
-        "-v #{job.source_code_dir}:/mnt/exercism-iteration",
-        "-l #{container_label}",
-        "-m 7GB",
         "--stop-timeout 0", # Convert a SIGTERM to a SIGKILL instantly
         "--rm",
-        "--network no-internet",
+        "-v #{job.source_code_dir}:/mnt/exercism-iteration",
+        "-l #{container_label}",
+        "--network #{Configuration.instance.network_for_tool(job.tool)}",
+        "-m #{Configuration.instance.max_memory_for_tool(job.tool)}",
         job.image,
         *job.invocation_args
       ].join(" ")

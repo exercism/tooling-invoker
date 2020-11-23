@@ -1,6 +1,7 @@
 module ToolingInvoker
   class Configuration
     include Singleton
+    extend Mandate::Memoize
 
     def invoker
       return InvokeDocker unless Exercism.env.development?
@@ -45,6 +46,22 @@ module ToolingInvoker
       else
         File.expand_path("/tmp/exercism-tooling-jobs")
       end
+    end
+
+    def max_memory_for_tool(tool)
+      tool_config = tools_config[tool.tr('-', '_')]
+      tool_config&.fetch("max_memory", nil) || "3GB"
+    end
+
+    def network_for_tool(tool)
+      tool_config = tools_config[tool.tr('-', '_')]
+      tool_config&.fetch("network", nil) || "none"
+    end
+
+    private
+    memoize
+    def tools_config
+      JSON.parse(File.read(File.expand_path('../../tools.json', __dir__)))
     end
   end
 end

@@ -1,0 +1,18 @@
+{
+  "elixir_test_runner": {
+    "network": "internal",
+    "max_memory": "3GB"
+  },
+  "ruby_analyzer": {
+    "network": "none",
+    "max_memory": "1GB"
+  },
+  "ruby_representer": {
+    "network": "none",
+    "max_memory": "1GB"
+  },
+  "ruby_test_runner": {
+    "network": "none",
+    "max_memory": "1GB"
+  }
+}

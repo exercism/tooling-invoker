@@ -10,7 +10,7 @@ module ToolingInvoker
       # exists then this will be a noop. It takes about
       # 120ms to exec, so just do it on worker init
       system(
-        "docker network create --internal no-internet",
+        "docker network create --internal internal",
         out: File::NULL, err: File::NULL
       )
 
