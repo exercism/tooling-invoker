@@ -85,6 +85,7 @@ module ToolingInvoker
             end
 
             stream = f == stdout ? captured_stdout : captured_stderr
+            p stream
             begin
               stream << f.read_nonblock(BLOCK_SIZE)
             rescue IOError
@@ -108,6 +109,8 @@ module ToolingInvoker
         stdout.close unless stdout.closed?
         stderr.close unless stderr.closed?
 
+        p captured_stdout.join
+        p captured_stdout.join
         job.stdout = fix_encoding(captured_stdout.join)
         job.stderr = fix_encoding(captured_stdout.join)
 
