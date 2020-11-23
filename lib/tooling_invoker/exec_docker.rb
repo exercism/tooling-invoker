@@ -157,7 +157,7 @@ module ToolingInvoker
         "-m 7GB",
         "--stop-timeout 0", # Convert a SIGTERM to a SIGKILL instantly
         "--rm",
-        "--network none",
+        "--network no-internet",
         job.image,
         *job.invocation_args
       ].join(" ")
