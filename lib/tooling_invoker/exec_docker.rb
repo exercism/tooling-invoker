@@ -88,9 +88,9 @@ module ToolingInvoker
             begin
               stream << f.read_nonblock(BLOCK_SIZE)
             rescue IOError => e
-              Log.("Error reading from io: #{e.message}", job: job)
               # Don't blow up if there is an error reading
-              # the stream.
+              # the stream. Log messages that aren't EOF.
+              Log.("Error reading from io: #{e.message}", job: job) unless e.message == "end of file reached"
             end
 
             # If we haven't got too much output then continue for
