@@ -3,19 +3,6 @@ module ToolingInvoker
     include Singleton
     extend Mandate::Memoize
 
-    def invoker
-      return InvokeDocker unless Exercism.env.development?
-
-      case ENV["EXERCISM_INVOKE_STATEGY"]
-      when "shell"
-        InvokeLocalShell
-      when "docker"
-        InvokeDocker
-      else
-        InvokeLocalWebserver
-      end
-    end
-
     def orchestrator_address
       Exercism.config.tooling_orchestrator_url
     end
