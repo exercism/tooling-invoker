@@ -39,7 +39,7 @@ module ToolingInvoker
       end
 
       begin
-        InvokeDocker.(job)
+        ProcessJob.(job)
       ensure
         `kill -s SIGKILL #{pid_to_kill}`
       end
@@ -78,7 +78,7 @@ module ToolingInvoker
       # the half way stage.
       ExecDocker.any_instance.stubs(output_limit: 10_000)
 
-      InvokeDocker.(job)
+      ProcessJob.(job)
 
       assert_equal Jobs::Job::EXCESSIVE_STDOUT_STATUS, job.status
     end

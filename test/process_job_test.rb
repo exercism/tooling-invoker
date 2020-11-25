@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module ToolingInvoker
-  class InvokeDockerTest < Minitest::Test
+  class ProcessJobTest < Minitest::Test
     def setup
       super
 
@@ -25,7 +25,7 @@ module ToolingInvoker
 
       Dir.mkdir(@job.dir)
       Dir.chdir(@job.dir) do
-        InvokeDocker.(@job)
+        ProcessJob.(@job)
       end
 
       expected_output = { "results.json" => '{"happy": "people"}' }
@@ -42,7 +42,7 @@ module ToolingInvoker
 
       FileUtils.mkdir_p(@job.dir)
       Dir.chdir(@job.dir) do
-        InvokeDocker.(@job)
+        ProcessJob.(@job)
       end
 
       assert_equal 512, @job.status
@@ -53,7 +53,7 @@ module ToolingInvoker
     def test_failed_invocation
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/missing_file")
 
-      InvokeDocker.(@job)
+      ProcessJob.(@job)
 
       assert_equal 513, @job.status
       assert_equal({}, @job.output)

@@ -65,7 +65,7 @@ module ToolingInvoker
     end
 
     def handle_job(job)
-      InvokeDocker.(job)
+      ProcessJob.(job)
       RestClient.patch(
         "#{config.orchestrator_address}/jobs/#{job.id}",
         status: job.status,
