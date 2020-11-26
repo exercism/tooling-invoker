@@ -106,7 +106,7 @@ module ToolingInvoker
       end
 
       def image
-        "#{Exercism.config.tooling_ecr_repository_url}/#{tool}:production"
+        "#{Exercism.config.tooling_ecr_repository_url}/#{tool}:#{Exercism.config.image_tag}"
       end
 
       memoize

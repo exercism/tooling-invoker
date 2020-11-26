@@ -15,6 +15,10 @@ module ToolingInvoker
       end
     end
 
+    def image_tag
+      Exercism.env.development? ? "latest" : "production"
+    end
+
     def job_polling_delay
       (ENV["JOB_POLLING_DELAY"] || 1).to_f
     end
