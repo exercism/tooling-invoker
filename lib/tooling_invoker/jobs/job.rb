@@ -106,7 +106,11 @@ module ToolingInvoker
       end
 
       def image
-        "#{Exercism.config.tooling_ecr_repository_url}/#{tool}:production"
+        "#{Configuration.instance.image_registry}/#{tool}:#{Configuration.instance.image_tag}"
+      end
+
+      def source_code_root_dir
+        ENV['EXERCISM_DEV_ENV_DIR'] if ENV["EXERCISM_DOCKER"]
       end
 
       memoize

@@ -46,7 +46,7 @@ module ToolingInvoker
         @job_id, @language, @exercise, @container_version, @timeout
       ).returns(job)
 
-      InvokeDocker.expects(:call).with(job)
+      ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)
 
       RestClient.expects(:get).
@@ -87,7 +87,7 @@ module ToolingInvoker
       Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @container_version, @timeout
       ).returns(job)
-      InvokeDocker.expects(:call).with(job)
+      ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)
 
       RestClient.expects(:get).
@@ -128,7 +128,7 @@ module ToolingInvoker
       Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @container_version, @timeout
       ).returns(job)
-      InvokeDocker.expects(:call).with(job)
+      ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)
 
       RestClient.expects(:get).

@@ -3,19 +3,6 @@ module ToolingInvoker
     include Singleton
     extend Mandate::Memoize
 
-    def invoker
-      return InvokeDocker unless Exercism.env.development?
-
-      case ENV["EXERCISM_INVOKE_STATEGY"]
-      when "shell"
-        InvokeLocalShell
-      when "docker"
-        InvokeDocker
-      else
-        InvokeLocalWebserver
-      end
-    end
-
     def orchestrator_address
       Exercism.config.tooling_orchestrator_url
     end
@@ -26,6 +13,14 @@ module ToolingInvoker
       elsif Exercism.env.development?
         File.expand_path('../../..', __dir__)
       end
+    end
+
+    def image_registry
+      Exercism.env.development? ? "exercism" : Exercism.config.tooling_ecr_repository_url
+    end
+
+    def image_tag
+      Exercism.env.development? ? "latest" : "production"
     end
 
     def job_polling_delay

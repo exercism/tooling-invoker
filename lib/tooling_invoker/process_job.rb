@@ -1,5 +1,5 @@
 module ToolingInvoker
-  class InvokeDocker
+  class ProcessJob
     include Mandate
 
     def initialize(job)
