@@ -15,6 +15,10 @@ module ToolingInvoker
       end
     end
 
+    def image_registry
+      Exercism.env.development? ? "exercism" : Exercism.config.tooling_ecr_repository_url
+    end
+
     def image_tag
       Exercism.env.development? ? "latest" : "production"
     end

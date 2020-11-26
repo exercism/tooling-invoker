@@ -155,7 +155,7 @@ module ToolingInvoker
         "-a stdout -a stderr", # Attach stdout and stderr
         "--stop-timeout 0", # Convert a SIGTERM to a SIGKILL instantly
         "--rm",
-        "-v #{job.source_code_dir}:/mnt/exercism-iteration",
+        "-v #{job.source_code_root_dir}#{job.source_code_dir}:/mnt/exercism-iteration",
         "-l #{container_label}",
         "--network #{Configuration.instance.network_for_tool(job.tool)}",
         "-m #{Configuration.instance.max_memory_for_tool(job.tool)}",
