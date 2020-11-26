@@ -17,7 +17,7 @@ RUN gem install bundler:2.1.4 && \
 #############
 FROM ruby:2.6.6-alpine3.12
 
-RUN apk add --no-cache --update git bash
+RUN apk add --no-cache --update git bash docker
 
 WORKDIR /usr/src/app
 
