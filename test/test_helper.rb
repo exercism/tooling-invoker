@@ -33,8 +33,7 @@ module Minitest
     end
 
     def upload_to_s3(bucket, key, body)
-      client = ExercismConfig::SetupS3Client.()
-      client.put_object(
+      Exercism.s3_client.put_object(
         bucket: bucket,
         key: key,
         body: body,
@@ -43,8 +42,7 @@ module Minitest
     end
 
     def download_s3_file(bucket, key)
-      client = ExercismConfig::SetupS3Client.()
-      client.get_object(
+      Exercism.s3_client.get_object(
         bucket: bucket,
         key: key
       ).body.read
