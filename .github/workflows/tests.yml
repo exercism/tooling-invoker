@@ -11,15 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      dynamodb:
-        image: "amazon/dynamodb-local"
+      aws:
+        image: "localstack/localstack"
         ports:
-          - 8000
-
-      s3:
-        image: "adobe/s3mock"
-        ports:
-          - 9090
+          - 4566
 
     steps:
       ###
@@ -49,8 +44,7 @@ jobs:
         env:
           EXERCISM_ENV: test
           EXERCISM_CI: true
-          DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-          S3_PORT: ${{ job.services.s3.ports['9090'] }}
+          AWS_PORT: ${{ job.services.aws.ports['4566'] }}
         run: |
           gem install bundler:2.1.4
           bundle config path vendor/bundle # This is needed for the caching above
@@ -72,8 +66,7 @@ jobs:
         env:
           EXERCISM_ENV: test
           EXERCISM_CI: true
-          DYNAMODB_PORT: ${{ job.services.dynamodb.ports['8000'] }}
-          S3_PORT: ${{ job.services.s3.ports['9090'] }}
+          AWS_PORT: ${{ job.services.aws.ports['4566'] }}
           CAPTURE_CODE_COVERAGE: true
         run: |
           bundle exec rake test
