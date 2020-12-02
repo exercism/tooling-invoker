@@ -25,7 +25,7 @@ module ToolingInvoker
 
     memoize
     def client
-      ExercismConfig::SetupS3Client.()
+      Exercism.s3_client
     end
 
     memoize
