@@ -9,6 +9,8 @@ def system!(*args)
   system(*args) || abort("\n== Command #{args} failed ==")
 end
 
+# TODO: How do we do this without network on the machine?!
+# Do we check the gems into git?
 FileUtils.chdir APP_ROOT do
   system! 'git fetch'
   system! 'git reset --hard origin/main'
