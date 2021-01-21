@@ -3,8 +3,8 @@ module ToolingInvoker
     include Mandate
 
     def call
-      STDOUT.sync = true
-      STDERR.sync = true
+      $stdout.sync = true
+      $stderr.sync = true
 
       # Setup docker network. If the network already
       # exists then this will be a noop. It takes about
@@ -57,6 +57,7 @@ module ToolingInvoker
         job_data['id'],
         job_data['language'],
         job_data['exercise'],
+        job_data['source'],
         job_data['container_version'],
         job_data['timeout']
       )

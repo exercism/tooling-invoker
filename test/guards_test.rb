@@ -10,20 +10,16 @@ module ToolingInvoker
       SecureRandom.stubs(hex: @hex)
 
       @job_dir = "#{Configuration.instance.jobs_dir}/#{@job_id}-#{@hex}"
-      @input_efs_dir = "#{Configuration.instance.jobs_efs_dir}/#{@job_id}"
-
-      FileUtils.mkdir_p(@input_efs_dir)
     end
 
     def teardown
       FileUtils.rm_rf(@job_dir)
-      FileUtils.rm_rf(@input_efs_dir)
     end
 
     def test_timeout
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", "v1",
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
         1 # This is the timeout that we use to test this
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
@@ -50,7 +46,7 @@ module ToolingInvoker
     def test_too_many_results
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", "v1",
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
         1 # This is the timeout that we use to test this
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
@@ -69,7 +65,7 @@ module ToolingInvoker
     def test_excessive_output
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", "v1",
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
         1 # Ensures this is high enough to run out of output
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")

@@ -8,6 +8,7 @@ module ToolingInvoker
       @job_id = "123"
       @language = "ruby"
       @exercise = "bob"
+      @source = { "foo" => 'bar' }
       @container_version = "v1"
       @timeout = 10
 
@@ -33,6 +34,7 @@ module ToolingInvoker
         id: @job_id,
         language: @language,
         exercise: @exercise,
+        source: @source,
         container_version: @container_version,
         timeout: @timeout
       }
@@ -43,7 +45,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status: status, output: output)
 
       Jobs::TestRunnerJob.expects(:new).with(
-        @job_id, @language, @exercise, @container_version, @timeout
+        @job_id, @language, @exercise, @source, @container_version, @timeout
       ).returns(job)
 
       ProcessJob.expects(:call).with(job)
@@ -75,6 +77,7 @@ module ToolingInvoker
         id: @job_id,
         language: @language,
         exercise: @exercise,
+        source: @source,
         container_version: @container_version,
         timeout: @timeout
       }
@@ -85,7 +88,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status: status, output: output)
 
       Jobs::RepresenterJob.expects(:new).with(
-        @job_id, @language, @exercise, @container_version, @timeout
+        @job_id, @language, @exercise, @source, @container_version, @timeout
       ).returns(job)
       ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)
@@ -116,6 +119,7 @@ module ToolingInvoker
         id: @job_id,
         language: @language,
         exercise: @exercise,
+        source: @source,
         container_version: @container_version,
         timeout: @timeout
       }
@@ -126,7 +130,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status: status, output: output)
 
       Jobs::AnalyzerJob.expects(:new).with(
-        @job_id, @language, @exercise, @container_version, @timeout
+        @job_id, @language, @exercise, @source, @container_version, @timeout
       ).returns(job)
       ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)
