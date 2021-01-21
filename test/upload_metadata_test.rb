@@ -7,7 +7,7 @@ module ToolingInvoker
       stderr = "Some happy stderr"
 
       id = SecureRandom.hex
-      job = Jobs::TestRunnerJob.new(id, nil, nil, nil, nil)
+      job = Jobs::TestRunnerJob.new(id, nil, nil, nil, nil, nil)
 
       job.stdout = stdout
       job.stderr = stderr

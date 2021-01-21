@@ -4,6 +4,7 @@ require 'mandate'
 require 'aws-sdk-s3'
 require 'rest-client'
 require 'singleton'
+require 'rugged'
 require 'exercism-config'
 
 require "zeitwerk"

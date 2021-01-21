@@ -13,14 +13,15 @@ module ToolingInvoker
 
       MAX_OUTPUT_FILE_SIZE = 500 * 1024 # 500 kilobyte
 
-      attr_reader :id, :language, :exercise, :container_version, :timeout_s
+      attr_reader :id, :language, :exercise, :source, :container_version, :timeout_s
       attr_accessor :stdout, :stderr
       attr_writer :output # Used by local webserver
 
-      def initialize(id, language, exercise, container_version, timeout_s)
+      def initialize(id, language, exercise, source, container_version, timeout_s)
         @id = id
         @language = language
         @exercise = exercise
+        @source = source
         @container_version = container_version
         @timeout_s = timeout_s
 
@@ -126,11 +127,6 @@ module ToolingInvoker
       memoize
       def dir
         "#{Configuration.instance.jobs_dir}/#{id}-#{SecureRandom.hex}"
-      end
-
-      memoize
-      def input_efs_dir
-        "#{Configuration.instance.jobs_efs_dir}/#{id}"
       end
     end
   end
