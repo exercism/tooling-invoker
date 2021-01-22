@@ -4,7 +4,7 @@
 FROM exercism/setup as common
 FROM ruby:2.6.6-alpine3.12 as gembuilder
 
-RUN apk add --no-cache --update build-base cmake
+RUN apk add --no-cache --update build-base cmake openssl-dev
 
 WORKDIR /usr/src/app
 
