@@ -14,5 +14,9 @@
   "ruby_test_runner": {
     "network": "none",
     "max_memory": "1GB"
+  },
+  "clojurescript_test_runner": {
+    "network": "none",
+    "max_memory": "3GB"
   }
 }
