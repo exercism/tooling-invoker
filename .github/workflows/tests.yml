@@ -10,12 +10,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      aws:
-        image: "localstack/localstack"
-        ports:
-          - 4566
-
     steps:
       ###
       # Checkout using GitHub's checkout action
