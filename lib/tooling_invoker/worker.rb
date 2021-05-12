@@ -9,21 +9,21 @@ module ToolingInvoker
     end
 
     def start!
-      $stdout.sync = true
-      $stderr.sync = true
+      Log.("Worker #{worker_idx}: Starting")
 
-      # Setup docker network. If the network already
-      # exists then this will be a noop. It takes about
-      # 120ms to exec, so just do it on worker init
-      system(
-        "docker network create --internal internal",
-        out: File::NULL, err: File::NULL
-      )
+      counter = 0
 
       loop do
         if should_exit?
-          puts "Worker #{worker_idx} exiting"
+          Log.("Worker #{worker_idx}: Exiting")
           break
+        end
+
+        if counter > 100
+          counter = 0
+          Log.("Worker #{worker_idx}: Alive at #{Time.now}")
+        else
+          counter += 1
         end
 
         job = check_for_job

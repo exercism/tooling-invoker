@@ -5,6 +5,17 @@ module ToolingInvoker
     initialize_with :count
 
     def start!
+      $stdout.sync = true
+      $stderr.sync = true
+
+      # Setup docker network. If the network already
+      # exists then this will be a noop. It takes about
+      # 120ms to exec, so just do it on worker init
+      system(
+        "docker network create --internal internal",
+        out: File::NULL, err: File::NULL
+      )
+
       workers = Array(count).map { |idx| Worker.new(idx) }
 
       threads = workers.map do |worker|
