@@ -16,7 +16,7 @@ module ToolingInvoker
         out: File::NULL, err: File::NULL
       )
 
-      workers = Array(count).map { |idx| Worker.new(idx) }
+      workers = (1..count).map { |idx| Worker.new(idx) }
 
       threads = workers.map do |worker|
         Thread.new { worker.start! }
