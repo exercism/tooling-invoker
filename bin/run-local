@@ -9,7 +9,5 @@ require "tooling_invoker"
 
 puts "Starting ToolingInvoker::Worker..."
 STDOUT.flush
-ToolingInvoker::Worker.()
 
-#job = ToolingInvoker::Jobs::TestRunnerJob.new(1, :ruby, :bob, "", nil, nil)
-#p ToolingInvoker::ExecDocker.(job)
+ToolingInvoker::WorkerPool.new(3).start!

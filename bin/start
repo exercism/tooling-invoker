@@ -27,4 +27,6 @@ require "tooling_invoker"
 
 puts "Starting ToolingInvoker::Worker..."
 STDOUT.flush
-ToolingInvoker::Worker.()
+threads = 3.times.map { Thread.new { ToolingInvoker::Worker.() } }
+threads.join
+
