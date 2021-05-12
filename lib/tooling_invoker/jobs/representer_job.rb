@@ -1,9 +1,5 @@
 module ToolingInvoker::Jobs
   class RepresenterJob < Job
-    def initialize(id, *args)
-      super(id, *args)
-    end
-
     def type
       "representer"
     end

@@ -32,7 +32,7 @@ module Minitest
       ToolingInvoker.config
     end
 
-    def upload_to_s3(bucket, key, body)
+    def upload_to_s3(bucket, key, body) # rubocop:disable Naming/VariableNumber
       Exercism.s3_client.put_object(
         bucket: bucket,
         key: key,
