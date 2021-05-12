@@ -1,8 +1,14 @@
 module ToolingInvoker
   class Worker
-    include Mandate
+    extend Mandate::InitializerInjector
 
-    def call
+    initialize_with :worker_idx
+
+    def exit!
+      @should_exit = true
+    end
+
+    def start!
       $stdout.sync = true
       $stderr.sync = true
 
@@ -15,6 +21,11 @@ module ToolingInvoker
       )
 
       loop do
+        if should_exit?
+          puts "Worker #{worker_idx} exiting"
+          break
+        end
+
         job = check_for_job
         if job
           Log.("Starting job", job: job)
@@ -34,6 +45,10 @@ module ToolingInvoker
     end
 
     private
+    def should_exit?
+      @should_exit
+    end
+
     # This will raise an exception if something other than
     # a 200 or a 404 is found.
     def check_for_job

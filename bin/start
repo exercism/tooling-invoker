@@ -26,5 +26,5 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "tooling_invoker"
 
 puts "Starting ToolingInvoker::Worker..."
-STDOUT.flush
-ToolingInvoker::Worker.()
+
+ToolingInvoker::WorkerPool.new(3).start!

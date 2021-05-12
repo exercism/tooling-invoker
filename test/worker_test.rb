@@ -16,7 +16,7 @@ module ToolingInvoker
     end
 
     def test_creates_network
-      service = Worker.new
+      service = Worker.new(1)
       service.stubs(:loop)
       service.stubs(:sleep)
 
@@ -25,7 +25,7 @@ module ToolingInvoker
         out: File::NULL, err: File::NULL
       )
 
-      service.()
+      service.start!
     end
 
     def test_flow_for_test_runner
@@ -64,11 +64,11 @@ module ToolingInvoker
           }
         )
 
-      service = Worker.new
+      service = Worker.new(1)
       service.expects(:loop).yields
       service.expects(:sleep).never
 
-      service.()
+      service.start!
     end
 
     def test_flow_for_representer
@@ -106,11 +106,11 @@ module ToolingInvoker
           }
         )
 
-      service = Worker.new
+      service = Worker.new(1)
       service.expects(:loop).yields
       service.expects(:sleep).never
 
-      service.()
+      service.start!
     end
 
     def test_flow_for_analyzer
@@ -148,28 +148,28 @@ module ToolingInvoker
           }
         )
 
-      service = Worker.new
+      service = Worker.new(1)
       service.expects(:loop).yields
       service.expects(:sleep).never
 
-      service.()
+      service.start!
     end
 
     def test_without_job
-      service = Worker.new
+      service = Worker.new(1)
       RestClient.expects(:get).raises(RestClient::NotFound)
       service.expects(:loop).yields
       service.expects(:sleep)
-      service.()
+      service.start!
     end
 
     def test_with_exception
       RestClient.expects(:get).raises(RuntimeError)
-      service = Worker.new
+      service = Worker.new(1)
       service.expects(:loop).yields
       service.expects(:sleep)
 
-      service.()
+      service.start!
     end
   end
 end
