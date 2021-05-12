@@ -1,10 +1,6 @@
 module ToolingInvoker
   module Jobs
     class TestRunnerJob < Job
-      def initialize(id, *args)
-        super(id, *args)
-      end
-
       def type
         "test-runner"
       end

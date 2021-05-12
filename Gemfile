@@ -10,7 +10,7 @@ gem "aws-sdk-s3"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism-config', '>= 0.61.0'
+gem 'exercism-config', '>= 0.66.0'
 #gem 'exercism-config', path: "../exercism_config"
 
 gem 'rubyzip'
@@ -23,3 +23,5 @@ gem 'rubocop'
 gem 'rubocop-minitest'
 gem 'rubocop-performance'
 gem 'simplecov', '~> 0.17.0'
+
+gem 'redis' # TODO: Remove this

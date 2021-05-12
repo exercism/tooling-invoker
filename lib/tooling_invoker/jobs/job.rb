@@ -84,25 +84,23 @@ module ToolingInvoker
       end
 
       def output
-        @output ||= begin
-          # TODO: Ensure files are smaller than some sensible value
-          output_filepaths.each.with_object({}) do |output_filepath, hash|
-            begin
-              # TODO: This should be set to source_code_dir eventually
-              contents = File.read("#{source_code_dir}/#{output_filepath}")
-            rescue StandardError
-              # If the file hasn't been written by the tooling
-              # don't blow up everything else unnceessarily
-              next
-            end
-
-            if contents.size > MAX_OUTPUT_FILE_SIZE
-              @status = EXCESSIVE_OUTPUT_STATUS
-              return # rubocop:disable Lint/NonLocalExitFromIterator
-            end
-
-            hash[output_filepath] = contents
+        # TODO: Ensure files are smaller than some sensible value
+        @output ||= output_filepaths.each.with_object({}) do |output_filepath, hash|
+          begin
+            # TODO: This should be set to source_code_dir eventually
+            contents = File.read("#{source_code_dir}/#{output_filepath}")
+          rescue StandardError
+            # If the file hasn't been written by the tooling
+            # don't blow up everything else unnceessarily
+            next
           end
+
+          if contents.size > MAX_OUTPUT_FILE_SIZE
+            @status = EXCESSIVE_OUTPUT_STATUS
+            return # rubocop:disable Lint/NonLocalExitFromIterator
+          end
+
+          hash[output_filepath] = contents
         end
       end
 

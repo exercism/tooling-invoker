@@ -73,7 +73,7 @@ module ToolingInvoker
         ProcessJob.(job)
 
         assert_equal 513, job.status
-        assert_equal({}, job.output)
+        assert_empty job.output
         assert_equal "", job.stdout
         assert_equal "", job.stderr
       ensure
