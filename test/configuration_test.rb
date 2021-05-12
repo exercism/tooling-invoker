@@ -29,7 +29,7 @@ module ToolingInvoker
         )
       )
       config = Configuration.instance
-      assert_equal 1, config.job_polling_delay
+      assert_equal 0.1, config.job_polling_delay
       assert_equal '/tmp/exercism/tooling-jobs', config.jobs_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal "latest", config.image_tag
@@ -44,7 +44,7 @@ module ToolingInvoker
         )
       )
       config = Configuration.instance
-      assert_equal 1, config.job_polling_delay
+      assert_equal 0.1, config.job_polling_delay
       assert_equal '/tmp/exercism/tooling-jobs', config.jobs_dir
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal "production", config.image_tag
