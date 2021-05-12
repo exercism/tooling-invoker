@@ -49,6 +49,7 @@ GEM
       ast (~> 2.4.1)
     rainbow (3.0.0)
     rake (13.0.3)
+    redis (4.2.5)
     regexp_parser (2.0.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -97,6 +98,7 @@ DEPENDENCIES
   minitest
   mocha
   rake
+  redis
   rest-client
   rubocop
   rubocop-minitest
