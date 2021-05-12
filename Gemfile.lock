@@ -92,7 +92,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-s3
-  exercism-config (>= 0.61.0)
+  exercism-config (>= 0.65.0)
   mandate
   minitest
   mocha
