@@ -10,6 +10,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      aws:
+        image: "localstack/localstack"
+        ports:
+          - 4566
+
     steps:
       ###
       # Checkout using GitHub's checkout action
@@ -22,6 +28,17 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
+
+      ###
+      # Install bundler and yarn dependencies
+      - name: Install dependencies
+        env:
+          EXERCISM_ENV: test
+          EXERCISM_CI: true
+          AWS_PORT: ${{ job.services.aws.ports['4566'] }}
+        run: |
+          bundle exec setup_exercism_config
+          bundle exec setup_exercism_local_aws
 
       ###
       # Setup code climate
