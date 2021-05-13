@@ -19,7 +19,7 @@ module ToolingInvoker
           break
         end
 
-        if counter > 100
+        if counter > 10
           counter = 0
           Log.("Worker #{worker_idx}: Alive at #{Time.now}")
         else

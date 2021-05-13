@@ -18,8 +18,8 @@ module ToolingInvoker
 
       workers = (1..count).map { |idx| Worker.new(idx) }
 
-      threads = workers.map do |worker|
-        Thread.new { worker.start! }
+      workers.each do |worker|
+        fork { worker.start! }
       end
 
       %w[INT TERM].each do |sig|
@@ -29,7 +29,7 @@ module ToolingInvoker
         end
       end
 
-      threads.each(&:join)
+      Process.waitall
     end
   end
 end
