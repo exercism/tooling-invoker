@@ -16,9 +16,11 @@ module ToolingInvoker
     end
 
     def test_creates_network
-      service = Worker.new(1)
-      service.stubs(:loop)
-      service.stubs(:sleep)
+      worker = mock
+      worker.stubs(start!: true)
+      Worker.expects(:new).once.returns(worker)
+
+      service = WorkerPool.new(1)
 
       service.expects(:system).with(
         "docker network create --internal internal",
@@ -41,8 +43,9 @@ module ToolingInvoker
 
       status = mock
       output = mock
+      exception = mock
       job = mock
-      job.stubs(id: @job_id, status: status, output: output)
+      job.stubs(id: @job_id, status: status, output: output, exception: exception)
 
       Jobs::TestRunnerJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version, @timeout
@@ -60,7 +63,8 @@ module ToolingInvoker
           "#{config.orchestrator_address}/jobs/#{@job_id}",
           {
             status: status,
-            output: output
+            output: output,
+            exception: exception
           }
         )
 
@@ -84,8 +88,9 @@ module ToolingInvoker
 
       status = mock
       output = mock
+      exception = mock
       job = mock
-      job.stubs(id: @job_id, status: status, output: output)
+      job.stubs(id: @job_id, status: status, output: output, exception: exception)
 
       Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version, @timeout
@@ -102,7 +107,8 @@ module ToolingInvoker
           "#{config.orchestrator_address}/jobs/#{@job_id}",
           {
             status: status,
-            output: output
+            output: output,
+            exception: exception
           }
         )
 
@@ -126,8 +132,9 @@ module ToolingInvoker
 
       status = mock
       output = mock
+      exception = mock
       job = mock
-      job.stubs(id: @job_id, status: status, output: output)
+      job.stubs(id: @job_id, status: status, output: output, exception: exception)
 
       Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version, @timeout
@@ -144,7 +151,8 @@ module ToolingInvoker
           "#{config.orchestrator_address}/jobs/#{@job_id}",
           {
             status: status,
-            output: output
+            output: output,
+            exception: exception
           }
         )
 
