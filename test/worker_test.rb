@@ -11,23 +11,24 @@ module ToolingInvoker
       @source = { "foo" => 'bar' }
       @container_version = "v1"
       @timeout = 10
-
-      Kernel.stubs(:system)
     end
 
     def test_creates_network
-      worker = mock
-      worker.stubs(start!: true)
-      Worker.expects(:new).once.returns(worker)
+      Mocha::Configuration.override(stubbing_method_unnecessarily: :allow) do
+        worker = mock
+        worker.stubs(start!: true)
+        Worker.expects(:new).once.returns(worker)
 
-      service = WorkerPool.new(1)
+        service = WorkerPool.new(1)
 
-      service.expects(:system).with(
-        "docker network create --internal internal",
-        out: File::NULL, err: File::NULL
-      )
+        service.expects(:system).with(
+          "docker network create --internal internal",
+          out: File::NULL, err: File::NULL
+        )
 
-      service.start!
+        service.start!
+        sleep(1)
+      end
     end
 
     def test_flow_for_test_runner
@@ -44,8 +45,8 @@ module ToolingInvoker
       status = mock
       output = mock
       exception = mock
-      job = mock
-      job.stubs(id: @job_id, status: status, output: output, exception: exception)
+      job = Jobs::Job.new(@job_id, 'ruby', 'two-fer', nil, nil, nil)
+      job.stubs(status: status, output: output, exception: exception)
 
       Jobs::TestRunnerJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version, @timeout

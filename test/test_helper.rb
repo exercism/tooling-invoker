@@ -20,6 +20,13 @@ require "tooling_invoker"
 # are allowed to report, so shut it up
 Thread.report_on_exception = false
 
+Mocha.configure do |c|
+  # c.stubbing_method_unnecessarily = :prevent
+  c.stubbing_non_existent_method = :prevent
+  c.stubbing_method_on_nil = :prevent
+  # c.stubbing_non_public_method = :prevent
+end
+
 # Silence the noise. Comment this to see exception
 # messages and other things that are printed during tests.
 module Kernel

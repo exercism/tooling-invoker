@@ -49,7 +49,6 @@ module ToolingInvoker
         "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
         1 # This is the timeout that we use to test this
       )
-      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
 
       FileUtils.mkdir_p(job.source_code_dir)
       Dir.chdir(job.source_code_dir) do
@@ -69,10 +68,6 @@ module ToolingInvoker
         1 # Ensures this is high enough to run out of output
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")
-
-      # The command will print out 20,000 bytes. Let's break at
-      # the half way stage.
-      ExecDocker.any_instance.stubs(output_limit: 10_000)
 
       ProcessJob.(job)
 

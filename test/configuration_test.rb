@@ -38,7 +38,7 @@ module ToolingInvoker
     def test_test_defaults
       orchestrator_url = mock
       Exercism.stubs(
-        environment: :test,
+        env: ExercismConfig::Environment.new(:test),
         config: mock(
           tooling_orchestrator_url: orchestrator_url
         )

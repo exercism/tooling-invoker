@@ -42,8 +42,6 @@ module ToolingInvoker
       )
 
       begin
-        ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
-
         FileUtils.mkdir_p(job.dir)
         Dir.chdir(job.dir) do
           ProcessJob.(job)
