@@ -16,7 +16,7 @@ module ToolingInvoker
     end
 
     def job_polling_delay
-      (ENV["JOB_POLLING_DELAY"] || 0.1).to_f
+      (ENV["JOB_POLLING_DELAY"] || 0.6).to_f
     end
 
     def jobs_dir
