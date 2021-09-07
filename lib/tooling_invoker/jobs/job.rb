@@ -5,7 +5,7 @@ module ToolingInvoker
 
       SUCCESS_STATUS = 200
       TIMEOUT_STATUS = 408
-      DID_NOT_EXCEUTE_STATUS = 410
+      DID_NOT_EXECUTE_STATUS = 410
       EXCESSIVE_STDOUT_STATUS = 413
       EXCESSIVE_OUTPUT_STATUS = 460
       FAILED_TO_PREPARE_INPUT = 512
@@ -25,7 +25,7 @@ module ToolingInvoker
         @container_version = container_version
         @timeout_s = timeout_s
 
-        @status = DID_NOT_EXCEUTE_STATUS
+        @status = DID_NOT_EXECUTE_STATUS
         @stdout = ""
         @stderr = ""
         @exception = {}
@@ -72,7 +72,7 @@ module ToolingInvoker
 
       # Check the instance variable here, not the public accessor
       def status_set?
-        @status != DID_NOT_EXCEUTE_STATUS
+        @status != DID_NOT_EXECUTE_STATUS
       end
 
       def status
