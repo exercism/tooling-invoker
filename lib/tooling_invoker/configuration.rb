@@ -37,6 +37,11 @@ module ToolingInvoker
       tool_config&.fetch("network", nil) || "none"
     end
 
+    def timeout_for_tool(tool)
+      tool_config = tools_config[tool.tr('-', '_')]
+      tool_config&.fetch("timeout", nil) || "20"
+    end
+
     private
     memoize
     def tools_config

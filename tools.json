@@ -13,7 +13,8 @@
   },
   "ruby_test_runner": {
     "network": "none",
-    "max_memory": "1GB"
+    "max_memory": "1GB",
+    "timeout": "10"
   },
   "clojurescript_test_runner": {
     "network": "none",
