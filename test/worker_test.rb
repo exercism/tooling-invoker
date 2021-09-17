@@ -10,7 +10,6 @@ module ToolingInvoker
       @exercise = "bob"
       @source = { "foo" => 'bar' }
       @container_version = "v1"
-      @timeout = 10
     end
 
     def test_creates_network
@@ -38,18 +37,17 @@ module ToolingInvoker
         language: @language,
         exercise: @exercise,
         source: @source,
-        container_version: @container_version,
-        timeout: @timeout
+        container_version: @container_version
       }
 
       status = mock
       output = mock
       exception = mock
-      job = Jobs::Job.new(@job_id, 'ruby', 'two-fer', nil, nil, nil)
+      job = Jobs::Job.new(@job_id, 'ruby', 'two-fer', nil, nil)
       job.stubs(status: status, output: output, exception: exception)
 
       Jobs::TestRunnerJob.expects(:new).with(
-        @job_id, @language, @exercise, @source, @container_version, @timeout
+        @job_id, @language, @exercise, @source, @container_version
       ).returns(job)
 
       ProcessJob.expects(:call).with(job)
@@ -83,8 +81,7 @@ module ToolingInvoker
         language: @language,
         exercise: @exercise,
         source: @source,
-        container_version: @container_version,
-        timeout: @timeout
+        container_version: @container_version
       }
 
       status = mock
@@ -94,7 +91,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status: status, output: output, exception: exception)
 
       Jobs::RepresenterJob.expects(:new).with(
-        @job_id, @language, @exercise, @source, @container_version, @timeout
+        @job_id, @language, @exercise, @source, @container_version
       ).returns(job)
       ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)
@@ -127,8 +124,7 @@ module ToolingInvoker
         language: @language,
         exercise: @exercise,
         source: @source,
-        container_version: @container_version,
-        timeout: @timeout
+        container_version: @container_version
       }
 
       status = mock
@@ -138,7 +134,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status: status, output: output, exception: exception)
 
       Jobs::AnalyzerJob.expects(:new).with(
-        @job_id, @language, @exercise, @source, @container_version, @timeout
+        @job_id, @language, @exercise, @source, @container_version
       ).returns(job)
       ProcessJob.expects(:call).with(job)
       UploadMetadata.expects(:call).with(job)

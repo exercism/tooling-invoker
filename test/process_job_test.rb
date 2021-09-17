@@ -8,8 +8,7 @@ module ToolingInvoker
         "ruby",
         "bob",
         { 'submission_filepaths' => [] },
-        "v1",
-        10
+        "v1"
       )
 
       begin
@@ -37,8 +36,7 @@ module ToolingInvoker
         "ruby",
         "bob",
         {},
-        "v1",
-        10
+        "v1"
       )
 
       begin
@@ -61,8 +59,7 @@ module ToolingInvoker
         "ruby",
         "bob",
         { 'submission_filepaths' => [] },
-        "v1",
-        10
+        "v1"
       )
 
       begin

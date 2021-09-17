@@ -73,8 +73,7 @@ module ToolingInvoker
         job_data['language'],
         job_data['exercise'],
         job_data['source'],
-        job_data['container_version'],
-        job_data['timeout']
+        job_data['container_version']
       )
     rescue RestClient::NotFound
       nil

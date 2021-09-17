@@ -8,15 +8,13 @@ module ToolingInvoker::Jobs
       exercise = "bob"
       source = { foo: 'bar' }
       container_version = "v3"
-      timeout = "10"
 
-      job = RepresenterJob.new(job_id, language, exercise, source, container_version, timeout)
+      job = RepresenterJob.new(job_id, language, exercise, source, container_version)
       assert_equal job_id, job.id
       assert_equal language, job.language
       assert_equal exercise, job.exercise
       assert_equal source, job.source
       assert_equal container_version, job.container_version
-      assert_equal timeout, job.timeout_s
       assert_equal "bin/run.sh", job.cmd
       assert_equal [
         'bob',
