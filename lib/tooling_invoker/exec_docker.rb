@@ -160,7 +160,8 @@ module ToolingInvoker
         *job.invocation_args
       ].join(" ")
 
-      timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{Configuration.instance.timeout_for_tool(job.tool)} #{docker_cmd}"
+      timeout_s = Configuration.instance.timeout_for_tool(job.tool)
+      timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{timeout_s} #{docker_cmd}"
       Exercism.env.development? ? docker_cmd : timeout_cmd
     end
 

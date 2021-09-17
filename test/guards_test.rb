@@ -22,7 +22,7 @@ module ToolingInvoker
 
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",        
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
 
@@ -71,7 +71,7 @@ module ToolingInvoker
 
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",        
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")
 
