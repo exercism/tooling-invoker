@@ -5,10 +5,10 @@ module ToolingInvoker
     initialize_with :count
 
     def start!
-      wait_until_manager_ready!
-
       $stdout.sync = true
       $stderr.sync = true
+
+      wait_until_manager_ready!
 
       # Setup docker network. If the network already
       # exists then this will be a noop. It takes about
@@ -40,10 +40,10 @@ module ToolingInvoker
 
       loop do
         if File.exist?("#{dir}/.tooling-manager-ready")
-          puts "Tooling Manager Ready. Continuing..."
+          Log.("Tooling Manager Ready. Continuing...")
           return
         else
-          puts "Waiting for tooling manager..."
+          Log.("Waiting for tooling manager...")
           sleep(3)
         end
       end
