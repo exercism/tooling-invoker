@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+git fetch
+git reset --hard origin/main
+bundle config set deployment 'true'
+bundle config set without 'development test'
+bundle check || bundle install
