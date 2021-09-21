@@ -22,3 +22,11 @@ FileUtils.chdir APP_ROOT do
   system! "bundle exec bin/run"
 end
 
+require "bundler/setup"
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+
+require "tooling_invoker"
+
+puts "Starting ToolingInvoker::Worker..."
+
+ToolingInvoker::WorkerPool.new(3).start!
