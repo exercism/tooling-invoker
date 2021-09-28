@@ -84,8 +84,7 @@ module ToolingInvoker
       RestClient.patch(
         "#{config.orchestrator_address}/jobs/#{job.id}",
         status: job.status,
-        output: job.output,
-        exception: job.exception
+        output: job.output
       )
       UploadMetadata.(job)
     rescue StandardError => e
