@@ -5,32 +5,25 @@ module ToolingInvoker
     initialize_with :job
 
     def call
-      upload('stdout', job.stdout)
-      upload('stderr', job.stderr)
+      # The server can't access redis (deliberately)
+      # so we can't retrieve the job, but we don't actually
+      # need to as we're just using the key to write to S3.
+      helper = Exercism::ToolingJob.new(job.id, {})
+      helper.store_stdout!(job.stdout)
+      helper.store_stderr!(job.stderr)
+      helper.store_metadata!(metadata)
     end
 
-    def upload(name, contents)
-      client.put_object(
-        bucket: bucket_name,
-        key: "#{folder}/#{name}",
-        body: contents,
-        acl: 'private'
-      )
-    end
-
-    memoize
-    def folder
-      "#{Exercism.env}/#{job.id}"
-    end
-
-    memoize
-    def client
-      Exercism.s3_client
-    end
-
-    memoize
-    def bucket_name
-      Exercism.config.aws_tooling_jobs_bucket
+    private
+    def metadata
+      {
+        id: job.id,
+        language: job.language,
+        exercise: job.exercise,
+        status: job.status,
+        output: job.output,
+        exception: job.exception
+      }
     end
   end
 end
