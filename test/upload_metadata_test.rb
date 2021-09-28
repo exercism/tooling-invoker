@@ -3,20 +3,37 @@ require 'test_helper'
 module ToolingInvoker
   class UploadMetadataTest < Minitest::Test
     def test_uploads_properly
+      status = 512
+      output = { no: :idea }
+      exception = "On dear..."
       stdout = "Some scary stdout"
       stderr = "Some happy stderr"
+      language = 'ruby'
+      exercise = 'bob'
 
       id = SecureRandom.hex
-      job = Jobs::TestRunnerJob.new(id, nil, nil, nil, nil, nil)
-
+      job = Jobs::TestRunnerJob.new(id, language, exercise, nil, nil, nil)
+      job.expects(status: status)
+      job.expects(output: output)
+      job.expects(exception: exception)
       job.stdout = stdout
       job.stderr = stderr
 
       UploadMetadata.(job)
 
-      bucket = Exercism.config.aws_tooling_jobs_bucket
-      assert_equal stdout, download_s3_file(bucket, "test/#{id}/stdout")
-      assert_equal stderr, download_s3_file(bucket, "test/#{id}/stderr")
+      helper = Exercism::ToolingJob.new(job.id, {})
+      assert_equal stdout, helper.stdout
+      assert_equal stderr, helper.stderr
+
+      expected_metadata = JSON.parse({
+        id: id,
+        language: language,
+        exercise: exercise,
+        status: status,
+        output: output,
+        exception: exception
+      }.to_json)
+      assert_equal expected_metadata, helper.metadata
     end
   end
 end
