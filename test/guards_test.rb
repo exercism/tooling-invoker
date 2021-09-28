@@ -17,10 +17,12 @@ module ToolingInvoker
     end
 
     def test_timeout
+      # This is the timeout that we use to test this
+      Configuration.any_instance.stubs(:timeout_for_tool).returns(1)
+
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
-        1 # This is the timeout that we use to test this
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
 
@@ -44,10 +46,12 @@ module ToolingInvoker
     end
 
     def test_too_many_results
+      # This is the timeout that we use to test this
+      Configuration.any_instance.stubs(:timeout_for_tool).returns(1)
+
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
-        1 # This is the timeout that we use to test this
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
 
       FileUtils.mkdir_p(job.source_code_dir)
@@ -62,10 +66,12 @@ module ToolingInvoker
     end
 
     def test_excessive_output
+      # Ensures this is high enough to run out of output
+      Configuration.any_instance.stubs(:timeout_for_tool).returns(1)
+
       job = Jobs::TestRunnerJob.new(
         @job_id,
-        "ruby", "bob", { 'submission_filepaths' => [] }, "v1",
-        1 # Ensures this is high enough to run out of output
+        "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
       ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")
 

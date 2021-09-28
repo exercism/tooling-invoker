@@ -28,16 +28,26 @@ module ToolingInvoker
     end
 
     def max_memory_for_tool(tool)
-      tool_config = tools_config[tool.tr('-', '_')]
-      tool_config&.fetch("max_memory", nil) || "3GB"
+      tool_setting(tool, "max_memory", "3GB")
     end
 
     def network_for_tool(tool)
-      tool_config = tools_config[tool.tr('-', '_')]
-      tool_config&.fetch("network", nil) || "none"
+      tool_setting(tool, "network", "none")
+    end
+
+    def timeout_for_tool(tool)
+      tool_setting(tool, "timeout", 20).to_i
     end
 
     private
+    def tool_setting(tool, setting, default)
+      tool_config(tool)&.fetch(setting, default) || default
+    end
+
+    def tool_config(tool)
+      tools_config[tool.tr('-', '_')]
+    end
+
     memoize
     def tools_config
       JSON.parse(File.read(File.expand_path('../../tools.json', __dir__)))

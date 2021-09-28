@@ -12,7 +12,7 @@ module ToolingInvoker
       exercise = 'bob'
 
       id = SecureRandom.hex
-      job = Jobs::TestRunnerJob.new(id, language, exercise, nil, nil, nil)
+      job = Jobs::TestRunnerJob.new(id, language, exercise, nil, nil)
       job.expects(status: status)
       job.expects(output: output)
       job.expects(exception: exception)
