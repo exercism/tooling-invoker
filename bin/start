@@ -27,4 +27,4 @@ require "tooling_invoker"
 
 puts "Starting ToolingInvoker::Worker..."
 
-ToolingInvoker::WorkerPool.new(3).start!
+ToolingInvoker::WorkerPool.new(1).start!
