@@ -9,7 +9,7 @@ RUN apk add --no-cache --update build-base cmake openssl-dev
 WORKDIR /usr/src/app
 
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler:2.3.4 && \
+RUN gem install bundler:2.3.6 && \
     bundle install
 
 #############
@@ -22,7 +22,7 @@ RUN apk add --no-cache --update git bash docker
 WORKDIR /usr/src/app
 
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler:2.3.4
+RUN gem install bundler:2.3.6
 
 COPY --from=gembuilder /usr/local/bundle/ /usr/local/bundle/
 COPY --from=common /shell /

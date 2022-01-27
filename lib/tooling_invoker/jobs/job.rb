@@ -64,8 +64,8 @@ module ToolingInvoker
 
         @status = UNKNOWN_ERROR_STATUS
         @exception = {
-          message: message,
-          backtrace: backtrace
+          message:,
+          backtrace:
         }
       end
 

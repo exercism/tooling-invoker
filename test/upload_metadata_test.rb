@@ -13,9 +13,9 @@ module ToolingInvoker
 
       id = SecureRandom.hex
       job = Jobs::TestRunnerJob.new(id, language, exercise, nil, nil)
-      job.expects(status: status)
-      job.expects(output: output)
-      job.expects(exception: exception)
+      job.expects(status:)
+      job.expects(output:)
+      job.expects(exception:)
       job.stdout = stdout
       job.stderr = stderr
 

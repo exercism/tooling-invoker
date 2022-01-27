@@ -7,7 +7,7 @@ module ToolingInvoker
     end
 
     def call
-      Log.("Invoking request: #{job.type}:#{job.language}:#{job.exercise}", job: job)
+      Log.("Invoking request: #{job.type}:#{job.language}:#{job.exercise}", job:)
 
       prepare_input! && run_job!
     end
@@ -19,7 +19,7 @@ module ToolingInvoker
       retries = 0
 
       begin
-        Log.("Preparing input", job: job)
+        Log.("Preparing input", job:)
         FileUtils.rm_rf("#{job.dir}/*")
         FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)
         FileUtils.mkdir(job.source_code_dir) unless Dir.exist?(job.source_code_dir)
@@ -39,7 +39,7 @@ module ToolingInvoker
           retry
         end
 
-        Log.("Failed to prepare input", job: job)
+        Log.("Failed to prepare input", job:)
         job.failed_to_prepare_input!(e)
 
         false
@@ -47,7 +47,7 @@ module ToolingInvoker
     end
 
     def run_job!
-      Log.("Invoking container", job: job)
+      Log.("Invoking container", job:)
 
       ExecDocker.(job)
     rescue StandardError => e
