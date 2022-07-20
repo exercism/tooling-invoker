@@ -16,10 +16,12 @@ module ToolingInvoker
     attr_reader :job
 
     def prepare_input!
-      Log.("Preparing input", job: job)
-      FileUtils.mkdir_p(job.dir)
+      Log.("Preparing input", job: job)      
+      FileUtils.mkdir_p(job.dir)      
       FileUtils.mkdir(job.source_code_dir)
       FileUtils.mkdir(job.output_dir)
+
+      FileUtils.rm_rf("#{job.dir}/*")
 
       SetupInputFiles.(job)
 
