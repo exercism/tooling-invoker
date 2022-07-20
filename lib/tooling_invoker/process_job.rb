@@ -16,24 +16,32 @@ module ToolingInvoker
     attr_reader :job
 
     def prepare_input!
-      Log.("Preparing input", job: job)      
-      FileUtils.mkdir_p(job.dir)      
-      FileUtils.mkdir(job.source_code_dir)
-      FileUtils.mkdir(job.output_dir)
+      retries = 0
 
-      FileUtils.rm_rf("#{job.dir}/*")
+      begin
+        Log.("Preparing input", job: job)      
+        FileUtils.rm_rf("#{job.dir}/*")
+        FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)         
+        FileUtils.mkdir(job.source_code_dir) unless Dir.exist?(job.source_code_dir)
+        FileUtils.mkdir(job.output_dir) unless Dir.exists?(job.output_dir)
 
-      SetupInputFiles.(job)
+        SetupInputFiles.(job)
 
-      FileUtils.chmod_R(0o777, job.source_code_dir)
-      FileUtils.chmod_R(0o777, job.output_dir)
+        FileUtils.chmod_R(0o777, job.source_code_dir)
+        FileUtils.chmod_R(0o777, job.output_dir)
 
-      true
-    rescue StandardError => e
-      Log.("Failed to prepare input", job: job)
-      job.failed_to_prepare_input!(e)
+        true
+      rescue StandardError => e
+        retries += 1
+        # TODO: sleep
+        
+        retry unless retries > 3
 
-      false
+        Log.("Failed to prepare input", job: job)
+        job.failed_to_prepare_input!(e)
+
+        false
+      end
     end
 
     def run_job!
