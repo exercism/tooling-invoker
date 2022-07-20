@@ -65,18 +65,12 @@ module ToolingInvoker
       begin
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
-        # To simulate SetupInputFiles working as expected after three calls,
-        # we cheat and execute it beforehand. The first three calls to it will
-        # still raise (see code below), but the fourth with just finish immediately
-        # and it will look like it finishes as normal.
-        ToolingInvoker::SetupInputFiles.(job)
-        
-        ToolingInvoker::SetupInputFiles.expects(:call)
-          .times(4)
-          .raises(StandardError)
-          .then.raises(StandardError)
-          .then.raises(StandardError)
-          .then.returns(true)
+        ToolingInvoker::SetupInputFiles.expects(:call).
+          times(4).
+          raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.returns(true)
 
         FileUtils.mkdir_p(job.dir)
         Dir.chdir(job.dir) do
@@ -105,13 +99,13 @@ module ToolingInvoker
 
       begin
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
-        
-        ToolingInvoker::SetupInputFiles.expects(:call)
-          .times(4)
-          .raises(StandardError)
-          .then.raises(StandardError)
-          .then.raises(StandardError)
-          .then.raises(StandardError)
+
+        ToolingInvoker::SetupInputFiles.expects(:call).
+          times(4).
+          raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError)
 
         FileUtils.mkdir_p(job.dir)
         Dir.chdir(job.dir) do
@@ -137,22 +131,22 @@ module ToolingInvoker
 
       begin
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
-        
-        ToolingInvoker::SetupInputFiles.expects(:call)
-          .times(4)
-          .raises(StandardError)
-          .then.raises(StandardError)
-          .then.raises(StandardError)
-          .then.raises(StandardError)
+
+        ToolingInvoker::SetupInputFiles.expects(:call).
+          times(4).
+          raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError)
 
         FileUtils.mkdir_p(job.dir)
 
         start = Time.now
-        Dir.chdir(job.dir) do          
-          ProcessJob.(job)          
+        Dir.chdir(job.dir) do
+          ProcessJob.(job)
         end
         elapsed = Time.now - start
-        
+
         assert elapsed < 2
       ensure
         FileUtils.rm_rf(job.dir)

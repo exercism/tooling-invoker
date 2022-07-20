@@ -19,11 +19,11 @@ module ToolingInvoker
       retries = 0
 
       begin
-        Log.("Preparing input", job: job)      
+        Log.("Preparing input", job: job)
         FileUtils.rm_rf("#{job.dir}/*")
-        FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)         
+        FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)
         FileUtils.mkdir(job.source_code_dir) unless Dir.exist?(job.source_code_dir)
-        FileUtils.mkdir(job.output_dir) unless Dir.exists?(job.output_dir)
+        FileUtils.mkdir(job.output_dir) unless Dir.exist?(job.output_dir)
 
         SetupInputFiles.(job)
 
@@ -33,9 +33,11 @@ module ToolingInvoker
         true
       rescue StandardError => e
         retries += 1
-        # TODO: sleep
-        
-        retry unless retries > 3
+
+        if retries <= MAX_NUM_RETRIES
+          sleep RETRY_SLEEP_SECONDS[retries - 1]
+          retry
+        end
 
         Log.("Failed to prepare input", job: job)
         job.failed_to_prepare_input!(e)
@@ -51,5 +53,10 @@ module ToolingInvoker
     rescue StandardError => e
       job.exceptioned!(e.message, backtrace: e.backtrace)
     end
+
+    RETRY_SLEEP_SECONDS = [0.1, 0.3, 0.6].freeze
+    MAX_NUM_RETRIES = 3
+
+    private_constant :RETRY_SLEEP_SECONDS, :MAX_NUM_RETRIES
   end
 end
