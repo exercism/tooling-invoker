@@ -66,8 +66,9 @@ module ToolingInvoker
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         ToolingInvoker::SetupInputFiles.expects(:call).
-          times(4).
+          times(5).
           raises(StandardError).
+          then.raises(StandardError).
           then.raises(StandardError).
           then.raises(StandardError).
           then.returns(true)
@@ -101,8 +102,9 @@ module ToolingInvoker
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         ToolingInvoker::SetupInputFiles.expects(:call).
-          times(4).
+          times(5).
           raises(StandardError).
+          then.raises(StandardError).
           then.raises(StandardError).
           then.raises(StandardError).
           then.raises(StandardError)
@@ -133,8 +135,9 @@ module ToolingInvoker
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         ToolingInvoker::SetupInputFiles.expects(:call).
-          times(4).
+          times(5).
           raises(StandardError).
+          then.raises(StandardError).
           then.raises(StandardError).
           then.raises(StandardError).
           then.raises(StandardError)
@@ -147,7 +150,7 @@ module ToolingInvoker
         end
         elapsed = Time.now - start
 
-        assert elapsed < 2
+        assert elapsed <= 2
       ensure
         FileUtils.rm_rf(job.dir)
       end

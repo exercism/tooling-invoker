@@ -54,7 +54,7 @@ module ToolingInvoker
       job.exceptioned!(e.message, backtrace: e.backtrace)
     end
 
-    RETRY_SLEEP_SECONDS = [0.1, 0.3, 0.6].freeze
+    RETRY_SLEEP_SECONDS = [0.1, 0.2, 0.5, 1.0].freeze
     MAX_NUM_RETRIES = RETRY_SLEEP_SECONDS.length
 
     private_constant :RETRY_SLEEP_SECONDS, :MAX_NUM_RETRIES
