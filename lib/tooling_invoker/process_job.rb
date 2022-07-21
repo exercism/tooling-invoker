@@ -55,7 +55,7 @@ module ToolingInvoker
     end
 
     RETRY_SLEEP_SECONDS = [0.1, 0.3, 0.6].freeze
-    MAX_NUM_RETRIES = 3
+    MAX_NUM_RETRIES = RETRY_SLEEP_SECONDS.length
 
     private_constant :RETRY_SLEEP_SECONDS, :MAX_NUM_RETRIES
   end
