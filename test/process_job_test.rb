@@ -53,6 +53,109 @@ module ToolingInvoker
       end
     end
 
+    def test_failed_setup_retried_thrice
+      job = Jobs::TestRunnerJob.new(
+        SecureRandom.hex,
+        "ruby",
+        "bob",
+        { 'submission_filepaths' => [] },
+        "v1"
+      )
+
+      begin
+        ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
+
+        ToolingInvoker::SetupInputFiles.expects(:call).
+          times(5).
+          raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.returns(true)
+
+        FileUtils.mkdir_p(job.dir)
+        Dir.chdir(job.dir) do
+          ProcessJob.(job)
+        end
+
+        expected_output = { "results.json" => '{"happy": "people"}' }
+
+        assert_equal 200, job.status
+        assert_equal expected_output, job.output
+        assert_equal "", job.stdout
+        assert_equal "", job.stderr
+      ensure
+        FileUtils.rm_rf(job.dir)
+      end
+    end
+
+    def test_failed_setup_stops_at_fourth_retry
+      job = Jobs::TestRunnerJob.new(
+        SecureRandom.hex,
+        "ruby",
+        "bob",
+        { 'submission_filepaths' => [] },
+        "v1"
+      )
+
+      begin
+        ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
+
+        ToolingInvoker::SetupInputFiles.expects(:call).
+          times(5).
+          raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError)
+
+        FileUtils.mkdir_p(job.dir)
+        Dir.chdir(job.dir) do
+          ProcessJob.(job)
+        end
+
+        assert_equal 512, job.status
+        assert_equal "", job.stdout
+        assert_equal "", job.stderr
+      ensure
+        FileUtils.rm_rf(job.dir)
+      end
+    end
+
+    def test_failed_setup_retries_doesnt_wait_longer_than_two_seconds
+      job = Jobs::TestRunnerJob.new(
+        SecureRandom.hex,
+        "ruby",
+        "bob",
+        { 'submission_filepaths' => [] },
+        "v1"
+      )
+
+      begin
+        ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
+
+        ToolingInvoker::SetupInputFiles.expects(:call).
+          times(5).
+          raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError).
+          then.raises(StandardError)
+
+        FileUtils.mkdir_p(job.dir)
+
+        start = Time.now
+        Dir.chdir(job.dir) do
+          ProcessJob.(job)
+        end
+        elapsed = Time.now - start
+
+        assert elapsed <= 2
+      ensure
+        FileUtils.rm_rf(job.dir)
+      end
+    end
+
     def test_failed_invocation
       job = Jobs::TestRunnerJob.new(
         SecureRandom.hex,

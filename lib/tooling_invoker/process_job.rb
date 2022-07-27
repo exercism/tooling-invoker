@@ -16,22 +16,34 @@ module ToolingInvoker
     attr_reader :job
 
     def prepare_input!
-      Log.("Preparing input", job: job)
-      FileUtils.mkdir_p(job.dir)
-      FileUtils.mkdir(job.source_code_dir)
-      FileUtils.mkdir(job.output_dir)
+      retries = 0
 
-      SetupInputFiles.(job)
+      begin
+        Log.("Preparing input", job: job)
+        FileUtils.rm_rf("#{job.dir}/*")
+        FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)
+        FileUtils.mkdir(job.source_code_dir) unless Dir.exist?(job.source_code_dir)
+        FileUtils.mkdir(job.output_dir) unless Dir.exist?(job.output_dir)
 
-      FileUtils.chmod_R(0o777, job.source_code_dir)
-      FileUtils.chmod_R(0o777, job.output_dir)
+        SetupInputFiles.(job)
 
-      true
-    rescue StandardError => e
-      Log.("Failed to prepare input", job: job)
-      job.failed_to_prepare_input!(e)
+        FileUtils.chmod_R(0o777, job.source_code_dir)
+        FileUtils.chmod_R(0o777, job.output_dir)
 
-      false
+        true
+      rescue StandardError => e
+        retries += 1
+
+        if retries <= MAX_NUM_RETRIES
+          sleep RETRY_SLEEP_SECONDS[retries - 1]
+          retry
+        end
+
+        Log.("Failed to prepare input", job: job)
+        job.failed_to_prepare_input!(e)
+
+        false
+      end
     end
 
     def run_job!
@@ -41,5 +53,10 @@ module ToolingInvoker
     rescue StandardError => e
       job.exceptioned!(e.message, backtrace: e.backtrace)
     end
+
+    RETRY_SLEEP_SECONDS = [0.1, 0.2, 0.5, 1.0].freeze
+    MAX_NUM_RETRIES = RETRY_SLEEP_SECONDS.length
+
+    private_constant :RETRY_SLEEP_SECONDS, :MAX_NUM_RETRIES
   end
 end
