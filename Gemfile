@@ -13,7 +13,7 @@ gem 'rest-client'
 gem 'exercism-config', '>= 0.76.0'
 
 gem 'rubyzip'
-gem 'rugged' # Git
+gem 'rugged', '1.4.2' # Git
 
 gem "mocha"
 gem "minitest"
