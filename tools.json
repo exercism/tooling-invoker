@@ -3,6 +3,10 @@
     "network": "internal",
     "max_memory": "3GB"
   },
+  "gleam_test_runner": {
+    "network": "internal",
+    "max_memory": "3GB"
+  },
   "ruby_analyzer": {
     "network": "none",
     "max_memory": "1GB"
