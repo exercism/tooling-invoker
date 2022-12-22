@@ -13,7 +13,7 @@ module ToolingInvoker::Jobs
     end
 
     def output_filepaths
-      ["representation.txt", "mapping.json"]
+      ["representation.txt", "representation.json", "mapping.json"]
     end
 
     def working_directory
