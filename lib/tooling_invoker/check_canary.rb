@@ -3,9 +3,14 @@ module ToolingInvoker
     include Mandate
 
     def call
-      # Do the job three times.
-      # Quick fail if we get 512 or 513
-      # Quick succeed if we get a 200
+      # Wait for the the machine to be ready
+      WaitForManager.()
+      CreateNetworks.()
+
+      # Do the job three times here as a guard.
+      # Quick fail if we get 512 or 513 which means something bad.
+      # Quick succeed if we get a 200.
+      # Otherwise see if we recover.
       3.times do
         job = Jobs::TestRunnerJob.new(
           "canary-#{SecureRandom.hex}",
@@ -20,7 +25,7 @@ module ToolingInvoker
         return false if job.status == 512
         return false if job.status == 513
 
-        sleep(10)
+        sleep(5)
       end
 
       false

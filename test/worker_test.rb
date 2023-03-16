@@ -20,10 +20,7 @@ module ToolingInvoker
 
         service = WorkerPool.new(1)
 
-        service.expects(:system).with(
-          "docker network create --internal internal",
-          out: File::NULL, err: File::NULL
-        )
+        CreateNetworks.expects(:call)
 
         service.start!
         sleep(1)

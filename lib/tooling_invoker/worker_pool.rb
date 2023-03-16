@@ -8,15 +8,8 @@ module ToolingInvoker
       $stdout.sync = true
       $stderr.sync = true
 
-      wait_until_manager_ready!
-
-      # Setup docker network. If the network already
-      # exists then this will be a noop. It takes about
-      # 120ms to exec, so just do it on worker init
-      system(
-        "docker network create --internal internal",
-        out: File::NULL, err: File::NULL
-      )
+      WaitForManager.()
+      CreateNetworks.()
 
       workers = (1..count).map { |idx| Worker.new(idx) }
 
@@ -32,21 +25,6 @@ module ToolingInvoker
       end
 
       Process.waitall
-    end
-
-    def wait_until_manager_ready!
-      dir = "/home/exercism"
-      return unless Dir.exist?(dir)
-
-      loop do
-        if File.exist?("#{dir}/.tooling-manager-ready")
-          Log.("Tooling Manager Ready. Continuing...")
-          return
-        else
-          Log.("Waiting for tooling manager...")
-          sleep(3)
-        end
-      end
     end
   end
 end

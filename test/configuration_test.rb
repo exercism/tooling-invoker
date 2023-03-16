@@ -18,7 +18,7 @@ module ToolingInvoker
       assert_equal "internal", config.network_for_tool("elixir-test-runner")
       assert_equal "none", config.network_for_tool("foobar")
       assert_equal 20, config.timeout_for_tool("foobar")
-      assert_equal 4, config.timeout_for_tool("ruby-test-runner")
+      assert_equal 6, config.timeout_for_tool("ruby-test-runner")
       assert_equal "production", config.image_tag
     end
 
