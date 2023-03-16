@@ -21,6 +21,9 @@ failure_count_filepath = File.expand_path("../../CANARY_FAILURE_COUNT", __FILE__
 
   if ToolingInvoker::CheckCanary.()
     File.delete(failure_count_filepath) if File.exists?(failure_count_filepath)
+    # We're happy - sleep for 10mins. It'd be better to do this
+    # in the AMI, but I don't have energy to create a new one.
+    sleep(600)
     exit
   end
 
