@@ -3,6 +3,23 @@ module ToolingInvoker
     include Mandate
 
     def call
+      # Do the job three times.
+      # Quick fail if we get 512 or 513
+      # Quick succeed if we get a 200
+      3.times do
+        process_job
+
+        return true if job.status == 200
+        return false if job.status == 512
+        return false if job.status == 513
+
+        sleep(10)
+      end
+
+      false
+    end
+
+    def process_job
       job = Jobs::TestRunnerJob.new(
         "canary-#{SecureRandom.hex}",
         'ruby',
@@ -11,8 +28,6 @@ module ToolingInvoker
         '1'
       )
       ProcessJob.(job)
-
-      job.status == 200
     end
 
     CANARY_SOURCE = {
