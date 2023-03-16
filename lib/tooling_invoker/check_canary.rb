@@ -7,7 +7,14 @@ module ToolingInvoker
       # Quick fail if we get 512 or 513
       # Quick succeed if we get a 200
       3.times do
-        process_job
+        job = Jobs::TestRunnerJob.new(
+          "canary-#{SecureRandom.hex}",
+          'ruby',
+          'hello-world',
+          CANARY_SOURCE,
+          '1'
+        )
+        ProcessJob.(job)
 
         return true if job.status == 200
         return false if job.status == 512
@@ -17,17 +24,6 @@ module ToolingInvoker
       end
 
       false
-    end
-
-    def process_job
-      job = Jobs::TestRunnerJob.new(
-        "canary-#{SecureRandom.hex}",
-        'ruby',
-        'hello-world',
-        CANARY_SOURCE,
-        '1'
-      )
-      ProcessJob.(job)
     end
 
     CANARY_SOURCE = {
