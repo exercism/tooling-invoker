@@ -28,10 +28,10 @@ module ToolingInvoker
 
         job = check_for_job
         if job
-          Log.("Starting job", job: job)
+          Log.("Starting job", job:)
           start_time = Time.now.to_f
           handle_job(job)
-          Log.("Total time: #{Time.now.to_f - start_time}", job: job)
+          Log.("Total time: #{Time.now.to_f - start_time}", job:)
         else
           sleep(ToolingInvoker.config.job_polling_delay)
         end
@@ -83,14 +83,16 @@ module ToolingInvoker
       ProcessJob.(job)
       RestClient.patch(
         "#{config.orchestrator_address}/jobs/#{job.id}",
-        status: job.status,
-        output: job.output
+        {
+          status: job.status,
+          output: job.output
+        }
       )
       UploadMetadata.(job)
     rescue StandardError => e
-      Log.("Error handling job", job: job)
-      Log.(e.message, job: job)
-      Log.(e.backtrace, job: job)
+      Log.("Error handling job", job:)
+      Log.(e.message, job:)
+      Log.(e.backtrace, job:)
     end
 
     def config

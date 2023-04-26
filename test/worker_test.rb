@@ -40,7 +40,7 @@ module ToolingInvoker
       status = mock
       output = mock
       job = Jobs::Job.new(@job_id, 'ruby', 'two-fer', nil, nil)
-      job.stubs(status: status, output: output)
+      job.stubs(status:, output:)
 
       Jobs::TestRunnerJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version
@@ -57,8 +57,8 @@ module ToolingInvoker
         with(
           "#{config.orchestrator_address}/jobs/#{@job_id}",
           {
-            status: status,
-            output: output
+            status:,
+            output:
           }
         )
 
@@ -82,7 +82,7 @@ module ToolingInvoker
       status = mock
       output = mock
       job = mock
-      job.stubs(id: @job_id, status: status, output: output)
+      job.stubs(id: @job_id, status:, output:)
 
       Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version
@@ -98,8 +98,8 @@ module ToolingInvoker
         with(
           "#{config.orchestrator_address}/jobs/#{@job_id}",
           {
-            status: status,
-            output: output
+            status:,
+            output:
           }
         )
 
@@ -123,7 +123,7 @@ module ToolingInvoker
       status = mock
       output = mock
       job = mock
-      job.stubs(id: @job_id, status: status, output: output)
+      job.stubs(id: @job_id, status:, output:)
 
       Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version
@@ -139,8 +139,8 @@ module ToolingInvoker
         with(
           "#{config.orchestrator_address}/jobs/#{@job_id}",
           {
-            status: status,
-            output: output
+            status:,
+            output:
           }
         )
 

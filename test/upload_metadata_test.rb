@@ -13,9 +13,9 @@ module ToolingInvoker
 
       id = SecureRandom.hex
       job = Jobs::TestRunnerJob.new(id, language, exercise, nil, nil)
-      job.expects(status: status)
-      job.expects(output: output)
-      job.expects(exception: exception)
+      job.expects(status:)
+      job.expects(output:)
+      job.expects(exception:)
       job.stdout = stdout
       job.stderr = stderr
 
@@ -26,12 +26,12 @@ module ToolingInvoker
       assert_equal stderr, helper.stderr
 
       expected_metadata = JSON.parse({
-        id: id,
-        language: language,
-        exercise: exercise,
-        status: status,
-        output: output,
-        exception: exception
+        id:,
+        language:,
+        exercise:,
+        status:,
+        output:,
+        exception:
       }.to_json)
       assert_equal expected_metadata, helper.metadata
     end
