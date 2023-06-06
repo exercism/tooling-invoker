@@ -50,8 +50,8 @@ module ToolingInvoker
       Log.("Invoking container", job: job)
 
       ExecDocker.(job)
-    rescue StandardError => e
-      job.exceptioned!(e.message, backtrace: e.backtrace)
+    # rescue StandardError => e
+      # job.exceptioned!(e.message, backtrace: e.backtrace)
     end
 
     RETRY_SLEEP_SECONDS = [0.1, 0.2, 0.5, 1.0].freeze

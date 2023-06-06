@@ -47,10 +47,15 @@ module ToolingInvoker
         }
       end
 
-      def timed_out!
+      def timed_out!(details)
         return if status_set?
 
+        # Sometimes a test runner writes the file but fails
+        # to fully exit. This handles that case.
+        return succeeded! if valid_output?
+
         @status = TIMEOUT_STATUS
+        @exception = { message: "Timed out. #{details}" }
       end
 
       def killed_for_excessive_output!
@@ -100,6 +105,17 @@ module ToolingInvoker
           end
 
           hash[output_filepath] = contents
+        end
+      end
+
+      def valid_output?
+        output_filepaths.all? do |output_filepath|
+          begin
+            contents = File.read("#{source_code_dir}/#{output_filepath}")
+            contents && contents.size > 0 && contents.size <= MAX_OUTPUT_FILE_SIZE
+          rescue StandardError => e
+            false
+          end
         end
       end
 
