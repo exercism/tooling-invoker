@@ -178,5 +178,39 @@ module ToolingInvoker
         FileUtils.rm_rf(job.dir)
       end
     end
+
+    def test_timeout_with_results
+      results = '{"happy": "people"}'
+
+      job = Jobs::TestRunnerJob.new(
+        SecureRandom.hex,
+        "ruby",
+        "bob",
+        { 'submission_filepaths' => [] },
+        "v1"
+      )
+
+      # Write results to the place the test runner should write to
+      FileUtils.mkdir_p(job.source_code_dir)
+      File.write("#{job.source_code_dir}/#{job.output_filepaths[0]}", results)
+
+      begin
+        ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
+
+        FileUtils.mkdir_p(job.dir)
+        Dir.chdir(job.dir) do
+          ProcessJob.(job)
+        end
+
+        expected_output = { "results.json" => results }
+
+        assert_equal 200, job.status
+        assert_equal expected_output, job.output
+        assert_equal "", job.stdout
+        assert_equal "", job.stderr
+      ensure
+        FileUtils.rm_rf(job.dir)
+      end
+    end
   end
 end

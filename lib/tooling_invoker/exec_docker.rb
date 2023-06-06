@@ -39,14 +39,14 @@ module ToolingInvoker
         # breached, but it just adds one tiny layer of protection.
         unless success
           Log.("Forcing timeout", job: job)
-          job.timed_out!
+          job.timed_out!("Forced")
 
           abort!
           sleep(0.01)
           docker_thread.kill
         end
       rescue StandardError => e
-        job.exceptioned!(e.message, e.backtrace)
+        job.exceptioned!(e.message, backtrace: e.backtrace)
       end
 
       # Always explicity kill the containers in case they've timed-out
@@ -112,7 +112,7 @@ module ToolingInvoker
         if wait_thr.value&.exitstatus == 0
           job.succeeded!
         elsif wait_thr.value.termsig == 9
-          job.timed_out!
+          job.timed_out!("Termsig 9")
         else
           job.exceptioned!("Exit status: #{wait_thr.value&.exitstatus}")
         end
