@@ -3,6 +3,7 @@ require 'test_helper'
 module ToolingInvoker
   class ProcessJobTest < Minitest::Test
     def test_happy_path
+
       job = Jobs::TestRunnerJob.new(
         SecureRandom.hex,
         "ruby",
@@ -12,6 +13,7 @@ module ToolingInvoker
       )
 
       begin
+        WriteToCloudwatch.expects(:call)
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         FileUtils.mkdir_p(job.dir)
@@ -40,6 +42,7 @@ module ToolingInvoker
       )
 
       begin
+        WriteToCloudwatch.expects(:call)
         FileUtils.mkdir_p(job.dir)
         Dir.chdir(job.dir) do
           ProcessJob.(job)
@@ -63,6 +66,7 @@ module ToolingInvoker
       )
 
       begin
+        WriteToCloudwatch.expects(:call)
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         ToolingInvoker::SetupInputFiles.expects(:call).
@@ -99,6 +103,7 @@ module ToolingInvoker
       )
 
       begin
+        WriteToCloudwatch.expects(:call)
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         ToolingInvoker::SetupInputFiles.expects(:call).
@@ -132,6 +137,7 @@ module ToolingInvoker
       )
 
       begin
+        WriteToCloudwatch.expects(:call)
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/mock_docker")
 
         ToolingInvoker::SetupInputFiles.expects(:call).
@@ -166,6 +172,7 @@ module ToolingInvoker
       )
 
       begin
+        WriteToCloudwatch.expects(:call)
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/missing_file")
 
         ProcessJob.(job)
@@ -195,6 +202,7 @@ module ToolingInvoker
       File.write("#{job.source_code_dir}/#{job.output_filepaths[0]}", results)
 
       begin
+        WriteToCloudwatch.expects(:call)
         ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
 
         FileUtils.mkdir_p(job.dir)

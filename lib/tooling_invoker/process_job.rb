@@ -41,17 +41,25 @@ module ToolingInvoker
 
         Log.("Failed to prepare input", job:)
         job.failed_to_prepare_input!(e)
+        WriteToCloudwatch.(job, nil)
 
         false
       end
     end
 
     def run_job!
-      Log.("Invoking container", job:)
+      start_time = Time.now.to_f
 
-      ExecDocker.(job)
-    # rescue StandardError => e
-      # job.exceptioned!(e.message, backtrace: e.backtrace)
+      begin
+        Log.("Invoking container", job: )
+
+        ExecDocker.(job)
+      rescue StandardError => e
+        job.exceptioned!(e.message, backtrace: e.backtrace)
+      ensure
+        duration = Time.now.to_f - start_time
+        WriteToCloudwatch.(job, duration)
+      end
     end
 
     RETRY_SLEEP_SECONDS = [0.1, 0.2, 0.5, 1.0].freeze

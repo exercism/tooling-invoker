@@ -8,6 +8,7 @@ module ToolingInvoker
       @hex = SecureRandom.hex
 
       SecureRandom.stubs(hex: @hex)
+      WriteToCloudwatch.expects(:call)
 
       @job_dir = "#{Configuration.instance.jobs_dir}/#{@job_id}-#{@hex}"
     end
@@ -61,6 +62,8 @@ module ToolingInvoker
           "a" * (Jobs::Job::MAX_OUTPUT_FILE_SIZE + 1)
         )
       end
+
+      ProcessJob.(job)
 
       assert_equal Jobs::Job::EXCESSIVE_OUTPUT_STATUS, job.status
     end
