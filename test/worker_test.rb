@@ -20,7 +20,7 @@ module ToolingInvoker
 
         service = WorkerPool.new(1)
 
-        CreateNetworks.expects(:call)
+        Setup::CreateNetworks.expects(:call)
 
         service.start!
         sleep(1)
@@ -46,8 +46,8 @@ module ToolingInvoker
         @job_id, @language, @exercise, @source, @container_version
       ).returns(job)
 
-      ProcessJob.expects(:call).with(job)
-      UploadMetadata.expects(:call).with(job)
+      JobProcessor::ProcessJob.expects(:call).with(job)
+      Worker::WriteToCloudwatch.expects(:call).with(job)
 
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
@@ -87,8 +87,8 @@ module ToolingInvoker
       Jobs::RepresenterJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version
       ).returns(job)
-      ProcessJob.expects(:call).with(job)
-      UploadMetadata.expects(:call).with(job)
+      JobProcessor::ProcessJob.expects(:call).with(job)
+      Worker::WriteToCloudwatch.expects(:call).with(job)
 
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").
@@ -128,8 +128,8 @@ module ToolingInvoker
       Jobs::AnalyzerJob.expects(:new).with(
         @job_id, @language, @exercise, @source, @container_version
       ).returns(job)
-      ProcessJob.expects(:call).with(job)
-      UploadMetadata.expects(:call).with(job)
+      JobProcessor::ProcessJob.expects(:call).with(job)
+      Worker::WriteToCloudwatch.expects(:call).with(job)
 
       RestClient.expects(:get).
         with("#{config.orchestrator_address}/jobs/next").

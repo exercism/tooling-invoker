@@ -1,8 +1,9 @@
 module ToolingInvoker
+  class Worker
   class WriteToCloudwatch
     include Mandate
 
-    initialize_with :job, :duration
+    initialize_with :job
 
     def call
       resp = client.put_log_events({
@@ -25,8 +26,8 @@ module ToolingInvoker
         language: job.language,
         exercise: job.exercise,
         status: job.status,
+        duration: job.duration,
         instance_id: instance_id,
-        duration: duration
       }.to_json
     end
 
@@ -42,4 +43,5 @@ module ToolingInvoker
       `curl http://169.254.169.254/latest/meta-data/instance-id`
     end
   end
+end
 end
