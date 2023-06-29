@@ -4,6 +4,8 @@ module ToolingInvoker
       include Mandate
 
       def call
+        return true if Exercism.env.development?
+
         job = Jobs::TestRunnerJob.new(
           "canary-#{SecureRandom.hex}",
           'ruby',
