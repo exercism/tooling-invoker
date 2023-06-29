@@ -39,7 +39,7 @@ module ToolingInvoker
         else
           sleep(ToolingInvoker.config.job_polling_delay)
         end
-      rescue ExitWorkerError => e
+      rescue ExitWorkerError
         exit!
       rescue StandardError => e
         Log.("Top level error")

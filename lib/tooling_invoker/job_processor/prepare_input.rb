@@ -8,33 +8,31 @@ module ToolingInvoker
       end
 
       def call
-        begin
-          ToolingInvoker::Log.("Preparing input", job:)
+        ToolingInvoker::Log.("Preparing input", job:)
 
-          FileUtils.rm_rf("#{job.dir}/*")
-          FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)
-          FileUtils.mkdir(job.source_code_dir) unless Dir.exist?(job.source_code_dir)
-          FileUtils.mkdir(job.output_dir) unless Dir.exist?(job.output_dir)
+        FileUtils.rm_rf("#{job.dir}/*")
+        FileUtils.mkdir_p(job.dir) unless Dir.exist?(job.dir)
+        FileUtils.mkdir(job.source_code_dir) unless Dir.exist?(job.source_code_dir)
+        FileUtils.mkdir(job.output_dir) unless Dir.exist?(job.output_dir)
 
-          SetupInputFiles.(job)
+        SetupInputFiles.(job)
 
-          FileUtils.chmod_R(0o777, job.source_code_dir)
-          FileUtils.chmod_R(0o777, job.output_dir)
+        FileUtils.chmod_R(0o777, job.source_code_dir)
+        FileUtils.chmod_R(0o777, job.output_dir)
 
-          true
-        rescue StandardError => e
-          self.retries += 1
+        true
+      rescue StandardError => e
+        self.retries += 1
 
-          if self.retries <= MAX_NUM_RETRIES
-            sleep RETRY_SLEEP_SECONDS[self.retries - 1]
-            retry
-          end
-
-          ToolingInvoker::Log.("Failed to prepare input", job:)
-          job.failed_to_prepare_input!(e)
-
-          false
+        if self.retries <= MAX_NUM_RETRIES
+          sleep RETRY_SLEEP_SECONDS[self.retries - 1]
+          retry
         end
+
+        ToolingInvoker::Log.("Failed to prepare input", job:)
+        job.failed_to_prepare_input!(e)
+
+        false
       end
 
       private

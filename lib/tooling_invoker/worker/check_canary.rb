@@ -11,7 +11,7 @@ module ToolingInvoker
           CANARY_SOURCE,
           '1'
         )
-        ProcessJob.(job)
+        JobProcessor::ProcessJob.(job)
 
         return true if job.status == 200
 
