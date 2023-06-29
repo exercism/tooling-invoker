@@ -11,6 +11,8 @@ module ToolingInvoker
       @exercise = "bob"
       @source = { "foo" => 'bar' }
       @container_version = "v1"
+
+      Worker::CheckCanary.stubs(:call).returns(true)
     end
 
     def test_creates_network
