@@ -8,7 +8,7 @@ module ToolingInvoker
       def call
         JobProcessor::ProcessJob.(job)
 
-        check_canary! if Jobs::Job::ABNORMAL_STATUSES.include?(job.status)
+        return if Jobs::Job::ABNORMAL_STATUSES.include?(job.status) && !check_canary!
 
         RestClient.patch(
           "#{config.orchestrator_address}/jobs/#{job.id}",
@@ -29,18 +29,12 @@ module ToolingInvoker
       end
 
       def check_canary!
-        return if Worker::CheckCanary.()
+        return true if Worker::CheckCanary.()
 
         # OK - we're in a bad state.
         # Firstly, let's tell the orchestrator to let something
         # else handle this job.
-        RestClient.patch(
-          "#{config.orchestrator_address}/jobs/#{job.id}/requeue",
-          {
-            status: job.status,
-            output: job.output
-          }
-        )
+        RestClient.patch("#{config.orchestrator_address}/jobs/#{job.id}/requeue")
 
         # Now let's check the machine a couple more times
         # and if we keep getting failures, we'll kill the machine
@@ -48,6 +42,10 @@ module ToolingInvoker
         # pick up any new jobs until we've made a determination one
         # way or the other.
         Worker::HandleFailingCanary.()
+
+        # If we get here the canary has recovered,
+        # but now we want to abort this.
+        false
       end
     end
   end
