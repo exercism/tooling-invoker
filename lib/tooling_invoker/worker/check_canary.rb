@@ -8,6 +8,7 @@ module ToolingInvoker
 
         job = Jobs::TestRunnerJob.new(
           "canary-#{SecureRandom.hex}",
+          SecureRandom.hex,
           'ruby',
           'hello-world',
           CANARY_SOURCE,

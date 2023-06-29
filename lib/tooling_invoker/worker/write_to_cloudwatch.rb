@@ -26,6 +26,7 @@ module ToolingInvoker
       def message
         {
           id: job.id,
+          submission_uuid:,
           type: job.type,
           language: job.language,
           exercise: job.exercise,

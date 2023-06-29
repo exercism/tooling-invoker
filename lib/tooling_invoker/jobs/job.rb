@@ -20,12 +20,13 @@ module ToolingInvoker
 
       MAX_OUTPUT_FILE_SIZE = 500 * 1024 # 500 kilobyte
 
-      attr_reader :id, :language, :exercise, :source, :container_version, :exception
+      attr_reader :id, :submission_uuid, :language, :exercise, :source, :container_version, :exception
       attr_accessor :stdout, :stderr, :duration
       attr_writer :output # Used by local webserver
 
-      def initialize(id, language, exercise, source, container_version)
+      def initialize(id, submission_uuid, language, exercise, source, container_version)
         @id = id
+        @submission_uuid = submission_uuid
         @language = language
         @exercise = exercise
         @source = source

@@ -29,6 +29,7 @@ module ToolingInvoker
 
         klass.new(
           job_data['id'],
+          job_data['submission_uuid'],
           job_data['language'],
           job_data['exercise'],
           job_data['source'],

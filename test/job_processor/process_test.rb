@@ -6,6 +6,7 @@ module ToolingInvoker
       def test_happy_path
         job = Jobs::TestRunnerJob.new(
           SecureRandom.hex,
+          SecureRandom.hex,
           "ruby",
           "bob",
           { 'submission_filepaths' => [] },
@@ -34,6 +35,7 @@ module ToolingInvoker
       def test_failed_setup
         job = Jobs::TestRunnerJob.new(
           SecureRandom.hex,
+          SecureRandom.hex,
           "ruby",
           "bob",
           {},
@@ -56,6 +58,7 @@ module ToolingInvoker
 
       def test_failed_setup_retried_thrice
         job = Jobs::TestRunnerJob.new(
+          SecureRandom.hex,
           SecureRandom.hex,
           "ruby",
           "bob",
@@ -93,6 +96,7 @@ module ToolingInvoker
       def test_failed_setup_stops_at_fourth_retry
         job = Jobs::TestRunnerJob.new(
           SecureRandom.hex,
+          SecureRandom.hex,
           "ruby",
           "bob",
           { 'submission_filepaths' => [] },
@@ -125,6 +129,7 @@ module ToolingInvoker
 
       def test_failed_setup_retries_doesnt_wait_longer_than_two_seconds
         job = Jobs::TestRunnerJob.new(
+          SecureRandom.hex,
           SecureRandom.hex,
           "ruby",
           "bob",
@@ -161,6 +166,7 @@ module ToolingInvoker
       def test_failed_invocation
         job = Jobs::TestRunnerJob.new(
           SecureRandom.hex,
+          SecureRandom.hex,
           "ruby",
           "bob",
           { 'submission_filepaths' => [] },
@@ -185,6 +191,7 @@ module ToolingInvoker
         results = '{"happy": "people"}'
 
         job = Jobs::TestRunnerJob.new(
+          SecureRandom.hex,
           SecureRandom.hex,
           "ruby",
           "bob",

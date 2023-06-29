@@ -6,6 +6,7 @@ module ToolingInvoker
       super
 
       @job_id = "123"
+      @submission_uuid = SecureRandom.uuid
       @language = "ruby"
       @exercise = "bob"
       @source = { "foo" => 'bar' }
@@ -31,6 +32,7 @@ module ToolingInvoker
       resp = {
         type: "test_runner",
         id: @job_id,
+        submission_uuid: @submission_uuid,
         language: @language,
         exercise: @exercise,
         source: @source,
@@ -39,11 +41,11 @@ module ToolingInvoker
 
       status = mock
       output = mock
-      job = Jobs::Job.new(@job_id, 'ruby', 'two-fer', nil, nil)
+      job = Jobs::Job.new(@job_id, @submission_uuid, 'ruby', 'two-fer', nil, nil)
       job.stubs(status:, output:)
 
       Jobs::TestRunnerJob.expects(:new).with(
-        @job_id, @language, @exercise, @source, @container_version
+        @job_id, @submission_uuid, @language, @exercise, @source, @container_version
       ).returns(job)
 
       JobProcessor::ProcessJob.expects(:call).with(job)
@@ -73,6 +75,7 @@ module ToolingInvoker
       resp = {
         type: "representer",
         id: @job_id,
+        submission_uuid: @submission_uuid,
         language: @language,
         exercise: @exercise,
         source: @source,
@@ -85,7 +88,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status:, output:)
 
       Jobs::RepresenterJob.expects(:new).with(
-        @job_id, @language, @exercise, @source, @container_version
+        @job_id, @submission_uuid, @language, @exercise, @source, @container_version
       ).returns(job)
       JobProcessor::ProcessJob.expects(:call).with(job)
       Worker::WriteToCloudwatch.expects(:call).with(job)
@@ -114,6 +117,7 @@ module ToolingInvoker
       resp = {
         type: "analyzer",
         id: @job_id,
+        submission_uuid: @submission_uuid,
         language: @language,
         exercise: @exercise,
         source: @source,
@@ -126,7 +130,7 @@ module ToolingInvoker
       job.stubs(id: @job_id, status:, output:)
 
       Jobs::AnalyzerJob.expects(:new).with(
-        @job_id, @language, @exercise, @source, @container_version
+        @job_id, @submission_uuid, @language, @exercise, @source, @container_version
       ).returns(job)
       JobProcessor::ProcessJob.expects(:call).with(job)
       Worker::WriteToCloudwatch.expects(:call).with(job)

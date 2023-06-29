@@ -4,7 +4,7 @@ module ToolingInvoker
   class Worker
     class HandleJobTest < Minitest::Test
       def test_failing_job_with_passing_canary
-        job = Jobs::TestRunnerJob.new(SecureRandom.hex, "ruby", "bob", {}, "v1")
+        job = Jobs::TestRunnerJob.new(SecureRandom.hex, SecureRandom.hex, "ruby", "bob", {}, "v1")
 
         # Fail the job
         JobProcessor::ProcessJob.expects(:call).with(job)
@@ -26,7 +26,7 @@ module ToolingInvoker
       end
 
       def test_failing_job_with_failing_canary
-        job = Jobs::TestRunnerJob.new(SecureRandom.hex, "ruby", "bob", {}, "v1")
+        job = Jobs::TestRunnerJob.new(SecureRandom.hex, SecureRandom.hex, "ruby", "bob", {}, "v1")
 
         # Fail the job
         JobProcessor::ProcessJob.expects(:call).with(job)
