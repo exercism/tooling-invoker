@@ -1,4 +1,4 @@
-module ToolingInvoker
+module ToolingInvoker::Setup
   class CreateNetworks
     include Mandate
 

@@ -8,8 +8,8 @@ module ToolingInvoker
       $stdout.sync = true
       $stderr.sync = true
 
-      WaitForManager.()
-      CreateNetworks.()
+      Setup::WaitForManager.()
+      Setup::CreateNetworks.()
 
       workers = (1..count).map { |idx| Worker.new(idx) }
 

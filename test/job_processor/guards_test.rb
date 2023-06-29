@@ -24,7 +24,7 @@ module ToolingInvoker
         @job_id,
         "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
-      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_loop")
+      JobProcessor::ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/../bin/infinite_loop")
 
       # Check the cleanup command is called correctly and then
       # store it so we can clean up the test too. Else we'll leave
@@ -37,7 +37,7 @@ module ToolingInvoker
       end
 
       begin
-        ProcessJob.(job)
+        JobProcessor::ProcessJob.(job)
       ensure
         `kill -s SIGKILL #{pid_to_kill}`
       end
@@ -62,6 +62,8 @@ module ToolingInvoker
         )
       end
 
+      JobProcessor::ProcessJob.(job)
+
       assert_equal Jobs::Job::EXCESSIVE_OUTPUT_STATUS, job.status
     end
 
@@ -73,9 +75,9 @@ module ToolingInvoker
         @job_id,
         "ruby", "bob", { 'submission_filepaths' => [] }, "v1"
       )
-      ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/bin/infinite_output")
+      JobProcessor::ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/../bin/infinite_output")
 
-      ProcessJob.(job)
+      JobProcessor::ProcessJob.(job)
 
       assert_equal Jobs::Job::EXCESSIVE_STDOUT_STATUS, job.status
     end
