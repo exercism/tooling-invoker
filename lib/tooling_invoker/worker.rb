@@ -16,6 +16,13 @@ module ToolingInvoker
 
       counter = 0
 
+      %w[INT TERM].each do |sig|
+        trap sig do
+          p "Exit signal recieved"
+          exit!
+        end
+      end
+
       loop do
         if should_exit?
           Log.("Worker #{worker_idx}: Exiting")

@@ -10,4 +10,4 @@ require "tooling_invoker"
 puts "Starting ToolingInvoker::Worker..."
 STDOUT.flush
 
-ToolingInvoker::WorkerPool.new(1).start!
+ToolingInvoker::Worker.new(1).start!
