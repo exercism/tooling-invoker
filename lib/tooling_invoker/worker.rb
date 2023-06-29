@@ -2,6 +2,9 @@ module ToolingInvoker
   class Worker
     extend Mandate::InitializerInjector
 
+    class ExitWorkerError < StandardError
+    end
+
     initialize_with :worker_idx
 
     def exit!
@@ -36,6 +39,8 @@ module ToolingInvoker
         else
           sleep(ToolingInvoker.config.job_polling_delay)
         end
+      rescue ExitWorkerError => e
+        exit!
       rescue StandardError => e
         Log.("Top level error")
         Log.(e.message)

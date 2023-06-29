@@ -11,6 +11,12 @@ module ToolingInvoker
       FAILED_TO_PREPARE_INPUT = 512
       UNKNOWN_ERROR_STATUS = 513
 
+      ABNORMAL_STATUSES = [
+        TIMEOUT_STATUS,
+        FAILED_TO_PREPARE_INPUT,
+        UNKNOWN_ERROR_STATUS
+      ]
+
       MAX_OUTPUT_FILE_SIZE = 500 * 1024 # 500 kilobyte
 
       attr_reader :id, :language, :exercise, :source, :container_version, :exception

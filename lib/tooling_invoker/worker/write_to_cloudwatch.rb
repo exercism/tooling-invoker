@@ -6,6 +6,8 @@ module ToolingInvoker
     initialize_with :job
 
     def call
+      return unless Exercism.env.production?
+
       resp = client.put_log_events({
         log_group_name: Exercism.config.tooling_cloudwatch_jobs_log_group_name,
         log_stream_name: Exercism.config.tooling_cloudwatch_jobs_log_stream_name,
