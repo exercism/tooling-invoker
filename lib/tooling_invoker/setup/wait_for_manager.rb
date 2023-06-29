@@ -1,4 +1,4 @@
-module ToolingInvoker
+module ToolingInvoker::Setup
   class WaitForManager
     include Mandate
 

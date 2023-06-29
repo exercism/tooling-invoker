@@ -38,21 +38,5 @@ module Minitest
     def config
       ToolingInvoker.config
     end
-
-    def upload_to_s3(bucket, key, body) # rubocop:disable Naming/VariableNumber
-      Exercism.s3_client.put_object(
-        bucket:,
-        key:,
-        body:,
-        acl: 'private'
-      )
-    end
-
-    def download_s3_file(bucket, key)
-      Exercism.s3_client.get_object(
-        bucket:,
-        key:
-      ).body.read
-    end
   end
 end
