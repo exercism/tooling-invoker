@@ -4,11 +4,6 @@
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged && ./bin/rubocop-quick"
-    }
-  },
   "scripts": {
     "prepare": "husky install"
   }
