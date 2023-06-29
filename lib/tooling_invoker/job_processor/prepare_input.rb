@@ -22,6 +22,8 @@ module ToolingInvoker
 
         true
       rescue StandardError => e
+        ToolingInvoker::Log.("Preparing input failed: #{e.message}", job:)
+
         self.retries += 1
 
         if self.retries <= MAX_NUM_RETRIES
