@@ -11,14 +11,22 @@ module ToolingInvoker
       FAILED_TO_PREPARE_INPUT = 512
       UNKNOWN_ERROR_STATUS = 513
 
+      ABNORMAL_STATUSES = [
+        DID_NOT_EXECUTE_STATUS,
+        TIMEOUT_STATUS,
+        FAILED_TO_PREPARE_INPUT,
+        UNKNOWN_ERROR_STATUS
+      ].freeze
+
       MAX_OUTPUT_FILE_SIZE = 500 * 1024 # 500 kilobyte
 
-      attr_reader :id, :language, :exercise, :source, :container_version, :exception
-      attr_accessor :stdout, :stderr
+      attr_reader :id, :submission_uuid, :language, :exercise, :source, :container_version, :exception
+      attr_accessor :stdout, :stderr, :duration
       attr_writer :output # Used by local webserver
 
-      def initialize(id, language, exercise, source, container_version)
+      def initialize(id, submission_uuid, language, exercise, source, container_version)
         @id = id
+        @submission_uuid = submission_uuid
         @language = language
         @exercise = exercise
         @source = source
@@ -69,8 +77,8 @@ module ToolingInvoker
 
         @status = UNKNOWN_ERROR_STATUS
         @exception = {
-          message: message,
-          backtrace: backtrace
+          message:,
+          backtrace:
         }
       end
 
@@ -110,12 +118,10 @@ module ToolingInvoker
 
       def valid_output?
         output_filepaths.all? do |output_filepath|
-          begin
-            contents = File.read("#{source_code_dir}/#{output_filepath}")
-            contents && contents.size > 0 && contents.size <= MAX_OUTPUT_FILE_SIZE
-          rescue StandardError => e
-            false
-          end
+          contents = File.read("#{source_code_dir}/#{output_filepath}")
+          contents && contents.size > 0 && contents.size <= MAX_OUTPUT_FILE_SIZE
+        rescue StandardError
+          false
         end
       end
 

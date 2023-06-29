@@ -8,8 +8,13 @@ module ToolingInvoker
       $stdout.sync = true
       $stderr.sync = true
 
-      WaitForManager.()
-      CreateNetworks.()
+      Log.("Waiting for Manager to finish")
+      Setup::WaitForManager.()
+
+      Log.("Creating Networks")
+      Setup::CreateNetworks.()
+
+      Log.("Waiting for Canary") until Worker::CheckCanary.()
 
       workers = (1..count).map { |idx| Worker.new(idx) }
 

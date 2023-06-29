@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'securerandom'
+
+# Path to the application root.
+APP_ROOT = File.expand_path('..', __dir__)
+require "bundler/setup"
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+require "tooling_invoker"
+
+track_slug = "fsharp"
+exercise_slug = "yacht"
+id = "test-#{SecureRandom.uuid}"
+
+# Generate this with:
+=begin
+submission = ...
+cmd = ToolingJob::Create.new(submission, 'test_runer')
+
+source: {
+  submission_efs_root: submission.uuid,
+  submission_filepaths: submission.valid_filepaths,
+  exercise_git_repo: submission.solution.track.slug,
+  exercise_git_sha: submission.git_sha,
+  exercise_git_dir: cmd.send(:exercise_repo).dir,
+  exercise_filepaths: cmd.send(:exercise_filepaths)
+}
+=end
+
+source = {
+  'submission_efs_root'=>"8d0451cd09a0483bb2be4ca0987845b7",
+  'submission_filepaths'=>["Yacht.fs"],
+  'exercise_git_repo'=>"fsharp",
+  'exercise_git_sha'=>"008f88a9113ee078165941ce3c607e849fb79363",
+  'exercise_git_dir'=>"exercises/practice/yacht",
+  'exercise_filepaths'=>[".config/dotnet-tools.json", ".meta/Example.fs", ".meta/config.json", ".meta/tests.toml", "Yacht.fsproj", "YachtTests.fs"]
+}
+
+puts id
+job = ToolingInvoker::Jobs::TestRunnerJob.new(id, track_slug, exercise_slug, source, nil)
+puts job.dir
+puts job.dir
+ToolingInvoker::ProcessJob.(job)
+

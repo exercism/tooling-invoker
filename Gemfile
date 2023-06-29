@@ -7,10 +7,11 @@ end
 
 gem 'mandate'
 gem "aws-sdk-s3"
+gem "aws-sdk-cloudwatchlogs"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism-config', '>= 0.76.0'
+gem 'exercism-config', '>= 0.102.0'
 
 gem 'rubyzip'
 gem 'rugged' # Git
@@ -22,5 +23,3 @@ gem 'rubocop'
 gem 'rubocop-minitest'
 gem 'rubocop-performance'
 gem 'simplecov', '~> 0.17.0'
-
-gem 'redis' # TODO: Remove this

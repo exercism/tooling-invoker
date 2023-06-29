@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
 jobs:
   test:
@@ -22,11 +21,11 @@ jobs:
       - uses: actions/checkout@v2
 
       ###
-      # Setup Ruby - this needs to match the version in the Gemfile
+      # Setup Ruby
       - name: Set up Ruby
-        uses: ruby/setup-ruby@2eb6adbfb1f8850489a1f947f9421d777ea89485
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
         with:
-          ruby-version: 2.6.6
+          ruby-version: .ruby-version
           bundler-cache: true
 
       ###
