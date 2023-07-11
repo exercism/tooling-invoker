@@ -36,7 +36,7 @@ module ToolingInvoker
         # else handle this job.
         begin
           RestClient.patch("#{config.orchestrator_address}/jobs/#{job.id}/requeue", {})
-        rescue RestClient::NotFound
+        rescue StandardError
           # This is weird, but not enough to shut the machine down
         end
 
