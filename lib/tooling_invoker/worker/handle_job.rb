@@ -38,6 +38,8 @@ module ToolingInvoker
           RestClient.patch("#{config.orchestrator_address}/jobs/#{job.id}/requeue", {})
         rescue StandardError
           # This is weird, but not enough to shut the machine down
+          # It could be a 404 on the job id or somnething else.
+          # But let's just catch everything to be safe.
         end
 
         # Now let's check the machine a couple more times
