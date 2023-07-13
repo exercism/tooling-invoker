@@ -37,7 +37,7 @@ module ToolingInvoker
 
         RestClient.
           expects(:patch).
-          with("#{config.orchestrator_address}/jobs/#{job.id}/requeue")
+          with("#{config.orchestrator_address}/jobs/#{job.id}/requeue", {})
 
         Worker::HandleJob.(job)
       end

@@ -34,7 +34,13 @@ module ToolingInvoker
         # OK - we're in a bad state.
         # Firstly, let's tell the orchestrator to let something
         # else handle this job.
-        RestClient.patch("#{config.orchestrator_address}/jobs/#{job.id}/requeue")
+        begin
+          RestClient.patch("#{config.orchestrator_address}/jobs/#{job.id}/requeue", {})
+        rescue StandardError
+          # This is weird, but not enough to shut the machine down
+          # It could be a 404 on the job id or somnething else.
+          # But let's just catch everything to be safe.
+        end
 
         # Now let's check the machine a couple more times
         # and if we keep getting failures, we'll kill the machine
@@ -46,6 +52,10 @@ module ToolingInvoker
         # If we get here the canary has recovered,
         # but now we want to abort this.
         false
+      rescue StandardError
+        # Everything's gone to hell. Tell the machine to shut down
+        # And then raise an exception.
+        `sudo shutdown now`
       end
     end
   end
