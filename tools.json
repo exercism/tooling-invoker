@@ -23,5 +23,14 @@
   "clojurescript_test_runner": {
     "network": "none",
     "max_memory": "3GB"
+  },
+  "kotlin_test_runner": {
+    "timeout": 30
+  },
+  "haskell_test_runner": {
+    "timeout": 30
+  },
+  "fsharp_test_runner": {
+    "timeout": 30
   }
 }
