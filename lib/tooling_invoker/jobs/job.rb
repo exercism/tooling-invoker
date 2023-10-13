@@ -38,9 +38,10 @@ module ToolingInvoker
         @exception = {}
       end
 
-      def tool
-        "#{language}-#{type}"
-      end
+      def tool = "#{language}-#{type}"
+      def cmd = "bin/run.sh"
+      def invocation_args = [exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
+      def working_directory = "/opt/#{type}"
 
       def succeeded!
         @status = 200
@@ -130,10 +131,6 @@ module ToolingInvoker
       def image
         "#{Configuration.instance.image_registry}/#{tool}:#{Configuration.instance.image_tag}"
       end
-
-      def cmd = "bin/run.sh"
-
-      def invocation_args = [exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
 
       def source_code_root_dir
         ENV['EXERCISM_DEV_ENV_DIR'] if ENV["EXERCISM_DOCKER"]
