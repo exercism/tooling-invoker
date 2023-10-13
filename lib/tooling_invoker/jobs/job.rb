@@ -103,7 +103,7 @@ module ToolingInvoker
             contents = File.read("#{source_code_dir}/#{output_filepath}")
           rescue StandardError
             # If the file hasn't been written by the tooling
-            # don't blow up everything else unnceessarily
+            # don't blow up everything else unnecessarily
             next
           end
 
