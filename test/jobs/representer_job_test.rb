@@ -24,6 +24,7 @@ module ToolingInvoker::Jobs
         "/mnt/exercism-iteration/"
       ], job.invocation_args
       assert_equal ["representation.txt", "representation.json", "mapping.json"], job.output_filepaths
+      assert_equal ["representation.json"], job.optional_filepaths
       assert_equal "/opt/representer", job.working_directory
     end
   end
