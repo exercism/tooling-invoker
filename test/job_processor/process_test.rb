@@ -187,7 +187,7 @@ module ToolingInvoker
         end
       end
 
-      def test_timeout_with_results
+      def test_timeout_with_required_files_present
         results = '{"happy": "people"}'
 
         job = Jobs::TestRunnerJob.new(
@@ -214,6 +214,79 @@ module ToolingInvoker
           expected_output = { "results.json" => results }
 
           assert_equal 200, job.status
+          assert_equal expected_output, job.output
+          assert_equal "", job.stdout
+          assert_equal "", job.stderr
+        ensure
+          FileUtils.rm_rf(job.dir)
+        end
+      end
+
+      def test_timeout_with_missing_optional_file
+        representation = '(class  (const nil :PLACEHOLDER_0) nil  (def :placeholder_1    (args)    (str "foo")))'
+        mapping = '{"TwoFer":"PLACEHOLDER_0","two_fer":"placeholder_1"}'
+
+        job = Jobs::RepresenterJob.new(
+          SecureRandom.hex,
+          SecureRandom.hex,
+          "ruby",
+          "bob",
+          { 'submission_filepaths' => [] },
+          "v1"
+        )
+
+        # Write the required files to the place the representer should write to
+        # Note: we're missing the representation.json file
+        FileUtils.mkdir_p(job.source_code_dir)
+        File.write("#{job.source_code_dir}/#{job.output_filepaths[0]}", representation)
+        File.write("#{job.source_code_dir}/#{job.output_filepaths[2]}", mapping)
+
+        begin
+          ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/../bin/infinite_loop")
+
+          FileUtils.mkdir_p(job.dir)
+          Dir.chdir(job.dir) do
+            ProcessJob.(job)
+          end
+
+          expected_output = { "representation.txt" => representation, "mapping.json" => mapping }
+
+          assert_equal 200, job.status
+          assert_equal expected_output, job.output
+          assert_equal "", job.stdout
+          assert_equal "", job.stderr
+        ensure
+          FileUtils.rm_rf(job.dir)
+        end
+      end
+
+      def test_timeout_with_missing_required_file
+        representation = '(class  (const nil :PLACEHOLDER_0) nil  (def :placeholder_1    (args)    (str "foo")))'
+
+        job = Jobs::RepresenterJob.new(
+          SecureRandom.hex,
+          SecureRandom.hex,
+          "ruby",
+          "bob",
+          { 'submission_filepaths' => [] },
+          "v1"
+        )
+
+        # Write only one of the required files to the place the representer should write to
+        FileUtils.mkdir_p(job.source_code_dir)
+        File.write("#{job.source_code_dir}/#{job.output_filepaths[0]}", representation)
+
+        begin
+          ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/../bin/infinite_loop")
+
+          FileUtils.mkdir_p(job.dir)
+          Dir.chdir(job.dir) do
+            ProcessJob.(job)
+          end
+
+          expected_output = { "representation.txt" => representation }
+
+          assert_equal 408, job.status
           assert_equal expected_output, job.output
           assert_equal "", job.stdout
           assert_equal "", job.stderr
