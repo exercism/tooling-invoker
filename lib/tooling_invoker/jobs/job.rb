@@ -117,7 +117,7 @@ module ToolingInvoker
       end
 
       def valid_output?
-        required_output_filepaths.all? do |output_filepath|
+        required_filepaths.all? do |output_filepath|
           contents = File.read("#{source_code_dir}/#{output_filepath}")
           contents && contents.size > 0 && contents.size <= MAX_OUTPUT_FILE_SIZE
         rescue StandardError
@@ -125,7 +125,7 @@ module ToolingInvoker
         end
       end
 
-      def required_output_filepaths = output_filepaths - optional_filepaths
+      def output_filepaths = required_filepaths + optional_filepaths
 
       def image
         "#{Configuration.instance.image_registry}/#{tool}:#{Configuration.instance.image_tag}"

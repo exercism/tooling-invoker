@@ -239,7 +239,7 @@ module ToolingInvoker
         # Note: we're missing the representation.json file
         FileUtils.mkdir_p(job.source_code_dir)
         File.write("#{job.source_code_dir}/#{job.output_filepaths[0]}", representation)
-        File.write("#{job.source_code_dir}/#{job.output_filepaths[2]}", mapping)
+        File.write("#{job.source_code_dir}/#{job.output_filepaths[1]}", mapping)
 
         begin
           ExecDocker.any_instance.stubs(docker_run_command: "#{__dir__}/../bin/infinite_loop")

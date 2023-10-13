@@ -3,7 +3,7 @@ module ToolingInvoker::Jobs
     def type = "analyzer"
     def cmd = "bin/run.sh"
     def invocation_args = [exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
-    def output_filepaths = ["analysis.json"]
+    def required_filepaths = ["analysis.json"]
     def optional_filepaths = []
     def working_directory = "/opt/analyzer"
     def tool = "#{language}-analyzer"

@@ -25,6 +25,7 @@ module ToolingInvoker::Jobs
         "/mnt/exercism-iteration/"
       ], job.invocation_args
       assert_equal ["analysis.json"], job.output_filepaths
+      assert_equal ["analysis.json"], job.required_filepaths
       assert_empty job.optional_filepaths
       assert_equal "/opt/analyzer", job.working_directory
     end
