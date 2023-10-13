@@ -1,27 +1,10 @@
 module ToolingInvoker::Jobs
   class AnalyzerJob < Job
-    def type
-      "analyzer"
-    end
-
-    def cmd
-      "bin/run.sh"
-    end
-
-    def invocation_args
-      [exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
-    end
-
-    def output_filepaths
-      ["analysis.json"]
-    end
-
-    def working_directory
-      "/opt/analyzer"
-    end
-
-    def tool
-      "#{language}-analyzer"
-    end
+    def type = "analyzer"
+    def cmd = "bin/run.sh"
+    def invocation_args = [exercise, "/mnt/exercism-iteration/", "/mnt/exercism-iteration/"]
+    def output_filepaths = ["analysis.json"]
+    def working_directory = "/opt/analyzer"
+    def tool = "#{language}-analyzer"
   end
 end
