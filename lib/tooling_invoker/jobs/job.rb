@@ -131,6 +131,8 @@ module ToolingInvoker
         "#{Configuration.instance.image_registry}/#{tool}:#{Configuration.instance.image_tag}"
       end
 
+      def cmd = "bin/run.sh"
+
       def source_code_root_dir
         ENV['EXERCISM_DEV_ENV_DIR'] if ENV["EXERCISM_DOCKER"]
       end
