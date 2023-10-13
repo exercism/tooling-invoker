@@ -6,6 +6,5 @@ module ToolingInvoker::Jobs
     def required_filepaths = ["analysis.json"]
     def optional_filepaths = ["tags.json"]
     def working_directory = "/opt/analyzer"
-    def tool = "#{language}-analyzer"
   end
 end

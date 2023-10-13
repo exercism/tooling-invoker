@@ -27,6 +27,7 @@ module ToolingInvoker::Jobs
       assert_equal ["representation.txt", "mapping.json"], job.required_filepaths
       assert_equal ["representation.json"], job.optional_filepaths
       assert_equal "/opt/representer", job.working_directory
+      assert_equal "ruby-representer", job.tool
     end
   end
 end

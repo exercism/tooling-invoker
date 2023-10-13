@@ -6,6 +6,5 @@ module ToolingInvoker::Jobs
     def required_filepaths = ["representation.txt", "mapping.json"]
     def optional_filepaths = ["representation.json"]
     def working_directory = "/opt/representer"
-    def tool = "#{language}-representer"
   end
 end

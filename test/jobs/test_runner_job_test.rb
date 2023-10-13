@@ -27,6 +27,7 @@ module ToolingInvoker::Jobs
       assert_equal ["results.json"], job.required_filepaths
       assert_empty job.optional_filepaths
       assert_equal "/opt/test-runner", job.working_directory
+      assert_equal "ruby-test-runner", job.tool
     end
   end
 end

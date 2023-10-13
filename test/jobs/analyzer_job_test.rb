@@ -28,6 +28,7 @@ module ToolingInvoker::Jobs
       assert_equal ["analysis.json"], job.required_filepaths
       assert_equal ["tags.json"], job.optional_filepaths
       assert_equal "/opt/analyzer", job.working_directory
+      assert_equal "ruby-analyzer", job.tool
     end
   end
 end
