@@ -32,5 +32,8 @@
   },
   "fsharp_test_runner": {
     "timeout": 30
+  },
+  "batch_test_runner": {
+    "network": "internal"
   }
 }
