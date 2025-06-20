@@ -1,3 +1,12 @@
+PATH
+  remote: ../config
+  specs:
+    exercism-config (0.121.0)
+      aws-sdk-dynamodb (~> 1.0)
+      aws-sdk-secretsmanager (~> 1.0)
+      mandate
+      zeitwerk
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -30,11 +39,6 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    exercism-config (0.102.0)
-      aws-sdk-dynamodb (~> 1.0)
-      aws-sdk-secretsmanager (~> 1.0)
-      mandate
-      zeitwerk
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
@@ -104,7 +108,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-cloudwatchlogs
   aws-sdk-s3
-  exercism-config (>= 0.102.0)
+  exercism-config!
   mandate
   minitest
   mocha
