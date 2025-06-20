@@ -38,5 +38,8 @@
   },
   "batch_test_runner": {
     "network": "internal"
+  },
+  "go_test_runner": {
+    "timeout": 30
   }
 }
