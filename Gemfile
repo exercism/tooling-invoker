@@ -11,7 +11,8 @@ gem "aws-sdk-cloudwatchlogs"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism-config', path: '../config' #'>= 0.102.0'
+gem 'exercism-config', '>= 0.123.0'
+# gem 'exercism-config', path: '../config'
 
 gem 'rubyzip'
 gem 'rugged' # Git

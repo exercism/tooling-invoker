@@ -11,7 +11,7 @@ module ToolingInvoker
       end
 
       def copy_submission_files!
-        efs_path = "#{Exercism.config.efs_submissions_mount_point}/#{job.source['submission_efs_root']}"
+        efs_path = job.source['submission_efs_root']
 
         job.source['submission_filepaths'].each do |filepath|
           destination = "#{job.source_code_dir}/#{filepath}"
