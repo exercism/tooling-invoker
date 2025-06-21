@@ -157,7 +157,7 @@ module ToolingInvoker
           "-l #{container_label}",
           "--network #{Configuration.instance.network_for_tool(job.tool)}",
           "-m #{Configuration.instance.max_memory_for_tool(job.tool)}",
-          "--platform linux/amd64",
+          # "--platform linux/amd64",
           job.image,
           *job.invocation_args
         ].join(" ")
