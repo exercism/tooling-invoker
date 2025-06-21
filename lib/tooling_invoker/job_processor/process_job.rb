@@ -9,8 +9,6 @@ module ToolingInvoker
         Log.("Invoking request: #{job.type}:#{job.language}:#{job.exercise}", job:)
 
         JobProcessor::PrepareInput.(job) && run_job!
-      ensure
-        JobProcessor::CleanUp.(job)
       end
 
       private
