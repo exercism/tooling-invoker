@@ -1,4 +1,4 @@
-require:
+plugins:
   - rubocop-minitest
   - rubocop-performance
 
@@ -43,7 +43,7 @@ Metrics/MethodLength:
   Exclude:
     - "test/**/*"
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Enabled: false
 
 Style/StringLiterals:
