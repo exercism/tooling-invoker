@@ -30,7 +30,7 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    exercism-config (0.123.0)
+    exercism-config (0.124.0)
       aws-sdk-dynamodb (~> 1.0)
       aws-sdk-secretsmanager (~> 1.0)
       mandate
@@ -99,12 +99,13 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
   aws-sdk-cloudwatchlogs
   aws-sdk-s3
-  exercism-config (>= 0.123.0)
+  exercism-config (>= 0.124.0)
   mandate
   minitest
   mocha
@@ -118,6 +119,9 @@ DEPENDENCIES
   simplecov (~> 0.17.0)
   timecop
   zeitwerk
+
+RUBY VERSION
+   ruby 3.4.4p34
 
 BUNDLED WITH
    2.4.12

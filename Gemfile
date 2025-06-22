@@ -1,9 +1,6 @@
 source 'https://rubygems.org'
 
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
-  "https://github.com/#{repo_name}.git"
-end
+ruby '3.4.4'
 
 gem 'mandate'
 gem "aws-sdk-s3"
@@ -11,7 +8,7 @@ gem "aws-sdk-cloudwatchlogs"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism-config', '>= 0.123.0'
+gem 'exercism-config', '>= 0.124.0'
 # gem 'exercism-config', path: '../config'
 
 gem 'rubyzip'
