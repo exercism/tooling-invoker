@@ -12,6 +12,12 @@ module ToolingInvoker
     end
 
     def start!
+      Log.("Waiting for Manager to finish")
+      Setup::WaitForManager.()
+
+      Log.("Creating Networks")
+      Setup::CreateNetworks.()
+
       Log.("Worker #{worker_idx}: Starting")
 
       counter = 0
