@@ -28,4 +28,10 @@ require "tooling_invoker"
 
 puts "Starting ToolingInvoker::Worker..."
 
+Log.("Waiting for Manager to finish")
+Setup::WaitForManager.()
+
+Log.("Creating Networks")
+Setup::CreateNetworks.()
+
 ToolingInvoker::Worker.new(1).start!
