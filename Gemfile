@@ -14,7 +14,10 @@ gem "aws-sdk-cloudwatchlogs"
 gem 'zeitwerk'
 gem "rake"
 gem 'rest-client'
-gem 'exercism-config', '>= 0.124.0'
+gem 'redis', '~> 5.1'
+gem 'redis-clustering', '~> 5.1'
+
+gem 'exercism-config', '>= 0.128.0'
 # gem 'exercism-config', path: '../config'
 
 gem 'rubyzip'

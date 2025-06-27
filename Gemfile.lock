@@ -31,9 +31,10 @@ GEM
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
     bigdecimal (3.2.2)
+    connection_pool (2.5.3)
     docile (1.4.1)
     domain_name (0.6.20240107)
-    exercism-config (0.124.0)
+    exercism-config (0.128.0)
       aws-sdk-dynamodb (~> 1.0)
       aws-sdk-secretsmanager (~> 1.0)
       mandate
@@ -68,6 +69,15 @@ GEM
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.3.0)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.25.0)
+      connection_pool
+    redis-cluster-client (0.13.5)
+      redis-client (~> 0.24)
+    redis-clustering (5.4.0)
+      redis (= 5.4.0)
+      redis-cluster-client (>= 0.10.0)
     regexp_parser (2.10.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -121,13 +131,15 @@ DEPENDENCIES
   aws-sdk-s3
   base64
   bigdecimal
-  exercism-config (>= 0.124.0)
+  exercism-config (>= 0.128.0)
   mandate
   minitest
   mocha
   nokogiri
   ostruct
   rake
+  redis (~> 5.1)
+  redis-clustering (~> 5.1)
   rest-client
   rubocop
   rubocop-minitest
