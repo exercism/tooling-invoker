@@ -15,7 +15,12 @@ module ToolingInvoker
 
     # Opens no sockets — it's a pool object, built once at load time and shared
     # by every worker thread.
-    CONNECTION = Net::HTTP::Persistent.new(name: 'tooling-invoker')
+    CONNECTION = Net::HTTP::Persistent.new(name: 'tooling-invoker').tap do |conn|
+      # net-http-persistent defaults to 30s where rest-client allowed 60s.
+      # Job output can be large, so keep the old ceiling rather than
+      # introducing a new class of timeout under load.
+      conn.read_timeout = 60
+    end
 
     class << self
       def get(path)
@@ -26,15 +31,29 @@ module ToolingInvoker
       def patch(path, payload = {})
         uri = uri_for(path)
         request = Net::HTTP::Patch.new(uri)
-
-        # Matches how rest-client encoded a Hash body, which is what the
-        # orchestrator's params parsing expects.
-        request.set_form_data(payload)
+        request.body = URI.encode_www_form(flatten_params(payload))
+        request.content_type = 'application/x-www-form-urlencoded'
 
         perform(uri, request)
       end
 
       private
+      # job.output is a Hash of filename => contents, and the orchestrator
+      # reads it back as a Hash (params.slice("status", "output")). rest-client
+      # encoded that as output[results.json]=contents, which Rack parses back
+      # into a nested Hash.
+      #
+      # Net::HTTP's set_form_data does NOT do this — it calls to_s on a Hash
+      # value, which would send a Ruby inspect string and silently corrupt
+      # every job result. Hence encoding the nesting ourselves.
+      def flatten_params(payload, prefix = nil)
+        payload.flat_map do |key, value|
+          name = prefix ? "#{prefix}[#{key}]" : key.to_s
+
+          value.is_a?(Hash) ? flatten_params(value, name) : [[name, value.to_s]]
+        end
+      end
+
       def perform(uri, request)
         response = CONNECTION.request(uri, request)
 
