@@ -53,13 +53,13 @@ module ToolingInvoker
       JobProcessor::ProcessJob.expects(:call).with(job)
       Worker::WriteToCloudwatch.expects(:call).with(job)
 
-      RestClient.expects(:get).
-        with("#{config.orchestrator_address}/jobs/next").
+      Http.expects(:get).
+        with("/jobs/next").
         returns(mock(body: resp.to_json))
 
-      RestClient.expects(:patch).
+      Http.expects(:patch).
         with(
-          "#{config.orchestrator_address}/jobs/#{@job_id}",
+          "/jobs/#{@job_id}",
           {
             status:,
             output:
@@ -95,13 +95,13 @@ module ToolingInvoker
       JobProcessor::ProcessJob.expects(:call).with(job)
       Worker::WriteToCloudwatch.expects(:call).with(job)
 
-      RestClient.expects(:get).
-        with("#{config.orchestrator_address}/jobs/next").
+      Http.expects(:get).
+        with("/jobs/next").
         returns(mock(body: resp.to_json))
 
-      RestClient.expects(:patch).
+      Http.expects(:patch).
         with(
-          "#{config.orchestrator_address}/jobs/#{@job_id}",
+          "/jobs/#{@job_id}",
           {
             status:,
             output:
@@ -137,13 +137,13 @@ module ToolingInvoker
       JobProcessor::ProcessJob.expects(:call).with(job)
       Worker::WriteToCloudwatch.expects(:call).with(job)
 
-      RestClient.expects(:get).
-        with("#{config.orchestrator_address}/jobs/next").
+      Http.expects(:get).
+        with("/jobs/next").
         returns(mock(body: resp.to_json))
 
-      RestClient.expects(:patch).
+      Http.expects(:patch).
         with(
-          "#{config.orchestrator_address}/jobs/#{@job_id}",
+          "/jobs/#{@job_id}",
           {
             status:,
             output:
@@ -159,14 +159,14 @@ module ToolingInvoker
 
     def test_without_job
       service = Worker.new(1)
-      RestClient.expects(:get).raises(RestClient::NotFound)
+      Http.expects(:get).raises(Http::NotFound)
       service.expects(:loop).yields
       service.expects(:sleep)
       service.start!
     end
 
     def test_with_exception
-      RestClient.expects(:get).raises(RuntimeError)
+      Http.expects(:get).raises(RuntimeError)
       service = Worker.new(1)
       service.expects(:loop).yields
       service.expects(:sleep)

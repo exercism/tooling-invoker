@@ -6,12 +6,10 @@ module ToolingInvoker
       # This will raise an exception if something other than
       # a 200 or a 404 is found.
       def call
-        resp = RestClient.get(
-          "#{config.orchestrator_address}/jobs/next"
-        )
+        resp = Http.get("/jobs/next")
         job_data = JSON.parse(resp.body)
         build_job(job_data)
-      rescue RestClient::NotFound
+      rescue Http::NotFound
         nil
       end
 
@@ -35,10 +33,6 @@ module ToolingInvoker
           job_data['source'],
           job_data['container_version']
         )
-      end
-
-      def config
-        ToolingInvoker.config
       end
     end
   end

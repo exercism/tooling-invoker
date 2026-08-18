@@ -2,7 +2,7 @@ ENV["EXERCISM_ENV"] ||= "development"
 
 require 'mandate'
 require 'aws-sdk-s3'
-require 'rest-client'
+require 'net/http/persistent'
 require 'singleton'
 require 'rugged'
 require 'exercism-config'
