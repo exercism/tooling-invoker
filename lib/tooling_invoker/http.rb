@@ -20,6 +20,13 @@ module ToolingInvoker
       # Job output can be large, so keep the old ceiling rather than
       # introducing a new class of timeout under load.
       conn.read_timeout = 60
+
+      # GET /jobs/next mutates state on the orchestrator (it locks the job to
+      # this worker), so Net::HTTP's default transparent retry of "idempotent"
+      # requests could pop a second job while the first sits locked against a
+      # worker that never saw it. Fail loudly instead — the worker loop already
+      # retries polling at a higher level.
+      conn.max_retries = 0
     end
 
     class << self

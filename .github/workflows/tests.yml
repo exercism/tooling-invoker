@@ -11,7 +11,12 @@ jobs:
 
     services:
       aws:
-        image: "localstack/localstack"
+        # Pinned: from 2026.7.x, localstack/localstack:latest requires a
+        # LOCALSTACK_AUTH_TOKEN and exits 55 ("License activation failed")
+        # without one, failing the job before any test runs. 4.6 is the last
+        # version this suite was green against (2025-07-06) and needs no
+        # credentials.
+        image: "localstack/localstack:4.6"
         ports:
           - 4566
 

@@ -10,18 +10,34 @@ module ToolingInvoker
 
         return if Jobs::Job::ABNORMAL_STATUSES.include?(job.status) && !check_canary!
 
-        Http.patch(
-          "/jobs/#{job.id}",
-          {
-            status: job.status,
-            output: job.output
-          }
-        )
+        report_result!
         WriteToCloudwatch.(job)
       rescue StandardError => e
         Log.("Error handling job", job:)
         Log.(e.message, job:)
         Log.(e.backtrace, job:)
+      end
+
+      # The connection has been idle for the whole duration of the job, so
+      # it's possible (if rare — the pool reopens anything idle for more than
+      # 5s) that the server closed it just before we wrote. Losing this PATCH
+      # loses the job's result entirely, and it's safe to repeat, so retry
+      # once on a fresh connection before giving up.
+      def report_result!
+        attempts = 0
+        begin
+          Http.patch(
+            "/jobs/#{job.id}",
+            {
+              status: job.status,
+              output: job.output
+            }
+          )
+        rescue StandardError
+          raise if (attempts += 1) > 1
+
+          retry
+        end
       end
 
       def check_canary!
