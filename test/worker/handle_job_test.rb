@@ -12,10 +12,10 @@ module ToolingInvoker
         # But pass the canary
         Worker::CheckCanary.expects(:call).returns(true)
 
-        RestClient.
+        Http.
           expects(:patch).
           with(
-            "#{config.orchestrator_address}/jobs/#{job.id}",
+            "/jobs/#{job.id}",
             {
               status: job.status,
               output: job.output
@@ -35,9 +35,9 @@ module ToolingInvoker
         # but recovers the second time
         Worker::CheckCanary.expects(:call).twice.returns(false, true)
 
-        RestClient.
+        Http.
           expects(:patch).
-          with("#{config.orchestrator_address}/jobs/#{job.id}/requeue", {})
+          with("/jobs/#{job.id}/requeue")
 
         Worker::HandleJob.(job)
       end

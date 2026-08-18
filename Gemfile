@@ -13,7 +13,7 @@ gem "aws-sdk-s3"
 gem "aws-sdk-cloudwatchlogs"
 gem 'zeitwerk'
 gem "rake"
-gem 'rest-client'
+gem 'net-http-persistent'
 gem 'redis', '~> 5.1'
 gem 'redis-clustering', '~> 5.1'
 

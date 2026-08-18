@@ -33,29 +33,22 @@ GEM
     bigdecimal (3.2.2)
     connection_pool (2.5.3)
     docile (1.4.1)
-    domain_name (0.6.20240107)
     exercism-config (0.128.0)
       aws-sdk-dynamodb (~> 1.0)
       aws-sdk-secretsmanager (~> 1.0)
       mandate
       zeitwerk
-    http-accept (1.7.0)
-    http-cookie (1.0.8)
-      domain_name (~> 0.5)
     jmespath (1.6.2)
     json (2.12.2)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
     mandate (2.2.0)
-    mime-types (3.7.0)
-      logger
-      mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0617)
     minitest (5.25.5)
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
-    netrc (0.11.0)
+    net-http-persistent (4.0.8)
+      connection_pool (>= 2.2.4, < 4)
     nokogiri (1.18.8-aarch64-linux-gnu)
       racc (~> 1.4)
     nokogiri (1.18.8-arm64-darwin)
@@ -81,11 +74,6 @@ GEM
       redis (= 5.4.0)
       redis-cluster-client (>= 0.10.0)
     regexp_parser (2.10.0)
-    rest-client (2.1.0)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     rubocop (1.77.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -138,12 +126,12 @@ DEPENDENCIES
   mandate
   minitest
   mocha
+  net-http-persistent
   nokogiri
   ostruct
   rake
   redis (~> 5.1)
   redis-clustering (~> 5.1)
-  rest-client
   rubocop
   rubocop-minitest
   rubocop-performance
@@ -157,4 +145,4 @@ RUBY VERSION
    ruby 3.4.4p34
 
 BUNDLED WITH
-   2.6.9
+   2.6.7

@@ -10,8 +10,8 @@ module ToolingInvoker
 
         return if Jobs::Job::ABNORMAL_STATUSES.include?(job.status) && !check_canary!
 
-        RestClient.patch(
-          "#{config.orchestrator_address}/jobs/#{job.id}",
+        Http.patch(
+          "/jobs/#{job.id}",
           {
             status: job.status,
             output: job.output
@@ -24,10 +24,6 @@ module ToolingInvoker
         Log.(e.backtrace, job:)
       end
 
-      def config
-        ToolingInvoker.config
-      end
-
       def check_canary!
         return true if Worker::CheckCanary.()
 
@@ -35,7 +31,7 @@ module ToolingInvoker
         # Firstly, let's tell the orchestrator to let something
         # else handle this job.
         begin
-          RestClient.patch("#{config.orchestrator_address}/jobs/#{job.id}/requeue", {})
+          Http.patch("/jobs/#{job.id}/requeue")
         rescue StandardError
           # This is weird, but not enough to shut the machine down
           # It could be a 404 on the job id or somnething else.
