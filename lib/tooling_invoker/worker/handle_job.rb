@@ -16,6 +16,20 @@ module ToolingInvoker
         Log.("Error handling job", job:)
         Log.(e.message, job:)
         Log.(e.backtrace, job:)
+      ensure
+        cleanup!
+      end
+
+      # Nothing else ever removes a job's directory, so a runner accumulates
+      # every job it has ever run (~5GB/day) until spot recycles it. Delete
+      # the directory once a successful result has been reported. Anything
+      # that didn't succeed is left in place so it can be inspected.
+      def cleanup!
+        return unless job.status == Jobs::Job::SUCCESS_STATUS
+
+        FileUtils.rm_rf(job.dir)
+      rescue StandardError => e
+        Log.("Failed to remove job dir: #{e.message}", job:)
       end
 
       # The connection has been idle for the whole duration of the job, so

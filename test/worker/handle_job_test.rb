@@ -58,6 +58,52 @@ module ToolingInvoker
         Worker::HandleJob.(job)
       end
 
+      def test_successful_job_dir_is_removed
+        job = Jobs::TestRunnerJob.new(SecureRandom.hex, SecureRandom.hex, "ruby", "bob", {}, "v1")
+        FileUtils.mkdir_p(job.dir)
+
+        JobProcessor::ProcessJob.expects(:call).with(job)
+        job.succeeded!
+        Http.expects(:patch)
+        WriteToCloudwatch.expects(:call).with(job)
+
+        Worker::HandleJob.(job)
+
+        refute Dir.exist?(job.dir)
+      end
+
+      def test_failed_job_dir_is_kept
+        job = Jobs::TestRunnerJob.new(SecureRandom.hex, SecureRandom.hex, "ruby", "bob", {}, "v1")
+        FileUtils.mkdir_p(job.dir)
+
+        begin
+          JobProcessor::ProcessJob.expects(:call).with(job)
+          job.timed_out!("boom")
+          Worker::CheckCanary.expects(:call).returns(true)
+          Http.expects(:patch)
+          WriteToCloudwatch.expects(:call).with(job)
+
+          Worker::HandleJob.(job)
+
+          assert Dir.exist?(job.dir)
+        ensure
+          FileUtils.rm_rf(job.dir)
+        end
+      end
+
+      def test_successful_job_dir_is_removed_even_if_reporting_fails
+        job = Jobs::TestRunnerJob.new(SecureRandom.hex, SecureRandom.hex, "ruby", "bob", {}, "v1")
+        FileUtils.mkdir_p(job.dir)
+
+        JobProcessor::ProcessJob.expects(:call).with(job)
+        job.succeeded!
+        Http.expects(:patch).twice.raises(Net::HTTP::Persistent::Error)
+
+        Worker::HandleJob.(job)
+
+        refute Dir.exist?(job.dir)
+      end
+
       def test_failing_job_with_failing_canary
         job = Jobs::TestRunnerJob.new(SecureRandom.hex, SecureRandom.hex, "ruby", "bob", {}, "v1")
 
