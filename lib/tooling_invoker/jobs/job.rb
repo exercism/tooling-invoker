@@ -11,6 +11,11 @@ module ToolingInvoker
       FAILED_TO_PREPARE_INPUT = 512
       UNKNOWN_ERROR_STATUS = 513
 
+      # When the orchestrator gives up on a job after repeated attempts, it
+      # sets this status (see its Queue). The invoker never sets it, but we
+      # list it here so that every status code is in one place.
+      GAVE_UP_STATUS = 514
+
       ABNORMAL_STATUSES = [
         DID_NOT_EXECUTE_STATUS,
         TIMEOUT_STATUS,

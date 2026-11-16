@@ -40,6 +40,21 @@ Or to jump into a console, then just run commands as normal:
       /usr/src/app % bundle exec rake test
 ```
 
+## Each job ends with a status code
+
+Each job's result carries one of these statuses, defined in `lib/tooling_invoker/jobs/job.rb`:
+
+| Status | Meaning |
+| --- | --- |
+| 200 | The tool ran and exited cleanly |
+| 408 | The tool timed out |
+| 410 | The tool did not run |
+| 413 | The tool wrote too much to stdout or stderr |
+| 460 | The tool's output files were too large |
+| 512 | The invoker could not prepare the job's input |
+| 513 | An unknown error occurred |
+| 514 | The orchestrator gave up on the job after repeated attempts. The invoker never sets this. |
+
 ## Filesystem Layout
 
 _This is WIP_

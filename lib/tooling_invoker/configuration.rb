@@ -19,6 +19,14 @@ module ToolingInvoker
       (ENV["JOB_POLLING_DELAY"] || 0.6).to_f
     end
 
+    # The invoker asks the orchestrator to wait up to this many seconds for a
+    # job, so that it doesn't need to keep asking. An older orchestrator
+    # ignores this and answers straight away, as it always has. This must stay
+    # well below Http::READ_TIMEOUT, so that the request never times out
+    # while it waits.
+    JOB_POLL_WAIT = 20
+    def job_poll_wait = JOB_POLL_WAIT
+
     def jobs_dir
       if Exercism.env.production?
         File.expand_path('/opt/jobs')
