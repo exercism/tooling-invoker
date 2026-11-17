@@ -5,8 +5,11 @@ module ToolingInvoker
 
       # This will raise an exception if something other than
       # a 200 or a 404 is found.
+      #
+      # The orchestrator keeps the request open until a job arrives or the
+      # wait runs out, so the invoker doesn't need to keep asking.
       def call
-        resp = Http.get("/jobs/next")
+        resp = Http.get("/jobs/next?wait=#{ToolingInvoker.config.job_poll_wait}")
         job_data = JSON.parse(resp.body)
         build_job(job_data)
       rescue Http::NotFound

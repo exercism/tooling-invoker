@@ -13,13 +13,17 @@ module ToolingInvoker
     NotFound = Class.new(StandardError)
     RequestFailed = Class.new(StandardError)
 
+    # The invoker waits up to this many seconds for a response. By default,
+    # net-http-persistent would wait 30 seconds, and rest-client waited 60.
+    # Job output can be large, so this keeps the 60-second limit. The limit
+    # also has to be well above the wait on GET /jobs/next
+    # (Configuration::JOB_POLL_WAIT).
+    READ_TIMEOUT = 60
+
     # Opens no sockets — it's a pool object, built once at load time and shared
     # by every worker thread.
     CONNECTION = Net::HTTP::Persistent.new(name: 'tooling-invoker').tap do |conn|
-      # net-http-persistent defaults to 30s where rest-client allowed 60s.
-      # Job output can be large, so keep the old ceiling rather than
-      # introducing a new class of timeout under load.
-      conn.read_timeout = 60
+      conn.read_timeout = READ_TIMEOUT
 
       # GET /jobs/next mutates state on the orchestrator (it locks the job to
       # this worker), so Net::HTTP's default transparent retry of "idempotent"

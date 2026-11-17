@@ -51,5 +51,16 @@ module ToolingInvoker
       assert_equal orchestrator_url, config.orchestrator_address
       assert_equal "production", config.image_tag
     end
+
+    def test_job_poll_wait
+      assert_equal 20, Configuration.instance.job_poll_wait
+    end
+
+    # If the read times out before the orchestrator answers, a job given to
+    # the invoker at the last moment will only go back on the queue when its
+    # deadline passes.
+    def test_http_read_timeout_comfortably_exceeds_the_wait
+      assert_operator Http::CONNECTION.read_timeout, :>=, Configuration::JOB_POLL_WAIT + 30
+    end
   end
 end

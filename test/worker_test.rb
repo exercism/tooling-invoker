@@ -54,7 +54,7 @@ module ToolingInvoker
       Worker::WriteToCloudwatch.expects(:call).with(job)
 
       Http.expects(:get).
-        with("/jobs/next").
+        with("/jobs/next?wait=20").
         returns(mock(body: resp.to_json))
 
       Http.expects(:patch).
@@ -96,7 +96,7 @@ module ToolingInvoker
       Worker::WriteToCloudwatch.expects(:call).with(job)
 
       Http.expects(:get).
-        with("/jobs/next").
+        with("/jobs/next?wait=20").
         returns(mock(body: resp.to_json))
 
       Http.expects(:patch).
@@ -138,7 +138,7 @@ module ToolingInvoker
       Worker::WriteToCloudwatch.expects(:call).with(job)
 
       Http.expects(:get).
-        with("/jobs/next").
+        with("/jobs/next?wait=20").
         returns(mock(body: resp.to_json))
 
       Http.expects(:patch).
