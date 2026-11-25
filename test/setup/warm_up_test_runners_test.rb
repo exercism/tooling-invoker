@@ -6,7 +6,13 @@ module ToolingInvoker
       def setup
         super
 
-        WarmUpTestRunners.any_instance.stubs(claim_boot!: true)
+        @marker_dir = Dir.mktmpdir
+        WarmUpTestRunners.any_instance.stubs(marker_path: "#{@marker_dir}/marker", boot_id: "boot-1")
+      end
+
+      def teardown
+        FileUtils.rm_r(@marker_dir)
+        super
       end
 
       def test_runs_each_test_runner_through_the_normal_job_code
@@ -52,23 +58,36 @@ module ToolingInvoker
       end
 
       def test_only_runs_on_fleet_machines
-        WarmUpTestRunners.any_instance.unstub(:claim_boot!)
-        Dir.stubs(:exist?).with("/home/exercism").returns(false)
+        WarmUpTestRunners.any_instance.stubs(marker_path: "/no/such/dir/marker")
         WarmUpTestRunners.any_instance.expects(:languages).never
 
         WarmUpTestRunners.()
       end
 
       def test_runs_once_per_boot
-        WarmUpTestRunners.any_instance.unstub(:claim_boot!)
-        WarmUpTestRunners.any_instance.stubs(boot_id: "boot-1", languages: [])
-        Dir.stubs(:exist?).with("/home/exercism").returns(true)
-        File.stubs(:exist?).with(WarmUpTestRunners::MARKER_PATH).returns(false, true, true)
-        File.stubs(:read).with(WarmUpTestRunners::MARKER_PATH).returns("boot-1", "boot-0")
+        WarmUpTestRunners.any_instance.stubs(languages: %w[python ruby])
+        WarmUpTestRunners.any_instance.expects(:warm_up!).with("python").twice
+        WarmUpTestRunners.any_instance.expects(:warm_up!).with("ruby").twice
 
         # The first run of this boot, the same boot again, and then a new boot.
-        File.expects(:write).with(WarmUpTestRunners::MARKER_PATH, "boot-1").twice
-        3.times { WarmUpTestRunners.() }
+        WarmUpTestRunners.()
+        WarmUpTestRunners.()
+        WarmUpTestRunners.any_instance.stubs(boot_id: "boot-2")
+        WarmUpTestRunners.()
+      end
+
+      def test_carries_on_after_the_invoker_crashes
+        WarmUpTestRunners.any_instance.stubs(languages: %w[csharp python ruby])
+        File.write("#{@marker_dir}/marker", "boot-1\ncsharp\n")
+
+        # csharp was running when the invoker crashed, so it isn't retried.
+        WarmUpTestRunners.any_instance.expects(:warm_up!).with("csharp").never
+        WarmUpTestRunners.any_instance.expects(:warm_up!).with("python")
+        WarmUpTestRunners.any_instance.expects(:warm_up!).with("ruby")
+
+        WarmUpTestRunners.()
+
+        assert_equal "boot-1\ncsharp\npython\nruby\n", File.read("#{@marker_dir}/marker")
       end
 
       def test_lists_the_test_runner_images_on_the_machine

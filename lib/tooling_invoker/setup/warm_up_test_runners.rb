@@ -10,10 +10,12 @@ module ToolingInvoker
     # each one on its track's hello-world, with the exercise's example
     # solution as the submission, to take that hit before students do.
     #
-    # We do this once per boot, as a restarted invoker has nothing to warm
-    # up. It must never stop the invoker from starting, so we mark it done
-    # before we start (so a crash part way through isn't repeated), every
-    # problem is logged and skipped, and we stop after MAX_TOTAL_SECONDS.
+    # We do this once per boot. It must never stop the invoker from starting,
+    # so every problem is logged and skipped, and we stop after
+    # MAX_TOTAL_SECONDS. The marker file records each test runner as we
+    # start it. If the invoker crashes and restarts during the pass, it
+    # carries on with the test runners it hasn't started, and never retries
+    # the one that was running, in case that runner caused the crash.
     class WarmUpTestRunners
       include Mandate
 
@@ -26,17 +28,21 @@ module ToolingInvoker
       BOOT_ID_PATH = "/proc/sys/kernel/random/boot_id".freeze
 
       def call
-        return unless claim_boot!
+        return unless fleet_machine?
+
+        remaining = languages - started_languages
+        return if remaining.empty?
 
         started_at = Time.now.to_f
-        Log.("Warm-up: running #{languages.size} test runners")
+        Log.("Warm-up: running #{remaining.size} of #{languages.size} test runners")
 
-        languages.each do |language|
+        remaining.each do |language|
           if Time.now.to_f - started_at > MAX_TOTAL_SECONDS
             Log.("Warm-up: out of time, so skipping the remaining test runners")
             break
           end
 
+          record_start!(language)
           warm_up!(language)
         end
 
@@ -46,16 +52,23 @@ module ToolingInvoker
       end
 
       private
-      # Returns true, and records that this boot has been warmed up, if it
-      # hasn't been yet. Only fleet machines have /home/exercism (see
-      # WaitForManager), so this is false everywhere else.
-      def claim_boot!
-        return false unless Dir.exist?(File.dirname(MARKER_PATH))
-        return false if File.exist?(MARKER_PATH) && File.read(MARKER_PATH) == boot_id
+      # Only fleet machines have /home/exercism (see WaitForManager).
+      def fleet_machine? = Dir.exist?(File.dirname(marker_path))
 
-        File.write(MARKER_PATH, boot_id)
-        true
+      # The marker holds this boot's ID, then one line for each test runner
+      # started. If it's from an earlier boot, we start it again.
+      def started_languages
+        lines = File.exist?(marker_path) ? File.readlines(marker_path, chomp: true) : []
+        return lines.drop(1) if lines.first == boot_id
+
+        File.write(marker_path, "#{boot_id}\n")
+        []
       end
+
+      def record_start!(language) = File.write(marker_path, "#{language}\n", mode: "a")
+
+      memoize
+      def marker_path = MARKER_PATH
 
       memoize
       def boot_id = File.read(BOOT_ID_PATH).strip
