@@ -36,7 +36,7 @@ module ToolingInvoker
         @exercise = exercise
         @source = source
         @container_version = container_version
-        @timeout_s = timeout_s
+        @custom_timeout_s = timeout_s
 
         @status = DID_NOT_EXECUTE_STATUS
         @stdout = ""
@@ -49,8 +49,9 @@ module ToolingInvoker
       end
 
       # A job can be given its own time limit. Otherwise it gets its tool's.
+      memoize
       def timeout_s
-        @timeout_s || Configuration.instance.timeout_for_tool(tool)
+        @custom_timeout_s || Configuration.instance.timeout_for_tool(tool)
       end
 
       def succeeded!
