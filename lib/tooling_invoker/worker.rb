@@ -18,6 +18,9 @@ module ToolingInvoker
       Log.("Creating Networks")
       Setup::CreateNetworks.()
 
+      Log.("Warming up test runners")
+      Setup::WarmUpTestRunners.()
+
       Log.("Worker #{worker_idx}: Starting")
 
       counter = 0
