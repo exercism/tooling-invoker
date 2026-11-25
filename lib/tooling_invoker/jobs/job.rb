@@ -29,13 +29,14 @@ module ToolingInvoker
       attr_accessor :stdout, :stderr, :duration
       attr_writer :output # Used by local webserver
 
-      def initialize(id, submission_uuid, language, exercise, source, container_version)
+      def initialize(id, submission_uuid, language, exercise, source, container_version, timeout_s: nil)
         @id = id
         @submission_uuid = submission_uuid
         @language = language
         @exercise = exercise
         @source = source
         @container_version = container_version
+        @timeout_s = timeout_s
 
         @status = DID_NOT_EXECUTE_STATUS
         @stdout = ""
@@ -45,6 +46,11 @@ module ToolingInvoker
 
       def tool
         "#{language}-#{type}"
+      end
+
+      # A job can be given its own time limit. Otherwise it gets its tool's.
+      def timeout_s
+        @timeout_s || Configuration.instance.timeout_for_tool(tool)
       end
 
       def succeeded!

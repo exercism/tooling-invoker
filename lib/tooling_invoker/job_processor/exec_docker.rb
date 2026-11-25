@@ -29,7 +29,7 @@ module ToolingInvoker
           # Run the command in a thread and timeout just
           # after the SIGKILL is sent inside ExternalCommand timeout.
           # Note whether it existed cleanly (success) or timed out
-          success = docker_thread.join(Configuration.instance.timeout_for_tool(job.tool) + 1.1)
+          success = docker_thread.join(job.timeout_s + 1.1)
 
           # If we get to this stage, and the thread didn't exit
           # clearly, it's still running and we need to stop it
@@ -162,8 +162,7 @@ module ToolingInvoker
           *job.invocation_args
         ].join(" ")
 
-        timeout_s = Configuration.instance.timeout_for_tool(job.tool)
-        timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{timeout_s} #{docker_cmd}"
+        timeout_cmd = "/usr/bin/timeout -s SIGTERM -k 1 #{job.timeout_s} #{docker_cmd}"
         Exercism.env.development? ? docker_cmd : timeout_cmd
       end
 
