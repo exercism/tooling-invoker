@@ -30,6 +30,18 @@ module ToolingInvoker
       def call
         return unless fleet_machine?
 
+        # If several workers start at once, the first warms up and the
+        # others wait here, then find nothing left to do.
+        File.open("#{marker_path}.lock", File::RDWR | File::CREAT) do |lock|
+          lock.flock(File::LOCK_EX)
+          warm_up_remaining!
+        end
+      rescue StandardError => e
+        Log.("Warm-up: failed, so skipping it: #{e.message}")
+      end
+
+      private
+      def warm_up_remaining!
         remaining = languages - started_languages
         return if remaining.empty?
 
@@ -47,11 +59,8 @@ module ToolingInvoker
         end
 
         Log.("Warm-up: finished in #{(Time.now.to_f - started_at).round(1)}s")
-      rescue StandardError => e
-        Log.("Warm-up: failed, so skipping it: #{e.message}")
       end
 
-      private
       # Only fleet machines have /home/exercism (see WaitForManager).
       def fleet_machine? = Dir.exist?(File.dirname(marker_path))
 
